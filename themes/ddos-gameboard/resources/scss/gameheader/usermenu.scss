@@ -1,0 +1,22 @@
+#usermenu {
+  height: min-content;
+  padding: 24px 24px 8px 4px;
+  font-weight: 800;
+  flex-shrink: 1;
+  text-align: right;
+  .pure-button {
+    margin-right: 0;
+  }
+  .scroll-checkbox-wrapper {
+    padding: 8px 0 0 0;
+  }
+  span, label {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+    #usermenu {
+      font-size: 0.75em;
+    }
+}

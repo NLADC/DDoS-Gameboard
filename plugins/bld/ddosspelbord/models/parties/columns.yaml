@@ -1,0 +1,11 @@
+columns:
+    name:
+        label: name
+        type: text
+        searchable: true
+    updated_at:
+        label: updated_at
+        type: datetime
+    deleted_at:
+        label: deleted_at
+        type: datetime

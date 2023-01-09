@@ -1,0 +1,47 @@
+description="DDoS gamboard layout"
+
+[localePicker]
+==
+use Winter\Translate\Classes\Translator;
+protected $translator;
+
+function onStart()
+{
+$this->translator = Translator::instance();
+$this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale();
+}
+==
+{% set CurrentLanguage = SelectedLanguage %}
+
+
+<!DOCTYPE html>
+<html lang="nl-nl" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ gameboard.data.csrftoken|raw }}">
+    <meta name="description" content="Anti-DDoS coalitie Open Source DDoS gameboard">
+    <meta name="keywords" content="DDoS, Gameboard, open source">
+    <meta name="author" content="First version; belastingdienst & SvSnet">
+    <title>{{ 'theme.ddosgameboard'|_ }}</title>
+    <!-- Scripts -->
+    <script src="{{ 'assets/vendor/jquery.js'|theme }}"></script>
+    <script src="{{ 'assets/js/gameboard-lite.js'|theme }}" defer></script>
+    {% snowboard all %}
+    {% scripts %}
+    <!-- styling -->
+    <link href="{{ 'assets/css/fonts.css'|theme }}" rel="stylesheet">
+    <link href="{{ 'assets/css/gameboard.css'|theme }}" rel="stylesheet">
+    <link href="{{ 'assets/css/theme.css'|theme }}" rel="stylesheet">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"> </script>
+    <script type="text/javascript" defer>
+        window.gameboard_locale = '{{CurrentLanguage}}';
+    </script>
+</head>
+<body class="el-0">
+
+<h1></h1>
+{% page %}
+</body>
+</html>
+

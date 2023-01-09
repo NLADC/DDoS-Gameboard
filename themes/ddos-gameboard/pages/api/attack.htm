@@ -1,0 +1,18 @@
+title = "Attack"
+url = "/api/attack"
+is_hidden = 0
+
+[session]
+security = "user"
+redirect = "home"
+
+[ddosspelbord_attack]
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_attack;
+function onStart() {
+    return ddosspelbord_attack::handleAttackChanges();
+}
+
+==
+?>

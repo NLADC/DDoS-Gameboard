@@ -1,0 +1,20 @@
+fields:
+    name:
+        label: name
+        span: auto
+        type: text
+    email:
+        label: email
+        span: auto
+        type: text
+    password:
+        label: password
+        type: password
+        span: auto
+    role_id:
+        label: role
+        relation: roles
+        select: name
+        type: radio
+        cssClass: 'inline-options'
+        span: auto

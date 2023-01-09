@@ -1,0 +1,51 @@
+// Important system variables used by js
+
+/**
+* --gameheader-height and --partyheader-height are css variables so the js responsive.js can tweak their height when scaling the window.
+* They can't be percentages of flex beceause they are position: sticky/fixed
+*/
+:root {
+  --gameheader-height: 104px;
+  --partyheader-height: 64px;
+}
+
+// theming
+:root {
+  --bg-prim: #ffa144;
+  --text-black: #22292f;
+  --color_started: #00b700;
+  --color_resumed: #88b400;
+  --color_paused: #df8b45;
+  --color_stopped: #b49924;
+  --color_loaded: #dff0f3;
+  --header-color: rgb(248, 113, 113);
+}
+
+:root {
+  --gray_1: #f6f6f6;
+  --gray_2: #e1e1e1;
+  --gray_3: #b9b9b9;
+  --gray_4: #858585;
+  --gray_5: #565656;
+  --gray_6: #363636;
+  --gray_7: #171717;
+}
+
+:root {
+  --btn-radius: 8px;
+}
+
+// Links
+:root {
+  --link-color: #9696e7;
+  --link-color-hover: #b8b8f5;
+  --link-color-active: #6565cc;
+}
+
+$breakpoint-sm: 400px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-xl2: 1536px;
+

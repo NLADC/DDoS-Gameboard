@@ -1,0 +1,71 @@
+.attachment-preview {
+  padding: 12px 2px;
+
+  .heading {
+    align-self: center;
+    padding: 0 0 6px 0;
+  }
+
+
+  &.preview-text object {
+    background: white;
+    max-height: 320px;
+    margin: 12px 0;
+    width: 550px;
+    max-width: 100%;
+  }
+
+  &.preview-image img {
+    background-color: white;
+    max-height: 440px;
+    margin: 12px auto;
+  }
+
+  &.preview-pdf embed {
+    width: 1400px;
+    max-width: 100%;
+  }
+
+  &.preview-video {
+
+    video {
+      margin: 0 auto;
+      max-height: 320px;
+    }
+  }
+
+  &.preview-audio {
+    max-height: 320px;
+    margin: 12px 0;
+    audio {
+      margin: 0 auto;
+    }
+  }
+
+  &.preview-download {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    h5 {
+      font-size: 0.75em;
+      padding: 12px 12px 0 0;
+    }
+
+    .btn.downloadbtn {
+      height: min-content;
+      align-self: center;
+      margin: 12px 0 0 12px;
+    }
+  }
+}
+
+#AttachmentModal {
+  .created_at {
+    float: right;
+    font-size: 0.75em;
+    padding: 12px 0 0 0;
+  }
+}

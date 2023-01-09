@@ -1,0 +1,63 @@
+.log-bubble {
+
+  .timestamp {
+    width: 50%;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  .author {
+    width: 50%;
+    text-align: right;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  .message {
+
+  }
+  .attachments {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.75em;
+    li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+
+    }
+  }
+}
+
+a.attachmentlink {
+  display: flex;
+  min-height: 21px;
+  .loading_animation {
+    display: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    height: 21px;
+    width: 26px;
+    margin: 0 4px;
+  }
+  &.loading .loading_animation {
+    display: inline-block;
+    background-image: url("/img/loadingcirlce.svg");
+  }
+}
+
+a.editlogbutton {
+  span.material-icons {
+    font-size: 20px;
+  }
+  &:hover {
+    span.material-icons {
+      color: var(--link-color-hover);
+    }
+  }
+  &:active {
+    span.material-icons {
+      color: var(--link-color-active);
+    }
+  }
+}

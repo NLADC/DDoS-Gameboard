@@ -1,0 +1,20 @@
+
+columns:
+    party:
+        label: party
+        relation: parties
+        select: name
+    name:
+        label: name
+        type: text
+    email:
+        label: email
+        type: text
+    role:
+        label: role
+        relation: roles
+        select: name
+    deleted_at:
+        label: deleted_at
+        type: datetime
+

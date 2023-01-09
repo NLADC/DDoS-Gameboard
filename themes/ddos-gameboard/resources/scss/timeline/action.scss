@@ -1,0 +1,10 @@
+.action {
+  .action-header {
+    position: sticky;
+    top: calc(var(--gameheader-height) + var(--partyheader-height));
+    z-index: 40;
+  }
+}
+.action-wrapper {
+  width: 100%;
+}

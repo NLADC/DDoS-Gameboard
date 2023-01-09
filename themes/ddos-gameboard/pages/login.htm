@@ -1,0 +1,27 @@
+title = "Login"
+url = "/login"
+layout = "ddos-gameboard"
+is_hidden = 0
+
+[session]
+security = "all"
+
+[ddosspelbord_data]
+==
+<div id="gameboard" class="flex flex-col el-0-brand">
+
+    <notification-box v-if="showNotification" @notify-off="notifyOff" :notifications="notifications"></notification-box>
+
+    <div class="relative flex-grow flex w-full">
+
+        <div class="w-full text-center">
+
+            <div id="loginheading">{{ 'theme.ddosgameboard'|_ }}</div>
+            <button class="pure-button pure-button-primary p-4" @click="showLoginModal = true">{{ 'theme.login'|_ }}</button>
+
+        </div>
+    </div>
+
+    <login-modal :show="showLoginModal" :csrf="csrfToken" @close="showLoginModal = false"></login-modal>
+
+</div>

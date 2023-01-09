@@ -1,0 +1,22 @@
+subject = "Welcome to the DDOS gameboard"
+description = "To a new user forcing it to change it password when created"
+
+==
+Welcome {{ name }} to the ddos gameboard
+
+An account has been made for you on the ddos gameboard
+To get access it is important to change your password
+
+Use the following code to change your password
+
+{% partial 'promotion' body %}
+{{ code }}
+{% endpartial %}
+
+Got to the following page to change your password
+
+{% partial 'button' url=link type='positive' body %}
+Set password
+{% endpartial %}
+
+**This is an automated message, you cannot reply to it..s**

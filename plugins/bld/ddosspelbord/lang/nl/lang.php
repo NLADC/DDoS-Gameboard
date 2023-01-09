@@ -1,0 +1,23 @@
+<?php return [
+    'plugin' => [
+        'name' => 'DDoSspelbord',
+        'description' => '',
+    ],
+    'export' => 'Exporteer',
+    'import' => 'Importeer',
+    'download' => 'Download',
+    'resettimestamps' => 'Zet tijdstempels naar vandaag',
+    'planner' => 'Planner',
+    'startpage' => 'Startpagina',
+    'dashboarddatatimestamp'=> 'Dashboard data tijdstempel:',
+    'numberoflogs' => 'Aantal logs',
+    'SentCOUNTDOWN' => 'Stuur COUNTDOWN',
+    'sentonlymessage' => 'Stuur alleen berichten',
+    'userseachparty' => '#Gebruikers per partij (ingelogd)',
+    'currentlogs' => 'Huidige logs',
+    'timestamp' => 'Tijdstempel:',
+    'user' => 'Gebruiker:',
+    'party' => 'Partij:',
+    'sendpasswordresetmail' => 'Verstuur wachtwoord reset mail',
+    'sendpasswordresetmail_conformation' => 'Wil je deze gebruikers echt een wachtwoord reset email sturen?',
+];

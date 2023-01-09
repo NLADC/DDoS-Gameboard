@@ -1,0 +1,20 @@
+fields:
+    name:
+        label: name
+        span: auto
+        type: text
+
+tabs:
+    fields:
+        actions:
+            tab: Actions
+            span: full
+            type: partial
+            path: party_actions
+            context: update
+        users:
+            tab: Users
+            span: full
+            type: partial
+            path: party_users
+            context: update

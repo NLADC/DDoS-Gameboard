@@ -1,0 +1,11 @@
+{
+  "name": "bld/ddosspelbord",
+  "type": "DDoS Spelbord",
+  "description": "Anti-DDoS Spelbord",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "bld\\ddosspelbord\\": ""
+    }
+  }
+}

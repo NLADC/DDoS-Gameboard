@@ -1,0 +1,18 @@
+#mainmenu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .menu-icons {
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  #game-header {
+    #mainmenu .menu-icons {
+      padding: 6px 12px 0;
+      align-self: flex-end;
+    }
+  }
+}

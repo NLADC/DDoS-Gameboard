@@ -1,0 +1,29 @@
+.party {
+  position: relative;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 112px;
+  border-right-width: 1px;
+  text-align: center;
+  vertical-align: top;
+  border-color: #363636;
+}
+
+.party-header {
+  position: sticky;
+  top: var(--gameheader-height);
+  min-height: var(--partyheader-height);
+  z-index: 49;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  border-width: 1px;
+  --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  background: #121212;
+  border-color: var(--bg-prim);
+  line-height: 2rem;
+  h2 {
+    word-break: break-word;
+    padding: 15px 7.5px;
+  }
+}

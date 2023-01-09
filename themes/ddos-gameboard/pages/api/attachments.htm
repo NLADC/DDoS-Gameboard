@@ -1,0 +1,18 @@
+title = "Attachments"
+url = "/api/attachments"
+is_hidden = 0
+
+[session]
+security = "user"
+redirect = "home"
+
+[ddosspelbord_attachments]
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_attachments;
+function onStart() {
+    return ddosspelbord_attachments::FetchAttachments();
+}
+
+==
+?>

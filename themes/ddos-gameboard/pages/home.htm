@@ -1,0 +1,110 @@
+title = "Home"
+url = "/"
+layout = "ddos-gameboard"
+is_hidden = 0
+
+[session]
+security = "all"
+
+[ddosspelbord_data]
+==
+<?php
+    use Auth;
+    use Redirect;
+        function onStart() {
+            $user = Auth::check();
+            $loginUrl = $this->pageUrl('login');
+
+if (!$user) {
+return Redirect::to($loginUrl);
+}
+}
+?>
+
+==
+<div id="gameboard" class="flex flex-col el-0-brand">
+    <notification-box v-if="showNotification" @notify-off="notifyOff" :notifications="notifications"></notification-box>
+
+    {% if gameboard.title!='' %}
+
+    <div id="game-header">
+        <div class="game-header-inner">
+            <div id="mainmenu" class="ghmenu-item">
+                <h1 title="Gameboard release {{ gameboard.version }}"
+                    class="inline-block font-light lg:text-4xl md:text-3xl sm:text-1xl" :class="titleColor">@{{ gameboard.title }}</h1>
+                <div class="menu-icons">
+                    <button v-if="user.role == 'purple'" @click="showLiveLogModal = true" title="Show live log"
+                            class="material-icons">list
+                    </button>
+                    <button @click="showPartiesSelect = true" title="Select parties" class="material-icons">business
+                    </button>
+                    <button @click="showActionsList = true" title="Exercise actions" class="material-icons">event
+                    </button>
+                    <button v-if="user.role!='observer'" @click="editDirectLog" title="Open direct logging"
+                            class="material-icons">insert_comment
+                    </button>
+                    <button @click="showHelpFile = true" title="Show help" class="material-icons mi-help-outline">
+                        help_outline
+                    </button>
+                </div>
+            </div>
+            <div id="timer" class="ghmenu-item">
+                <game-countdown starttime="{{ gameboard.starttime }}"
+                                endtime="{{ gameboard.endtime }}"></game-countdown>
+            </div>
+
+        </div>
+        <div id="usermenu" class="ghmenu-item lg:text-1xl">
+            <button v-if="user.id == 0" class="pure-button pure-button-primary" @click="showLoginModal = true">Login
+            </button>
+            <span v-if="user.id != 0">@{{ user.name }}</span>
+            <logout-button v-if="user.id != 0" :logoutbuttontext="'{{ 'theme.logout'|_ }}'"></logout-button>
+            <div class="scroll-checkbox-wrapper" v-if="showscroll">
+                <input type="checkbox" v-model="scroll" {{ gameboard.data.scroll ? 'checked="CHECKED"':'' }}
+                @click="submitScroll()" id="scroll"> <label for="scroll">{{ 'theme.scroll'|_ }}</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="timeline">
+        <div class="timeline-wrapper">
+            <timeline min="{{ gameboard.firsttime }}" max="{{ gameboard.endtime }}"
+                      granularity="{{ gameboard.granularity }}" :logs="logs" @edit="editLog" :rerender="reRender.logs"
+                      :loggedin="user.id != 0" @login="showLoginModal = true"
+                      @rerendered="reRender.logs = false"></timeline>
+        </div>
+        <timeline-scroller @notify-user="notifyUser" granularity="{{ gameboard.granularity }}"
+                           :start="moment('{{ gameboard.firsttime }}')" :scroll="scroll"></timeline-scroller>
+        <div id="parties-board">
+            <div class="timeline-background">
+                <div v-for="idx in 22" :key="idx">
+                    <div class="hi-hi" :class="{'hi-border': idx == 3 || ((idx - 3) % 2) == 0}"></div>
+                    <div class="hi-lo"></div>
+                </div>
+            </div>
+            <party v-for="party in sortedParties(parties)" :show="party.show" :global="!party.id"
+                   :showPartiesSelect="showPartiesSelect" :party="party" :key="party.id"
+                   @toggle="party.show = !party.show">
+                <action v-for="action in party.actions" :show="party.show" :global="!party.id" :role="user.role"
+                        :action="action" min="{{ gameboard.firsttime }}" granularity="{{ gameboard.granularity }}"
+                        :csrf="csrfToken" :key="action.id"></action>
+            </party>
+        </div>
+    </div>
+
+    <log-modal :show="showLogModal" :logs="logs" :user="user" :editing="editingLogs" :csrf="csrfToken"
+               @close="showLogModal = false" @update-log="updateLog"></log-modal>
+    <live-log :show="showLiveLogModal" :logs="logs" :rerender="reRender.livelogs" @rerendered="reRender.livelogs=false"
+              @close="showLiveLogModal = false"></live-log>
+    <parties-select :show="showPartiesSelect" :parties="parties" :csrf="csrfToken"
+                    @close="showPartiesSelect = false"></parties-select>
+    <actions-list :show="showActionsList" :parties="parties" @close="showActionsList = false"></actions-list>
+    <quick-logging :show="showQuickLogging" :logs="logs" :rerender="reRender.quicklogs" :rerenderattacks="reRender.attacks" :attacks="attacks" :acceptedFileTypes="acceptedFileTypes"
+                   :user="user" :csrf="csrfToken" :parties="parties" @rerendered="reRender.quicklogs = false" @rerenderattacks="reRender.attacks = false"
+                   @close="showQuickLogging = false" @update-log="updateLog" @update-attack="updateAttack"></quick-logging>
+    <help-file :show="showHelpFile" @close="showHelpFile = false"></help-file>
+    <attachment-modal :show="showAttachmentModal" :attachmentmodal="attachmentmodal" @close="showAttachmentModal = false"></attachment-modal>
+
+
+    {% endif %}
+</div>

@@ -1,0 +1,19 @@
+// Linkstates is a mixin because it can be used on other objects quite easiliy.
+@mixin linkstates {
+  color: var(--link-color);
+  &:hover,
+  &:focus {
+    color: var(--link-color-hover);
+  }
+  &:active {
+    color: var(--link-color-active);
+  }
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:focus,
+  &.disabled:active,
+  &:disabled {
+    pointer-events: none;
+    color: var(--gray_3);
+  }
+}

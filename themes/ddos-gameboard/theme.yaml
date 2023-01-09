@@ -1,0 +1,7 @@
+name: 'DDoS Gameboard'
+description: 'DDoS gameboard'
+author: BD
+homepage: ''
+code: ddos-gameboard
+translate: themes/ddos-gameboard/lang/lang.yaml
+

@@ -1,0 +1,37 @@
+.accountchangepage {
+
+  .lead, .lead strong {
+    font-size: 1.5em;
+    color: var(--header-color);
+    margin: 0 0 24px 0;
+  }
+
+  .form-group {
+    padding: 0 0 24px 0;
+  }
+  input {
+    border: 1px rgb(255 255 255 / 50%) solid;
+  }
+
+  .page-heading {
+    color: var(--header-color);
+    font-size: 1.5rem;
+    line-height: 2rem;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 40px auto 24px;
+  }
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    padding: 0 40px;
+    margin: 0 auto;
+  }
+
+  button[type="submit"] {
+    margin-left: 0;
+    @include btn-primary;
+  }
+
+}

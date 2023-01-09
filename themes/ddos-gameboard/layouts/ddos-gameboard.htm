@@ -1,0 +1,54 @@
+description="DDoS gamboard layout"
+
+[localePicker]
+==
+use Winter\Translate\Classes\Translator;
+protected $translator;
+
+function onStart()
+{
+$this->translator = Translator::instance();
+$this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale();
+}
+==
+{% set CurrentLanguage = SelectedLanguage %}
+
+<!DOCTYPE html>
+<html lang="nl-nl" class="h-full">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ gameboard.data.csrftoken|raw }}">
+    <meta name="description" content="Anti-DDoS coalitie Open Source DDoS gameboard">
+    <meta name="keywords" content="DDoS, Gameboard, open source">
+    <meta name="author" content="First version; belastingdienst & SvSnet">
+	<title>{{ 'theme.ddosgameboard'|_ }}</title>
+	<!-- scripts -->
+	<script src="{{ 'assets/js/gameboard.js'|theme }}" defer></script>
+	<!-- styling -->
+	<link href="{{ 'assets/css/fonts.css'|theme }}" rel="stylesheet">
+	<link href="{{ 'assets/css/gameboard.css'|theme }}" rel="stylesheet">
+    <link href="{{ 'assets/css/theme.css'|theme }}" rel="stylesheet">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"> </script>
+	<!-- global data -->
+	<script type="text/javascript" defer>
+        window.gameboard_lastTransaction = "{{ gameboard.data.hash|raw }}";
+        window.gameboard_parties = "{{ gameboard.data.parties|raw }}";
+        window.gameboard_user = "{{ gameboard.data.user|raw }}";
+        window.gameboard_logs = "{{ gameboard.data.logs|raw }}";
+        window.gameboard_attacks = "{{ gameboard.data.attacks|raw }}";
+        window.gameboard_csrfToken = "{{ gameboard.data.csrftoken|raw }}";
+        window.gameboard_firsttime = "{{ gameboard.firsttime }}";
+        window.gameboard_endtime = "{{ gameboard.endtime }}";
+        window.gameboard_access = "{{ gameboard.data.loggedin }}";
+        window.gameboard_logmaxfilesize = "{{ gameboard.data.logmaxfilesize }}";
+        window.gameboard_logmaxfiles = "{{ gameboard.data.logmaxfiles }}";
+        window.gameboard_scroll = {{ gameboard.data.scroll }};
+        window.gameboard_acceptedfiletypes = "{{ gameboard.data.acceptedfiletypes}}";
+        window.gameboard_locale = '{{CurrentLanguage}}';
+	</script>
+</head>
+<body class="el-0">
+    {% page %}
+</body>
+</html>

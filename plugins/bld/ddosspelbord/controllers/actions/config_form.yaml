@@ -1,0 +1,10 @@
+name: Actions
+form: $/bld/ddosspelbord/models/actions/fields.yaml
+modelClass: Bld\Ddosspelbord\Models\Actions
+defaultRedirect: bld/ddosspelbord/actions
+create:
+    redirect: 'bld/ddosspelbord/actions/update/:id'
+    redirectClose: bld/ddosspelbord/actions
+update:
+    redirect: bld/ddosspelbord/actions
+    redirectClose: bld/ddosspelbord/actions

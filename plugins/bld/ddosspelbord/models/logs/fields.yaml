@@ -1,0 +1,25 @@
+fields:
+    timestamp:
+        label: timestamp
+        span: auto
+        type: datepicker
+        mode: datetime
+    log:
+        label: Log
+        span: full
+        type: textarea
+    attachments:
+        label: Attachments
+        type: fileupload
+        mode: file
+        thumbOptions:
+            mode: crop
+            offset:
+                - 0
+                - 0
+            quality: 90
+            sharpen: 0
+            interlace: false
+            extension: auto
+
+

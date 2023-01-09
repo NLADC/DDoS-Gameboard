@@ -1,0 +1,19 @@
+scopes:
+  party_id:
+    label: 'party'
+    type: group
+    # conditions: 'party_id in (:filtered)'
+    scope: selectParty
+    modelClass: bld\ddosspelbord\models\Parties
+    options: getPartyOptions
+  user_id:
+    label: 'user'
+    type: group
+    # conditions: 'user_id in (:filtered)'
+    scope: selectUser
+    modelClass: bld\ddosspelbord\models\Spelbordusers
+    options: getUserOptions
+    dependsOn: party_id
+
+
+

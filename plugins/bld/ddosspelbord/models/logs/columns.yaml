@@ -1,0 +1,22 @@
+columns:
+    timestamp:
+        label: timstamp
+        type: text
+    user:
+        label: user
+        type: text
+        relation: user
+        select: email
+        searchable: true
+    party:
+        label: party
+        type: text
+        searchable: true
+        sortable: false
+    log:
+        label: log
+        type: text
+        searchable: true
+    deleted_at:
+        label: deleted_at
+        type: datetime

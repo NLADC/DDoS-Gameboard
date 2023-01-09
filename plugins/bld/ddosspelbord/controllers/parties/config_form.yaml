@@ -1,0 +1,10 @@
+name: Parties
+form: $/bld/ddosspelbord/models/parties/fields.yaml
+modelClass: Bld\Ddosspelbord\Models\Parties
+defaultRedirect: bld/ddosspelbord/parties
+create:
+    redirect: 'bld/ddosspelbord/parties/update/:id'
+    redirectClose: bld/ddosspelbord/parties
+update:
+    redirect: bld/ddosspelbord/parties
+    redirectClose: bld/ddosspelbord/parties

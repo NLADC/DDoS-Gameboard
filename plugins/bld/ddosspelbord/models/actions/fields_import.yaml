@@ -1,0 +1,6 @@
+fields:
+    cleartable:
+        label: 'Clear table before import'
+        type: switch
+        default: false
+        span: left

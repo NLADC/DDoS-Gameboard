@@ -1,0 +1,25 @@
+columns:
+    party:
+        label: party
+        relation: parties
+        select: name
+        searchable: true
+    name:
+        label: name
+        type: text
+        searchable: true
+    email:
+        label: email
+        type: text
+        searchable: true
+    role:
+        label: role
+        relation: roles
+        select: name
+        searchable: true
+    updated_at:
+        label: updated
+        type: datetime
+    deleted_at:
+        label: deleted_at
+        type: datetime

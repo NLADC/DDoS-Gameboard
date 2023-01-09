@@ -1,0 +1,263 @@
+.upload-log-attachments {
+  display: flex;
+}
+
+.quicklogging-box {
+  position: fixed;
+  right: 0.25rem;
+  bottom: 0.25rem;
+  z-index: 50;
+  width: calc(100% - 0.5rem);
+  max-width: 440px;
+  border-radius: 0.25rem;
+  border-width: 2px;
+  --tw-bg-opacity: 1;
+  background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
+  --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  border-color: var(--bg-prim);
+  height: auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 100%;
+  max-height: 100%;
+  h3 {
+    display: inline-block;
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .inputwrapper {
+    background: rgb(255 255 255 / 95%);
+    border-color: var(--bg-prim);
+    border-top-width: 2px;
+  }
+  input:not([type="checkbox"]), textarea {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+  input[type="file"] {
+    background: transparent;
+    color: #000;
+  }
+  #stopwatch {
+    color: white;
+    padding: 0 12px;
+    margin: auto 0;
+    &:hover {
+      color: var(--bg-prim);
+    }
+  }
+}
+
+#quicklogginbox-header {
+  width: 100%;
+  display: flex;
+  flex-shrink: 1;
+  height: auto;
+  align-content: center;
+  background-color: var(--bg-prim);
+  border-color: var(--bg-prim);
+  color: rgba(0, 0, 0, var(--tw-text-opacity));
+  font-weight: 600;
+  border-bottom-width: 2px;
+  flex-direction: row;
+}
+
+.quicklog-box {
+  margin-bottom: 0.75rem;
+  overflow-y: auto;
+  flex-basis: 480px;
+  height: auto;
+}
+
+#quicklogging-form {
+  height: auto;
+  .logTimespamp {
+    flex-basis: 33%;
+    min-width: 64px;
+    .focus\:outline-none:focus {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+  .actionswrapper {
+    flex-direction: row;
+    width: 100%;
+    display: flex;
+    padding: 12px 0;
+  }
+}
+
+#submitlogBtn {
+  padding: 0 24px;
+  max-width: 220px;
+  flex-basis: 50%;
+  justify-self: flex-end;
+}
+
+.quicklog-bubble {
+  background: #121212;
+  position: relative;
+  margin-bottom: 0.5rem;
+  display: block;
+  padding: 0.5rem;
+}
+
+
+li#currentattacks {
+  background: var(--gray_1);
+  left: 24px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-in-out;
+  &.show {
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  a.currentattack {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px #d2d2d2 solid;
+    cursor: pointer;
+    align-items: center;
+    &.loaded {
+      background: var(--color_loaded);
+    }
+    &:hover {
+      background: lightblue;
+    }
+    &.disabled {
+      pointer-events: none;
+      background: var(--gray_2);
+      .name {
+        color: #bebebe;
+      }
+    }
+    span {
+      margin: auto 0;
+    }
+    .name {
+      align-self: flex-start;
+      color: var(--link-color);
+      max-width: calc(100% - 65px);
+      overflow: hidden;
+    }
+    .status {
+      align-self: flex-end;
+      color: gray;
+      &.started {
+        color: var(--color_started);
+      }
+      &.paused {
+        color: var(--color_paused);
+      }
+      &.resumed {
+        color: var(--color_resumed);
+      }
+      &.stopped {
+        color: var(--color_stopped);
+      }
+    }
+  }
+}
+
+.stopwatch {
+  background: var(--gray_2);
+  display: flex;
+  flex-direction: row;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-in-out;
+  flex: none;
+  &.show {
+    max-height: 180px;
+  }
+  input#AttackName {
+    align-self: center;
+    &.loaded {
+      background: var(--color_loaded);
+    }
+  }
+  input:not([type=checkbox]) {
+    background: white;
+    color: black;
+    height: 40px;
+    align-self: end;
+  }
+  .buttons {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  i {
+    font-size: 2em;
+    cursor: pointer;
+    @include linkstates;
+    color: var(--gray_6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.play {
+      color: var(--color_started);
+      padding: 0;
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+    &.pause {
+      color: var(--color_paused);
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+    &.refresh {
+      font-size: 1.6em;
+    }
+    &.stop {
+      font-size: 1.9em;
+    }
+    &.recordicon {
+      display: inline-block;
+      background: red;
+      height: 18px;
+      width: 18px;
+      margin: 2px;
+      border-radius: 50%;
+      &:hover {
+        background: darkred;
+      }
+      &.recording, &:hover.recording {
+        background: var(--gray_3);
+        pointer-events: none;
+        color: var(--gray_3);
+      }
+    }
+    &.disabled,
+    &.disabled.recordicon,
+    &.disabled.refresh,
+    &.disabled.pause,
+    &.disabled.play {
+      pointer-events: none;
+      color: var(--gray_3);
+    }
+  }
+  i#loadCurrentattacks {
+    padding: 0 8px;
+    font-size: 1.75em;
+  }
+}
+

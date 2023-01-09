@@ -1,0 +1,10 @@
+name: Attacks
+form: $/bld/ddosspelbord/models/attack/fields.yaml
+modelClass: bld\ddosspelbord\Models\Attack
+defaultRedirect: bld/ddosspelbord/attacks
+create:
+    redirect: 'bld/ddosspelbord/attacks/update/:id'
+    redirectClose: bld/ddosspelbord/attacks
+update:
+    redirect: bld/ddosspelbord/attacks
+    redirectClose: bld/ddosspelbord/attacks

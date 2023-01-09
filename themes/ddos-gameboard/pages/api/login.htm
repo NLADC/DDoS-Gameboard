@@ -1,0 +1,16 @@
+title = "Login"
+url = "/api/user/login"
+is_hidden = 0
+
+[session]
+security = "all"
+
+[ddosspelbord_login]
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_login;
+function onStart() {
+    return ddosspelbord_login::login();
+}
+==
+?>

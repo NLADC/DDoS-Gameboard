@@ -1,0 +1,81 @@
+.game-countdown {
+  lottie-player {
+    height: 100%;
+    width: 38px;
+  }
+
+  .wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  * {
+    font-family: var(--font-headings);
+    color: var(--bg-prim);
+    font-weight: 300;
+  }
+
+  span {
+    font-size: 1em;
+    height: auto;
+  }
+
+  &.mode-1 {
+    span:nth-child(odd) {
+      width: 1.25em;
+    }
+
+    span:nth-child(even) {
+      width: 0.25em;
+    }
+  }
+
+  &.mode-2 {
+    span:nth-child(odd) {
+      width: 0.25em;
+    }
+
+    span:nth-child(even) {
+      width: 1.25em;
+    }
+  }
+}
+
+.game-header-inner {
+  .game-countdown {
+    .wrapper {
+      display: flex;
+      flex-basis: 300px;
+    }
+  }
+
+  #timer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: baseline;
+
+    div {
+      align-items: center;
+    }
+
+
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .game-header-inner {
+    #timer {
+      justify-content: flex-start;
+    }
+  }
+}
+
+
+@media (max-width: 1080px) {
+  .game-countdown lottie-player {
+    height: 100%;
+    width: 24px;
+  }
+}

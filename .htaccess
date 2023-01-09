@@ -1,0 +1,94 @@
+<IfModule mod_rewrite.c>
+
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+
+    RewriteEngine On
+
+    ##
+    ## You may need to uncomment the following line for some hosting environments,
+    ## if you have installed to a subdirectory, enter the name here also.
+    ##
+    # RewriteBase /
+
+    ##
+    ## Uncomment following lines to force HTTPS.
+    ##
+    # RewriteCond %{HTTPS} off
+    # RewriteRule (.*) https://%{SERVER_NAME}/$1 [L,R=301]
+
+    ##
+    ## Paths explicitly blocked from being handled by the server
+    ##
+    RewriteRule ^bootstrap/.* index.php [L,NC]
+    RewriteRule ^config/.* index.php [L,NC]
+    RewriteRule ^vendor/.* index.php [L,NC]
+    RewriteRule ^storage/cms/.* index.php [L,NC]
+    RewriteRule ^storage/logs/.* index.php [L,NC]
+    RewriteRule ^storage/framework/.* index.php [L,NC]
+    RewriteRule ^storage/temp/protected/.* index.php [L,NC]
+    RewriteRule ^storage/app/uploads/protected/.* index.php [L,NC]
+    RewriteRule ^storage/app/uploads/public/.* index.php [L,NC]
+
+    ##
+    ## Paths explicitly handled by the server
+    ##
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} !/.well-known/*
+    RewriteCond %{REQUEST_FILENAME} !/storage/app/uploads/public/.*
+    RewriteCond %{REQUEST_FILENAME} !/storage/app/media/.*
+    RewriteCond %{REQUEST_FILENAME} !/storage/app/resized/.*
+    RewriteCond %{REQUEST_FILENAME} !/storage/temp/public/.*
+    # Specific for lottie player package
+    RewriteCond %{REQUEST_FILENAME} !/json/*
+    RewriteCond %{REQUEST_FILENAME} !/fonts/*
+    RewriteCond %{REQUEST_FILENAME} !/img/*
+    # ddos spelbord icon
+    RewriteCond %{REQUEST_FILENAME} !/favicon.ico
+    RewriteCond %{REQUEST_FILENAME} !/themes/.*/(assets|resources)/.*
+    RewriteCond %{REQUEST_FILENAME} !/plugins/.*/(assets|resources)/.*
+    RewriteCond %{REQUEST_FILENAME} !/modules/.*/(assets|resources)/.*
+    RewriteRule !^index.php index.php [L,NC]
+
+    ##
+    ## Block all PHP files, except index
+    ##
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} \.php$
+    RewriteRule !^index.php index.php [L,NC]
+
+    ##
+    ## Standard routes
+    ##
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+
+     ##
+     ## Configuration when runnign html root at the base folder instead of public
+     ##
+#
+#    # If "public" directory is requested directly then redirect to remove it
+#    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+#    RewriteRule ^public(?:/(.*))?$ /$1 [R=301,L]
+#
+#    # Stop early if already rewritten to "public" directory
+#    RewriteRule ^public/ - [L]
+#
+#    # If it's a file/directory/symlink, serve it.
+#    RewriteCond %{REQUEST_FILENAME} -f [OR]
+#    RewriteCond %{REQUEST_FILENAME} -d [OR]
+#    RewriteCond %{REQUEST_FILENAME} -l
+#    RewriteRule ^ - [L]
+#
+#    # Rewrite to assets in "public" directory if they exist
+#    RewriteCond %{REQUEST_URI} \.\w{2,6}$
+#    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+#    RewriteRule !^public/ public%{REQUEST_URI} [L]
+#
+#    # Otherwise rewrite request to the MVC app in "public" directory
+#    RewriteRule (.*) public/index.php?$1 [QSA,L]
+
+
+</IfModule>

@@ -1,0 +1,16 @@
+#idLiveLogBox {
+  display: flex;
+  flex-direction: column-reverse;
+
+  &.hidered {
+    .redparty {
+      display: none;
+    }
+  }
+
+  &.hideblue {
+    .blueparty {
+      display: none;
+    }
+  }
+}

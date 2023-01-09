@@ -1,0 +1,131 @@
+<?= Block::put('body') ?>
+<div style="margin-left: 10px;">
+
+    <h1><?= e(trans('bld.ddosspelbord::lang.startpage')) ?> </h1>
+    <span class="small bold"><?= $release; ?> - <?= e(trans('bld.ddosspelbord::lang.dashboarddatatimestamp')) ?> <?= $cacheReload ?> </span>
+    <br />
+    <br />
+
+    <div class="row" style="margin-left: 2px; ">
+
+        <div class="col-xs-2" style="border: 1px solid gray; padding: 0;">
+            <div style="font-weight: bold; padding: 4px; background-color: gray; color: white;"><?= e(trans('bld.ddosspelbord::lang.numberoflogs')) ?></div>
+            <div style="margin-top: 10px; padding: 4px;"
+                class="control-chart"
+                data-control="chart-pie"
+                data-size="200"
+                data-center-text="<?= $logtotal ?>">
+                <ul>
+                    <?php foreach ($logparties AS $logparty) { ?>
+                    <li><?= $logparty['name'] ?><span><?= $logparty['count'] ?></span></li>
+                    <?php } ?>
+                </ul>
+            </div>
+
+            <br />
+            <?= Form::open(); ?>
+            <?= Form::text('message','',['placeholder' => '(specific message)', 'size' => 40]) ?><br />
+            <?= Form::label('type', 'info: ') ?>
+            <?= Form::radio('type', 'info', true) ?>&nbsp;&nbsp;
+            <?= Form::label('type', 'warning: ') ?>
+            <?= Form::radio('type', 'warning') ?>
+            <br />
+            <button type="button"
+                    class="btn btn-default oc-icon-countdown"
+                    data-request="onCountdown"
+                    data-request-confirm="Start countdown animation for everyone?"
+            ><?= e(trans('bld.ddosspelbord::lang.SentCOUNTDOWN')) ?></button>
+            <button type="button"
+                    class="btn btn-default oc-icon-countdown"
+                    data-request="onMessage"
+                    data-request-confirm="Sent nessage to everyone?"
+            ><?= e(trans('bld.ddosspelbord::lang.sentonlymessage')) ?></button>
+            <?= Form::close(); ?>
+        </div>
+
+        <div class="col-xs-2" style="margin-left: 4px; border: 1px solid gray; padding: 0;">
+            <div style="font-weight: bold; padding: 4px; background-color: gray; color: white;"><?= e(trans('bld.ddosspelbord::lang.userseachparty')) ?></div>
+            <div style="margin-top: 10px; padding: 4px;"
+                class="control-chart"
+                data-control="chart-bar"
+                data-height="200"
+                data-full-width="1">
+                <ul>
+                    <?php foreach ($userparties AS $userparty) { ?>
+                    <li><?= $userparty['name'] ?><span><?= $userparty['count'] ?> (<?= $userparty['loggedincount'] ?>)</span></li>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
+
+        <div class="currentlogs col-xs-4" style="margin-left: 4px; padding:0 ;border: 1px solid gray; height: 100%; overflow-y: auto;">
+            <div style="font-weight: bold; padding: 4px; background-color: gray; color: white;"><?= e(trans('bld.ddosspelbord::lang.currentlogs')) ?></div>
+            <div id="idLogging" style="position: relative; overflow: auto; height: 400px;" class=""><?= $loglines ?></div>
+            <div id="idLogtemplate" style="display: none;">
+                <div style="margin: 2px;">
+                    <hr style="height: 1px; background-color: gray"/>
+                    <strong><?= e(trans('bld.ddosspelbord::lang.timestamp')) ?> </strong>[timestamp]<br />
+                    <strong><?= e(trans('bld.ddosspelbord::lang.party')) ?> </strong>[party]<br />
+                    <strong><?= e(trans('bld.ddosspelbord::lang.user')) ?> </strong>[user]<br />
+                    [log]<br />
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var timed=null, logelm = document.getElementById('idLogging');
+            // scroll to bottom
+            function scrollToBottom() {
+                logelm.scrollTop = logelm.scrollHeight;
+            }
+            // append formatted
+            function appendLog(logs) {
+                logs.forEach(function(log,ind,arr) {
+                    var logtmp = document.getElementById('idLogtemplate').innerHTML;
+                    logtmp = logtmp.replace('[timestamp]',log.data.timestamp);
+                    logtmp = logtmp.replace('[party]',log.data.user.party.name);
+                    logtmp = logtmp.replace('[user]',log.data.user.name);
+                    logtmp = logtmp.replace('[log]',log.data.log);
+                    logelm.innerHTML += logtmp;
+                });
+                scrollToBottom();
+            }
+            // read (fetch) logs
+            function readLogs() {
+                $.request('onFeedLogs', {
+                    success: function(data) {
+                        if (data.status) {
+                            if (data.logs.length) {
+                                console.debug('append log');
+                                console.debug(data);
+                                appendLog(data.logs);
+                            }
+                        } else {
+                            console.debug('stop updating log');
+                            clearInterval(timed);
+                        }
+                    },
+                    error: function () {
+                        // stop
+                        console.debug('error request - stop updating log');
+                        clearInterval(timed);
+                    }
+                });
+            }
+            $(document).ready(function() {
+                // fill logs
+                readLogs();
+                // scroll to bottom log
+                scrollToBottom();
+                // set interval
+                timed = window.setInterval(readLogs,3000);
+            });
+
+        </script>
+
+        <div class="col-xs-4">
+        </div>
+
+        </div>
+
+</div>
+<?= Block::endPut() ?>

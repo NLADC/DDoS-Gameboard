@@ -1,0 +1,37 @@
+
+columns:
+    party:
+        label: party
+        relation: parties
+        select: name
+    start:
+        label: start
+        type: text
+    length:
+        label: 'length (sec)'
+        type: number
+    tag:
+        label: tag
+        type: text
+    name:
+        label: name
+        type: text
+    description:
+        label: description
+        type: text
+    delay:
+        label: 'delay (sec)'
+        type: number
+    extension:
+        label: 'extension (sec)'
+        type: number
+    has_issues:
+        label: issues
+        type: switch
+    is_cancelled:
+        label: cancelled
+        type: switch
+    deleted_at:
+        label: deleted_at
+        type: datetime
+

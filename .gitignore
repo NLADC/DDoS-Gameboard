@@ -1,0 +1,52 @@
+# Composer ignores
+composer.phar
+composer.lock
+
+# Framework ignores
+.env
+.env.*.php
+.env.php
+selenium.php
+/bootstrap/compiled.php
+.phpunit.result.cache
+
+# Editor ignores
+nbproject
+.idea
+.vscode
+_ide_helper.php
+.editorconfig
+
+# Other ignores
+package-lock.json
+.babelrc.winter
+.jshintrc
+artisan
+CHANGELOG.md
+index.php
+LICENSE
+package-lock.json
+package.winter.json
+phpcs.xml
+phpunit.xml
+server.php
+error-output.txt
+
+# Winter/laravel
+/bootstrap
+/config
+/modules
+/node_modules
+/public
+/plugins/winter
+/resources
+/storage
+/themes/cjkpl-tabularasa
+/themes/demo
+/themes/ddos-gameboard/assets
+/vendor
+/themes/nbip
+/plugins/nbip
+
+# needed for lottieplayer packages
+!/public/json

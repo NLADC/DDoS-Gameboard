@@ -1,0 +1,17 @@
+title = "Setting"
+url = "/api/setting"
+is_hidden = 0
+
+[session]
+security = "user"
+redirect = "home"
+
+[ddosspelbord_setting]
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_setting;
+function onStart() {
+    return ddosspelbord_setting::submitSetting();
+}
+==
+?>

@@ -1,0 +1,40 @@
+fields:
+    name:
+        label: name
+        type: text
+        span: left
+    description:
+        label: description
+        span: full
+        type: text
+    tag:
+        label: tag
+        span: left
+        type: text
+    start:
+        label: start
+        span: left
+        type: datepicker
+        mode: datetime
+        firstDay: 1
+    length:
+        label: 'length (sec)'
+        span: right
+        type: number
+    delay:
+        label: 'delay (sec)'
+        span: left
+        type: number
+    extension:
+        label: 'extension (sec)'
+        span: right
+        type: number
+    has_issues:
+        label: 'issue(s)'
+        span: left
+        type: switch
+    is_cancelled:
+        label: 'cancelled'
+        span: right
+        type: switch
+

@@ -1,0 +1,400 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import './utilities.css';
+@import 'animate.css/animate.min.css';
+
+/* fonts */
+:root {
+    --font-headings: var(--font-text);
+    --font-text: var(--font-text);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body * {
+  font-family: var(--font-text);
+  color: #e1e1e1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headings);
+}
+
+.shadow-outline {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+.autoscroll {
+  width: 5.5rem;
+
+  @apply z-40 absolute top-1 left-0 el-0 h-16 shadow-lg border-b border-prim;
+}
+
+
+.timeline-background {
+  @apply absolute top-0 left-0 block w-full pt-24;
+}
+
+.timeline-background > div > div {
+  border-top-width: .25rem;
+
+  @apply block h-24 border-t border-transparent;
+}
+
+.timeline-background > div > .hi-border {
+  border-color: #363636;
+}
+
+.timeline-background .hi-hi {
+  background: rgba(255, 255, 255, .02);
+}
+
+.timeline-background .hi-lo {
+
+}
+
+
+
+.timeline span {
+  @apply block w-full h-16 leading-16 font-light text-right outline-none border-0 border-transparent;
+}
+
+.timeline .has-logs {
+  @apply border-r-4 border-sec;
+}
+
+.timeline span:hover {
+  @apply border-r-4 border-sec cursor-pointer;
+}
+
+.timeline span:focus {
+  @apply outline-none;
+}
+
+.timeline .time-big {
+  font-family: var(--font-headings);
+
+  @apply leading-12 text-prim text-5xl;
+}
+
+.timeline .time-small {
+  font-family: var(--font-text);
+
+  @apply text-xl text-right;
+}
+
+.party-bubble {
+    background: #121212;
+
+    @apply relative block p-2 mb-2;
+}
+
+
+.action-box {
+    @apply max-h-132 overflow-y-auto mb-3;
+}
+
+.action-bubble {
+    background: #121212;
+
+    @apply relative block border-l-4 border-prim p-2 mb-2 rounded;
+}
+.action-bubble .timestamp {
+    @apply text-sm text-left;
+}
+.action-bubble .name {
+    @apply text-lg text-left;
+}
+
+.party {
+  border-color: #363636;
+  @apply flex-auto align-top text-center border-r;
+}
+
+.action-wrapper {
+  transition: all .3s ease;
+
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(144, 200, 255, 0.4),
+    rgba(144, 200, 255, 0.4) 10px,
+    rgba(68, 162, 255, 0.4) 10px,
+    rgba(68, 162, 255, 0.4) 20px
+  );
+
+  @apply absolute rounded-lg ml-2;
+}
+
+.action-wrapper-bg {
+    background: repeating-linear-gradient(
+            45deg,
+            rgba(144, 200, 255, 0.4),
+            rgba(144, 200, 255, 0.4) 5px,
+            rgba(68, 162, 255, 0.4) 5px,
+            rgba(68, 162, 255, 0.4) 10px
+    );
+
+    border: 1px solid #e1e1e1;
+    @apply rounded-lg;
+}
+
+.action {
+  transition: all .3s ease;
+
+  @apply border-prim border-2 rounded relative flex flex-col el-2 shadow-lg;
+}
+
+.action .sticky-top {
+  @apply sticky top-36 z-40;
+}
+
+.action .name {
+  @apply bg-prim text-black p-2 font-semibold;
+}
+
+.action .description {
+  @apply bg-black p-2 flex-grow overflow-auto;
+}
+
+
+.action .footer {
+  @apply flex flex-row w-full h-8;
+}
+
+.action .footer .tag {
+  font-family: 'Open Sans';
+    z-index: 40;
+
+  @apply w-full rounded-b leading-8 px-2 bg-prim text-left text-black font-medium font-semibold tracking-wider;
+}
+
+
+.action .has-flags .name {
+    @apply text-center;
+}
+
+.action .has-flags .flags {
+    @apply flex justify-end;
+}
+
+.action .has-flags .flag {
+    @apply text-black;
+}
+
+.action .has-flags .flag:not(:first-child) {
+    @apply ml-2;
+}
+
+.action .has-flags .flag.is-cancelled:before {
+    content: 'clear';
+}
+
+.action .has-flags .flag.has-issues:before {
+    content: 'priority_high';
+}
+
+
+.action-menu {
+  background: rgba(0, 0, 0, 0.75);
+
+  @apply z-40 absolute top-0 left-0 w-full h-full;
+}
+
+.action-menu .big-menu {
+
+  @apply flex flex-col w-full h-auto el-2 shadow-lg align-top border-prim border-t-4 rounded-t;
+}
+
+.action-menu .submenu {
+  @apply flex-grow;
+}
+
+.pills {
+  @apply inline-block w-full pl-2 pt-2;
+}
+
+.pills > .pill {
+  @apply float-left px-4 py-1 border border-prim rounded-full;
+}
+
+.pills > .pill:not(:last-child) {
+  @apply mr-2;
+}
+
+.pills > .pill:hover {
+  @apply bg-prim text-black;
+}
+
+.pills > .pill.active {
+  @apply bg-prim text-black;
+}
+
+.pills > .pill.active:hover {
+  @apply bg-prim-400;
+}
+
+.action-menu .big-menu .close {
+  @apply absolute top-0 right-0 px-0 py-1;
+}
+
+.action-menu .big-menu .save {
+  @apply block h-8 leading-8 w-full mt-2 bg-prim text-black;
+}
+
+
+
+.action-menu .submenu-1,
+.action-menu .submenu-2 {
+  @apply flex flex-row flex-wrap;
+}
+
+.action-menu .submenu-1 button,
+.action-menu .submenu-2 button {
+  @apply inline-block w-1/3 p-2 font-light text-lg tracking-widest;
+}
+
+.action-menu .submenu-1 button:hover,
+.action-menu .submenu-2 button:hover {
+  @apply shadow-inner bg-sec text-black;
+}
+
+.action-menu .submenu-1 .header,
+.action-menu .submenu-2 .header {
+  @apply block w-full text-prim text-lg;
+}
+
+
+
+.action-menu .submenu-3 {
+  @apply flex flex-row justify-around py-9/5;
+}
+
+.action-menu .submenu-3 input {
+  @apply hidden;
+}
+
+.action-menu .submenu-3 button {
+  @apply outline-none;
+}
+
+.action-menu .submenu-3 input + button > label {
+  @apply inline-block rounded-full w-16 h-16 leading-16 mt-auto mb-auto border border-acc;
+}
+
+.action-menu .submenu-3 input:not(:checked) + button:hover > label {
+  @apply border-acc-100;
+}
+
+.action-menu .submenu-3 input:checked + button > label {
+  @apply bg-acc text-black;
+}
+
+.action-menu .submenu-3 input:checked + button:hover > label {
+  @apply bg-acc-300;
+}
+
+
+
+.action-menu .submenu-4 .header {
+  @apply p-2 block w-full text-prim text-lg capitalize;
+}
+
+.system-modal .btn {
+  @apply inline-block py-2 px-4 rounded;
+}
+
+.system-modal .btn:focus {
+  @apply outline-none shadow-outline;
+}
+
+.system-modal .btn.btn-primary {
+  @apply bg-blue-500 text-white;
+}
+
+.system-modal .btn.btn-primary:hover {
+  @apply bg-blue-700;
+}
+
+
+
+
+input:not([type="checkbox"]),
+textarea {
+  background: #121212;
+
+  @apply shadow appearance-none border border-gray-900 rounded w-full py-2 px-3 leading-tight;
+}
+
+.input-error {
+  @apply text-red-500 text-xs italic;
+}
+
+
+
+.notification-box {
+  transition: all .3s ease;
+  z-index: 55;
+
+  @apply fixed bottom-0 right-0 w-96 pr-4 pb-2;
+}
+
+.notification {
+  transition: all .3s ease;
+
+  @apply relative mb-2 px-4 py-3 el-24 border-t-4 rounded-b shadow-2xl;
+}
+
+.notification.success {
+  @apply border-green-400;
+}
+
+.notification.success .title {
+  @apply text-green-400;
+}
+
+.notification.success .icon {
+  @apply text-green-200;
+}
+
+.notification.warning {
+  @apply border-prim;
+}
+
+.notification.warning .title {
+  @apply text-prim;
+}
+
+.notification.warning .icon {
+  @apply text-prim-400;
+}
+
+.notification.error {
+  @apply border-sec-800;
+}
+
+.notification.error .title {
+  @apply text-sec-400;
+}
+
+.notification.error .icon {
+  @apply text-sec-400;
+}
+
+.notification.info {
+  @apply border-comp-200;
+}
+
+.notification.info .title {
+  @apply text-comp-200;
+}
+
+.notification.info .icon {
+  @apply text-comp-100;
+}
+
+
+

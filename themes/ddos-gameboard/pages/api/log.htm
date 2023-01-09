@@ -1,0 +1,17 @@
+title = "Log"
+url = "/api/log"
+is_hidden = 0
+
+[session]
+security = "user"
+redirect = "home"
+
+[ddosspelbord_log]
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_log;
+function onStart() {
+    return ddosspelbord_log::submitLog();
+}
+==
+?>

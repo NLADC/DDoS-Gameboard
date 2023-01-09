@@ -1,0 +1,10 @@
+name: Spelbordusers
+form: $/bld/ddosspelbord/models/spelbordusers/fields.yaml
+modelClass: Bld\Ddosspelbord\Models\Spelbordusers
+defaultRedirect: bld/ddosspelbord/spelbordusers
+create:
+    redirect: 'bld/ddosspelbord/spelbordusers/update/:id'
+    redirectClose: bld/ddosspelbord/spelbordusers
+update:
+    redirect: bld/ddosspelbord/spelbordusers
+    redirectClose: bld/ddosspelbord/spelbordusers

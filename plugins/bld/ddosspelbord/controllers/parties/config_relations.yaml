@@ -1,0 +1,53 @@
+actions:
+    label: Actions
+    view:
+        title: Actions
+        list: $/bld/ddosspelbord/models/actions/columns_party.yaml
+        showCheckboxes: true
+        toolbarButtons:
+            create: Add action
+            delete: Remove actions
+        showSorting: true
+        showSearching: true
+        defaultSort:
+            start: ASC
+        recordsPerPage: 10
+    manage:
+        title: Actions
+        form: $/bld/ddosspelbord/models/actions/fields_party.yaml
+        showCheckboxes: true
+        toolbarButtons:
+            create: Add action
+            delete: Remove actions
+        showSorting: true
+        showSearching: true
+        defaultSort:
+            start: ASC
+        recordsPerPage: 10
+
+users:
+    label: Users
+    view:
+        title: Users
+        list: $/bld/ddosspelbord/models/spelbordusers/columns_party.yaml
+        showCheckboxes: true
+        toolbarButtons:
+            create: Add user
+            delete: Remove user
+        showSorting: true
+        showSearching: true
+        defaultSort:
+            name: ASC
+        recordsPerPage: 10
+    manage:
+        title: Users
+        form: $/bld/ddosspelbord/models/spelbordusers/fields_party.yaml
+        showCheckboxes: true
+        toolbarButtons:
+            create: Add user
+            delete: Remove user
+        showSorting: true
+        showSearching: true
+        defaultSort:
+            name: ASC
+        recordsPerPage: 10

@@ -1,0 +1,18 @@
+title = "Feed"
+url = "/api/feed/:hash"
+is_hidden = 0
+
+[session]
+security = "all"
+redirect = "home"
+
+[ddosspelbord_feed]
+hash={{ :hash }}
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_feed;
+function onStart() {
+    return (new ddosspelbord_feed)->getFeed();
+}
+==
+?>

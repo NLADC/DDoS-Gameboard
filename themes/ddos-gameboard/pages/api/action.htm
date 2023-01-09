@@ -1,0 +1,19 @@
+title = "Action"
+url = "/api/action/:action_id"
+is_hidden = 0
+
+[session]
+security = "user"
+redirect = "home"
+
+[ddosspelbord_action]
+action_id={{ :action_id }}
+
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_action;
+function onStart() {
+    return (new ddosspelbord_action())->submitAction('{{ action_id }}');
+}
+==
+?>

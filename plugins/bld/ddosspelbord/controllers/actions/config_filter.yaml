@@ -1,0 +1,10 @@
+scopes:
+  status_code:
+    label: 'party'
+    type: group
+    conditions: 'party_id in (:filtered)'
+    modelClass: bld\ddosspelbord\models\Parties
+    options: getPartyOptions
+
+
+

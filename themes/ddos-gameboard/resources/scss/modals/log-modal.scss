@@ -1,0 +1,46 @@
+#logmodalattachments {
+  li {
+    display: flex;
+    justify-content: space-between;
+    background: black;
+    padding: 8px 24px;
+    margin: 8px 0;
+    list-style: none;
+  }
+}
+
+a.attachmentmodifiers {
+  margin-left: auto;
+}
+
+li.attachmentholder.delete {
+  opacity: 0.4;
+  pointer-events: none;
+  .removeattachment {
+    display: none;
+  }
+}
+
+a.removeattachment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span.material-icons {
+    font-size: 20px;
+  }
+  &:hover {
+    span.material-icons {
+      color: var(--link-color-hover);
+    }
+  }
+  &:active {
+    span.material-icons {
+      color: var(--link-color-active);
+    }
+  }
+
+
+}
+
+

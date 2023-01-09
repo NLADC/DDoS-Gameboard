@@ -1,0 +1,47 @@
+plugin:
+    name: 'DDoS Spelbord'
+    description: 'Anti-DDoS coalitie oefeningen DDoS gameboard'
+    author: BLD
+    icon: oc-icon-database
+    homepage: ''
+navigation:
+    startpage:
+        label: Startpage
+        url: /bld/ddosspelbord/startpage
+        permissions:
+            - bld.ddosspelbord.startpage
+        icon: icon-dashboard
+        order: 700
+    Parties:
+        label: Parties
+        url: /bld/ddosspelbord/parties
+        permissions:
+            - bld.ddosspelbord.parties
+        icon: icon-building
+        order: 710
+    Spelbordusers:
+        label: Spelbordusers
+        url: /bld/ddosspelbord/spelbordusers
+        permissions:
+            - bld.ddosspelbord.spelbordusers
+        icon: icon-user
+        order: 720
+    Actions:
+        label: Actions
+        url: /bld/ddosspelbord/actions
+        permissions:
+            - bld.ddosspelbord.actions
+        icon: icon-list
+        order: 730
+    Logs:
+        label: Logs
+        url: /bld/ddosspelbord/logs
+        permissions:
+            - bld.ddosspelbord.logs
+        icon: icon-list
+        order: 740
+    Attacks:
+        label: Attacks
+        url: bld/ddosspelbord/attacks
+        icon: icon-soccer-ball-o
+        order: 750

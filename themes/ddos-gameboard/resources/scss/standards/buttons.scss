@@ -1,0 +1,73 @@
+.btn {
+  cursor: pointer;
+  padding: 12px 24px;
+  margin: 0 12px;
+  &.btn-small {
+    padding: 4px 8px;
+    margin: 0 2px;
+  }
+
+  &.btn-tiny {
+    padding: 1px 6px;
+    margin: 0 2px;
+  }
+}
+
+button, .btn {
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:focus,
+  &.disabled:active,
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+}
+
+// btn's are css are mixins because they can be recycled and easliy applied on other html elements that do not have .btn.btn-secondary in them
+
+
+@mixin btn-primary {
+  background-color: rgb(59, 130, 246);
+  color: rgb(255, 255, 255);
+  border-color: rgb(229, 231, 235);
+  border-radius: var(--btn-radius);
+  &:hover,
+  &:focus {
+    background-color: rgb(29, 78, 216);
+    color: rgb(255, 255, 255);
+    border-color: rgb(204, 205, 215);
+  }
+  &:active {
+    background-color: rgb(19, 59, 173);
+    color: rgb(255, 255, 255);
+    border-color: rgb(172, 173, 190);
+  }
+}
+
+.btn-primary {
+  @include btn-primary;
+}
+
+@mixin btn-secondary {
+  background: var(--bg-prim);
+  color: black;
+  border: 2px var(--bg-prim) solid;
+  border-radius: var(--btn-radius);
+  &:hover,
+  &:focus {
+    background: transparent;
+    color: var(--bg-prim);
+    border: 2px var(--bg-prim) solid;
+  }
+  &:active {
+    background: var(--bg-prim);
+    color: black;
+    border: 2px var(--bg-prim) solid;
+  }
+}
+
+.btn-secondary {
+  @include btn-secondary;
+}
+

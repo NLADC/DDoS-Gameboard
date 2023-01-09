@@ -1,0 +1,48 @@
+.modal-header {
+    .current-time {
+        margin-left: auto;
+    }
+}
+
+
+.log-box {
+    margin-bottom: 0.75rem;
+}
+
+.log-bubble {
+    background: #121212;
+    position: relative;
+    margin-bottom: 0.5rem;
+    display: block;
+    border-radius: 0.25rem;
+    border-left-width: 4px;
+    padding: 0.5rem;
+    border-color: var(--bg-prim);
+}
+
+.log-bubble .message {
+}
+
+.log-bubble .author {
+    width: 50%;
+    text-align: right;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.log-bubble .timestamp {
+    width: 50%;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.log-bubble-edit:hover {
+    background-color: var(--bg-prim);
+    cursor: pointer;
+    color: var(--text-black);
+}
+
+.log-bubble-edit:hover .message,.log-bubble-edit:hover .author,.log-bubble-edit:hover .timestamp {
+    color: var(--text-black);
+}

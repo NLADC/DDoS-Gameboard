@@ -1,0 +1,22 @@
+subject = "Welkom op het ddos spelbord"
+description = "To a new user forcing it to change it password when created"
+
+==
+Welkom {{ name }} tot het DDOS Spelbord.
+
+Er is een account voor je aangemaakt op het DDOS spelbord.
+Om toegang te krijgen is het belangrijk om je wachtwoord te wijzigen,
+
+Gebruik deze code om je wachtwoord te wijzigen
+
+{% partial 'promotion' body %}
+{{ code }}
+{% endpartial %}
+
+Ga naar de volgende pagina om te code in te voeren en je wachtwoord te wijzigen.
+
+{% partial 'button' url=link type='positive' body %}
+Maak wachtwoord aan
+{% endpartial %}
+
+**Dit is een automatisch bericht, hier kan niet op gereageerd worden..**

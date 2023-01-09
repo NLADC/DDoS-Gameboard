@@ -1,0 +1,52 @@
+#timeline {
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  position: relative;
+  .timeline {
+    text-align: right;
+    .hournode {
+      position: sticky;
+      top: var(--gameheader-height);
+      --tw-bg-opacity: 1;
+      background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
+      z-index: 50;
+    }
+  }
+}
+
+.timeline-wrapper {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.timeline-scroller {
+  height: 4px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  background-color: #ff4444;
+  z-index: 49;
+}
+
+.timeline-scroller span {
+  width: 5.5rem;
+  bottom: -1rem;
+  left: .5rem;
+  position: absolute;
+  display: inline-block;
+  border-radius: 9999px;
+  border-width: 2px;
+  --tw-bg-opacity: 1;
+  background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
+  background: #121212;
+  border-color: #ff4444;
+}

@@ -1,0 +1,30 @@
+<?= Block::put('body') ?>
+<div style="margin-left: 10px;">
+
+    <h1><?= e(trans('bld.ddosspelbord::lang.planner')) ?></h1>
+
+    <br /><br />
+
+    <form class="form-elements" role="form">
+
+        <div class="row" >
+            <?php foreach ($parties AS $party) { ?>
+                <div class="col-xs-<?= $partiescol ?> planner-border">
+                    <h1><?= $party->name; ?></h1>
+                </div>
+            <?php } ?>
+            <?php if ($partiescolextra) { ?>
+                <div class="col-xs-1">&nbsp;</div>
+            <?php } ?>
+        </div>
+
+    </form>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="idWhois"></div>
+        </div>
+    </div>
+
+</div>
+<?= Block::endPut() ?>

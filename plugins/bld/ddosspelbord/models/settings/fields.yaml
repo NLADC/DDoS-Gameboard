@@ -1,0 +1,68 @@
+fields:
+    exercise_section:
+        label: 'Exercise'
+        type: section
+    description:
+        label: 'description '
+        span: left
+        type: text
+    startdate:
+        label: 'start date'
+        span: left
+        type: datepicker
+        mode: date
+        format: 'Y-m-d'
+        firstDay: 1
+    firsttime:
+        label: 'first time'
+        span: right
+        type: datepicker
+        mode: time
+        format: 'H-i'
+    starttime:
+        label: 'start time'
+        span: right
+        type: datepicker
+        mode: time
+        format: 'H-i'
+    endtime:
+        label: 'end time'
+        span: right
+        type: datepicker
+        mode: time
+        format: 'H-i'
+    enddate:
+        label: 'end date'
+        span: left
+        type: datepicker
+        mode: date
+        format: 'Y-m-d'
+        firstDay: 1
+    granularity:
+        label: 'granularity (minutes)'
+        span: right
+        type: number
+        default: '1'
+    tech_section:
+        label: 'Technical'
+        type: section
+        comments: 'this section contains technisch '
+    maxexecutiontime:
+        label: 'max execution time webservice'
+        span: left
+        type: number
+        default: '25'
+    error_email:
+        label: 'send errors to email'
+        span: right
+        type: text
+    logmaxfilesize:
+        label: 'Log attachment max file size (mb)'
+        span: auto
+        type: number
+        default: 12
+    logmaxfiles:
+        label: 'Max amounts of log attachments'
+        span: auto
+        type: number
+        default: 10

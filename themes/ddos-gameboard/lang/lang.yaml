@@ -1,0 +1,23 @@
+en:
+  theme.welcomeandpassword: "Welcome to DDOS Gameboard, to continue please set your password"
+  theme.inemailispass: "In de email staat je activatiecode, voer deze als eerst in."
+  theme.activationcode: "Activation Code"
+  theme.newpass: "New Password"
+  theme.setnewpassword: "Set password"
+  theme.gotoboard: "Go to DDOS Gameboard"
+  theme.scroll: "Scroll"
+  theme.ddosgameboard: "DDoS Gameboard"
+  theme.login: "Login"
+  theme.logout: "Logout"
+
+nl:
+  theme.welcomeandpassword: "Welkom op het DDOSspelbord, om door te gaan set je wachtwoord"
+  theme.inemailispass: "In the e-mail is the actication code, please enter it first"
+  theme.activationcode: "Activatie Code"
+  theme.newpass: "Nieuw Wachtwoord"
+  theme.setnewpassword: "Verander wachtwoord"
+  theme.gotoboard: "Ga naar DDOS spelbord"
+  theme.scroll: "Scroll"
+  theme.ddosgameboard: "DDoS Spelbord"
+  theme.login: "Log in"
+  theme.logout: "Log uit"

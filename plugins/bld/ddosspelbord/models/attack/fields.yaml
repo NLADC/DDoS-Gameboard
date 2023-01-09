@@ -1,0 +1,22 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    party:
+        label: 'Party'
+        select: name
+        type: relation
+    user:
+        label: 'User'
+        select: name
+        type: relation
+    status:
+        label: Status
+        span: auto
+        type: dropdown
+        options:
+            started: started
+            paused: paused
+            resumed: resumed
+            stopped: stopped

@@ -1,0 +1,13 @@
+name: logs
+form: $/bld/ddosspelbord/models/logs/fields.yaml
+modelClass: Bld\Ddosspelbord\Models\Logs
+defaultRedirect: bld/ddosspelbord/logs
+create:
+    redirect: 'bld/ddosspelbord/logs/update/:id'
+    redirectClose: bld/ddosspelbord/logs
+update:
+    redirect: 'bld/ddosspelbord/logs/update/:id'
+    redirectClose: bld/ddosspelbord/logs
+preview:
+    redirect: 'bld/ddosspelbord/logs/preview/:id'
+    redirectClose: bld/ddosspelbord/logs
