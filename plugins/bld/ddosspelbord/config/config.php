@@ -3,8 +3,8 @@
 return [
 
     'release' => [
-        'version' => '1.2',
-        'build' => 'Build 2',
+        'version' => '2.1',
+        'build' => 'Build 1',
     ],
 
     'mail' => [
