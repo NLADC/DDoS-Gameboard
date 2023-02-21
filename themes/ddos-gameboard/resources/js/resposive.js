@@ -9,7 +9,7 @@ const root = document.documentElement;
 /* Function to update the game-header height in the css,
  * The party-header is sticky and needs to now from which point to stick top the top of the page
  */
-window.updateGameHeaderHeight = function() {
+window.updateGameHeaderHeight = function () {
     try {
         // Calculate the height the GameHeader wants to naturaly
         let heightheaderinner = (document.querySelector('#game-header .game-header-inner').clientHeight);
@@ -22,11 +22,11 @@ window.updateGameHeaderHeight = function() {
     }
 }
 
-/* Function to update the partyheader-height
+/** Function to update the partyheader-height
  * this is usefull for the sticky action-header
  * It needs to now from wich point it needs to be sticky in the page
  */
-window.updateActionHeaderHeight = function() {
+window.updateActionHeaderHeight = function () {
     try {
         if (document.querySelector('#parties-board .party-header h2.header')) {
             // Getting al the different heights from the party headers
@@ -58,8 +58,6 @@ window.updateActionHeaderHeight = function() {
 window.onload = function () {
     window.updateGameHeaderHeight();
     window.updateActionHeaderHeight();
-    // define what element should be observed by the observer
-    // and what types of mutations trigger the callback
 }
 
 // When resizing window recalculate
@@ -70,10 +68,9 @@ window.addEventListener('resize', function (event) {
 
 // This function is usefull to be called upon from vuejs or other parts of teh system to re calculate the heights
 // when an element has changed in the game header.
-window.delayedUpdateAllResponsiveFunctions = function() {
+window.delayedUpdateAllResponsiveFunctions = function () {
     setTimeout(function () {
         window.updateGameHeaderHeight();
         window.updateActionHeaderHeight();
     }, 2500)
 }
-

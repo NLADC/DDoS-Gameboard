@@ -88,11 +88,68 @@ Provide a nginx or apache configuration that ends up in the root folder:
 
 Add extra as an exception (at the bottom of nginx config):
 
-```shell
+```
 location ~ ^/json/.* { try_files $uri 404; }
 location ~ ^/img/.* { try_files $uri 404; }
 location ~ ^/fonts/.* { try_files $uri 404; }
 location ~ ^/favicon.ico { try_files $uri 404; }
+
+# status page block
+location ~ ^/(status|ping)$ {
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_index index.php;
+    include fastcgi_params;
+    fastcgi_pass 127.0.0.1:9000;
+}
+
+location /bootstrap {
+  rewrite ^/bootstrap/.* /index.php break;
+}
+
+location /config {
+  rewrite ^/config/.* /index.php break;
+}
+
+location /vendor {
+  rewrite ^/vendor/.* /index.php break;
+}
+
+location /storage {
+  rewrite ^/storage/cms/.* /index.php break;
+  rewrite ^/storage/logs/.* /index.php break;
+  rewrite ^/storage/framework/.* /index.php break;
+  rewrite ^/storage/temp/protected/.* /index.php break;
+  rewrite ^/storage/app/uploads/protected/.* /index.php break;
+  rewrite ^/storage/app/uploads/public/.* /index.php break;
+}
+
+location / {
+  if (-e $request_filename){
+    rewrite !^index.php /index.php break;
+  }
+  if (-e $request_filename){
+    rewrite !^index.php /index.php break;
+  }
+  if (!-e $request_filename){
+    rewrite ^(.*)$ /index.php break;
+  }
+}
+
+# Pass the phpmyadmin PHP scripts to FastCGI server
+location ~ ^/phpmyadmin/(.+\.php)$ {
+    allow 127.0.0.1;
+    allow 87.251.37.123;
+    deny all;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    fastcgi_param PATH_INFO $fastcgi_path_info;
+    fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include fastcgi_params;
+}
 ```
 
 #### apache config
@@ -110,10 +167,23 @@ Add the following to VirtualHost (i.e. line below #LogLevel info ssl:warn in apa
 
 Enable mod_rewrite and restart the apache server
 
+Make sure you don't forgot to disable acces to the phpmyadmin page when deploying
+
 ```shell
 sudo a2enmod rewrite
 sudo systemctl apache2 restart
 ```
+
+
+#### timezone server
+
+Set the timezone of your server to the correct time.
+For example to amsterdam:
+```shell
+timedatectl set-ntp true
+timedatectl set-timezone Europe/Amsterdam
+```
+
 
 Configuration is already in the .htaccess file and apache should pick it up automatically
 
@@ -259,7 +329,16 @@ in the terminal enter
 ```shell
 npm install
 npm update
+npm run prod
 ```
+
+#### initialize language
+Dont forgot to init the language strings
+```shell
+php artisan translate:scan --purge
+php artisan cache:clear
+```
+
 
 Now all packages are ready to start.
 See development.md to proceed.
@@ -275,7 +354,7 @@ root /server/www/dgb/public
 Now the environment should be up and running:
 - Access to the Admin section via the /backend
 - Access to the DDoS game board via the / base url
-- npm run dev -> to compile Vue
+- npm run prod -> to compile Vue to use for production
 
 To start a game it is important to set all settings on the next page:
   /backend/system/settings/update/bld/ddosgameboard/settings

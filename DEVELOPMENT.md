@@ -95,6 +95,7 @@ All api files with the functions can be found in ``plugins/bld/ddosspelboard/com
 ### gameboard.js
 
 This Js file is the top level of your VueJS. From here all .vue files are merged into one working javascript.
+For the targets dashboard this is gameboard-targets.js
 
 From "layous\ddos-gameboard.htm" all Vue is loaded via gameboard.js with the piece of HTML below.
 
@@ -141,6 +142,7 @@ This is done by adding things to the prototype, normally you use the data(), onl
 ```js
 Vue.prototype.logmaxfilesize = window.gameboard_logmaxfilesize;
 Vue.prototype.logmaxfiles = window.gameboard_logmaxfiles;
+Vue.prototype.acceptedFileTypes = window.gameboard_acceptedfiletypes.split(',');
 ```
 
 *Note here gameboard is the variable that is passed from the backend
@@ -154,7 +156,6 @@ in AttachmentModal.vue
 ```vue
 methods: {
      close() {
-         this.$emit('close')
          Event.$emit('emptyAttachmentsmodal');
      }
 }
@@ -164,9 +165,7 @@ in gameboard.js
 
 ```js
 Event.$on('emptyAttachmentsmodal', () => {
-         for (var key in this.attachmentmodal) {
-             this.attachmentmodal[key] = null;
-         }
+         // code to be excecuted
      }
 );
 ```
@@ -216,7 +215,6 @@ So you can write in the html:
 Tailwind HTML:
 
 ```html
-
 <div class="h-16 text-2xl p-6 text-red-400">DDoS gameboard</div>
 ```
 
@@ -246,7 +244,7 @@ CSS that browser receives:
 
 #### Advice
 
-The use of html DOM elements without clear names or structures can be confusing for fronend-developers who want to build on the theming.
+The use of html DOM elements without clear names or structures can be confusing for frontend-developers who want to build on the theming.
 The div from the example mentioned above is a header of the login screen.
 This is not immediately obvious to an external developer.
 In addition, the classnames ``h-16 text-2xl p-6 text-red-400`` are messy. 
@@ -511,10 +509,16 @@ For example, they are called like this:
 {{ 'site.newpass'|_ }}
 ```
 
+When adding, changing or removing these lang strings it is important that you run the following commands every time:
+```shell
+php artisan translate:scan --purge
+php artisan cache:clear
+```
+
 ### Custom lang strings for VUE
-Strings in Vue reference to a json that webpack moves to the public folder.
-From the layout, the json is globally loaded in the header under the `window.lang` variable. This contains the globally reachable function
-`l()`. This means that in Vue you can do the following.
+Strings in Vue reference to the same /lang/lang.yaml used by the translate plugin.
+The plugin will make the yaml avaiable in the `window.lang` variable. 
+The window also contains the globally reachable function `l()`. This means that in Vue you can do the following.
 
 ```vue
 <h3 v-html="l('theme.help')"> </h3>
@@ -522,11 +526,8 @@ From the layout, the json is globally loaded in the header under the `window.lan
 
 Vue will call function `l` with the name of a language string, then lang.js will check which language is selected and then serve the string from the correct lang.
 
-When adding, changing or removing these lang strings it is important that you run the following commands every time:
-```shell
-php artisan translate:scan --purge
-php artisan cache:clear
-```
+#### Warning
+Editing the strings through the backend `/backend/winter/translate/messages` has no effect on the Vue strings, you must use the `/themes/ddos-gameboard/lang/lang.yaml`
 
 ## Security
 
@@ -537,3 +538,14 @@ Where the PHP then determines what is and what is not allowed.
 VueJS is completely mutable and modifiable with simple inspector tools or more advanced XSS hacking tools
 
 Always think via the "security by design" method.
+    
+
+## Target dashboards
+
+#### via browser uitlezen
+
+```
+https://atlas.ripe.net/api/v2/measurements/MEASUREMENT_ID
+```
+
+

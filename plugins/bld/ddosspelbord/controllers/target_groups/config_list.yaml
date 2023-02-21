@@ -1,0 +1,12 @@
+list: $/bld/ddosspelbord/models/target_groups/columns.yaml
+modelClass: bld\ddosspelbord\models\Target_groups
+title: Target_groups
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+recordsPerPage: 20
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'bld/ddosspelbord/target_groups/update/:id'

@@ -55,8 +55,9 @@ class ddosspelbord_attack extends ComponentBase
      */
     public static function handleAttackChanges()
     {
+        $errmessage = '';
+        $anattack = '';
         $result = false;
-        $message = '';
         try {
             // get gameboard user
             if ($user = Spelbordusers::verifyAccess()) {
@@ -75,8 +76,14 @@ class ddosspelbord_attack extends ComponentBase
                             hLog::logLine("D-ddosspelbord_attack.handleAttackChanges; create new attack");
                             $attack = new Attack();
                             $attack->user_id = $user->id;
+                            $attack->party_id = $user->party_id;
                         }
-                        if ($attack) {
+
+                        // Check if user had correct party id
+                        $partyiscorrect = $attack->party_id === $user->party_id;
+                        $errmessage = (!$partyiscorrect) ? "can\'t update attack from other party" : null;
+
+                        if ($partyiscorrect) {
                             $attackname = post('name', '');
                             // Strip all tags
                             $attackname = strip_tags($attackname);
@@ -97,16 +104,7 @@ class ddosspelbord_attack extends ComponentBase
                             // Create a log entry
                             $log = new Logs();
                             $log->user_id = $user->id;
-                            $log->log = "No attack status but attack name is: " . $attack->name;
-                            if ($attack->status === 'started') {
-                                $log->log = "Attack started: " . $attack->name;
-                            } else if ($attack->status === 'resumed') {
-                                $log->log = "Attack resumed: " . $attack->name;
-                            } else if ($attack->status === 'paused') {
-                                $log->log = "Attack paused: " . $attack->name;
-                            } else if ($attack->status === 'stopped') {
-                                $log->log = "Attack stopped: " . $attack->name;
-                            }
+                            $log->log = ucfirst($attack->status . ': ' . $attack->name);
                             $log->timestamp = $timestamp;
                             $log->save();
 
@@ -121,25 +119,17 @@ class ddosspelbord_attack extends ComponentBase
                             (new Feeds())->createTransaction(TRANSACTION_TYPE_ATTACK, $anattack);
 
                             $result = true;
-                        } else {
-                            $result = false;
                         }
-                    } else {
-                        $result = false;
                     }
-                } else {
-                    $result = false;
                 }
-            } else {
-                $result = false;
             }
         } catch (Exception $err) {
-            $message = "Cannot initate or change attack: " . $err->getMessage();
-            hLog::logLine("E-$message");
+            $errmessage = "Cannot initate or change attack: " . $err->getMessage();
+            hLog::logLine("E-$errmessage");
             $result = false;
         }
-        if ($message) {
-            hLog::logLine("W-$message");
+        if ($errmessage) {
+            hLog::logLine("W-$errmessage");
         }
 
         return Response::json([

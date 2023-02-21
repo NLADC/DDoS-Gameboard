@@ -4,6 +4,7 @@
 
 .quicklogging-box {
   position: fixed;
+  overflow: hidden;
   right: 0.25rem;
   bottom: 0.25rem;
   z-index: 50;
@@ -70,7 +71,7 @@
 .quicklog-box {
   margin-bottom: 0.75rem;
   overflow-y: auto;
-  flex-basis: 480px;
+  flex-basis: 18.75em;
   height: auto;
 }
 

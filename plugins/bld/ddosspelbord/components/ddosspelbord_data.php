@@ -9,6 +9,8 @@ namespace bld\ddosspelbord\components;
  */
 
 use Auth;
+use Bld\Ddosspelbord\Models\Logs as Logs;
+use Bld\Ddosspelbord\Controllers\Logs as LogsController;
 use Bld\Ddosspelbord\Models\Roles;
 use Bld\Ddosspelbord\Models\Settings;
 use Input;
@@ -17,13 +19,14 @@ use Session;
 use Redirect;
 use Response;
 use Bld\Ddosspelbord\Controllers\Feeds;
-use Bld\Ddosspelbord\Models\Logs as Logs;
 use Bld\Ddosspelbord\Models\Attack as Attack;
 use Bld\Ddosspelbord\Models\Transactions;
 use Bld\Ddosspelbord\Models\spelbordusers;
 use Cms\Classes\ComponentBase;
 use bld\ddosspelbord\helpers\hLog;
 use Bld\Ddosspelbord\Models\Parties;
+use Yaml;
+use stdClass;
 
 class ddosspelbord_data extends ComponentBase
 {
@@ -97,8 +100,8 @@ class ddosspelbord_data extends ComponentBase
 
             $title = Settings::get('description', '');
             if (empty($title)) $title = 'DDoS gameboard';   // always filled
-            $startdate = Settings::get('startdate', date('Y-m-d'));
-            $enddate = Settings::get('enddate', date('Y-m-d'));
+            $startdate = date('Y-m-d 00:00:00',strtotime(Settings::get('startdate', date('Y-m-d'))));
+            $enddate = date('Y-m-d 00:00:00',strtotime(Settings::get('enddate',date('Y-m-d'))));
 
             $firsttime = date('H:i:s', strtotime(Settings::get('firsttime', '02:30:00')));
             $first = str_replace('00:00:00', $firsttime, $startdate);
@@ -120,10 +123,15 @@ class ddosspelbord_data extends ComponentBase
 
             $logmaxfiles = Settings::get('logmaxfiles');
 
+            $acceptedfiletypes = LogsController::GetAllowedFiletypes();
+
             hLog::logLine("D-ddosspelbord_data; title=$title, first=$first, start=$start, end=$end");
 
             // Save hash current user session
             Feeds::setLastsettingHash($hash);
+
+            // -1- lang
+            $lang = $this->getLangStrings();
 
             // -2- user
             $user = Spelbordusers::getOnAuth();
@@ -145,6 +153,7 @@ class ddosspelbord_data extends ComponentBase
 
             $data = [
                 'hash' => $hash,
+                'lang' => json_encode($lang),
                 'parties' => $parties,
                 'user' => addslashes(json_encode($user)),
                 'logs' => addslashes(json_encode($logs)),
@@ -154,7 +163,7 @@ class ddosspelbord_data extends ComponentBase
                 'scroll' => $scroll,
                 'logmaxfilesize' => $logmaxfilesize,
                 'logmaxfiles' => $logmaxfiles,
-                'acceptedfiletypes' =>  implode(',',Config::get('bld.ddosspelbord::acceptedfiletypes')),
+                'acceptedfiletypes' => implode(',', $acceptedfiletypes),
             ];
 
             // let's get to work
@@ -170,10 +179,14 @@ class ddosspelbord_data extends ComponentBase
 
         } else {
 
+            // -1- lang
+            $lang = $this->getLangStrings();
+
             hLog::logLine("D-ddosspelbord_data; no access data");
 
             $data = [
                 'hash' => $hash,
+                'lang' => json_encode($lang),
                 'parties' => $empty,
                 'user' => $empty,
                 'logs' => $empty,
@@ -181,6 +194,10 @@ class ddosspelbord_data extends ComponentBase
                 'csrftoken' => Session::token(),
                 'loggedin' => false,
                 'scroll' => 'false',
+                'logmaxfilesize' => 0,
+                'logmaxfiles' => 0,
+                'acceptedfiletypes' => $empty,
+
             ];
 
             // note; empty title is indication for not showing any data (html)
@@ -307,7 +324,7 @@ class ddosspelbord_data extends ComponentBase
             $party_id = $user->partyId;
             $attachments = [];
 
-                hLog::logLine("D-ddosspelbord_data; getLogs; userRole=$userRole, party_id=$party_id");
+            hLog::logLine("D-ddosspelbord_data; getLogs; userRole=$userRole, party_id=$party_id");
 
             $logs = Logs::join(DB_TABLE_USERS, DB_TABLE_USERS . '.id', '=', DB_TABLE_LOGS . '.user_id')
                 ->where(DB_TABLE_USERS . '.party_id', '=', $party_id)
@@ -322,8 +339,8 @@ class ddosspelbord_data extends ComponentBase
                 foreach ($logs as $log) {
                     $spelborduser = self::getSpelborduser($log->user_id);
                     // Only authorized logs
-                        $attachmentsmodels = self::getLogAttachments($log['id']);
-                        $attachments = self::exportLogAttachments($attachmentsmodels);
+                    $attachmentsmodels = self::getLogAttachments($log['id']);
+                    $attachments = self::exportLogAttachments($attachmentsmodels);
                     if ($userRole == DB_ROLE_PURPLE || $spelborduser['role'] == $userRole) {
                         $spelbordlog = $log->toArray();
                         $spelbordlog['user'] = $spelborduser;
@@ -401,7 +418,8 @@ class ddosspelbord_data extends ComponentBase
      * @param $hasattachments
      * @return Object
      */
-    public static function getSpelbordlog($log, $hasattachments = false) {
+    public static function getSpelbordlog($log, $hasattachments = false)
+    {
         // Array values
         $log = $log->toArray();
         $user = self::getSpelborduser($log['user_id']);
@@ -425,7 +443,8 @@ class ddosspelbord_data extends ComponentBase
      * @param $attack
      * @return object
      */
-    public static function getSpelbordAttack($attack)  {
+    public static function getSpelbordAttack($attack)
+    {
         // Array values
         $attack = $attack->toArray();
         $user = self::getSpelborduser($attack['user_id']);
@@ -440,4 +459,19 @@ class ddosspelbord_data extends ComponentBase
 
         return $attack;
     }
+
+    /**
+     * @return object
+     */
+    public static function getLangStrings() {
+        $strings = new stdClass();
+        if (file_exists(themes_path() . '/ddos-gameboard/lang/lang.yaml')){
+            $yamlpath = themes_path() . '/ddos-gameboard/lang/lang.yaml';
+            Yaml::parseFile($yamlpath);
+            $strings = Yaml::parseFile($yamlpath);
+        }
+        return $strings;
+    }
+
+
 }

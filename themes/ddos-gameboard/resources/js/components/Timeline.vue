@@ -68,8 +68,6 @@
 
             getLogs(block) {
                 var granularity = parseInt(this.granularity);
-                //var start = this.moment(block.timestamp).subtract(granularity / 2, 'minutes');
-                //var end = this.moment(block.timestamp).add(granularity / 2, 'minutes');
                 var start = this.moment(block.timestamp);
                 var end = this.moment(block.timestamp).add(granularity, 'minutes');
 

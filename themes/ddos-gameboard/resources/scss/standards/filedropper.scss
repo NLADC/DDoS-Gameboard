@@ -1,0 +1,17 @@
+.draganddropfiles {
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+  background-color: var(--gray_2);
+  border-color: rgba(209, 213, 219, 1);
+  border-width: 1px;
+  * {
+    color: var(--gray_6);
+  }
+  &.dragover {
+    background-color: var(--color_dragover);
+  }
+  &.dragleave {
+    background-color: var(--gray_2);
+  }
+}

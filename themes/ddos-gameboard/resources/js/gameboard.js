@@ -42,10 +42,6 @@ Vue.component('validation-observer', ValidationObserver);
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-// Vue.component('component-name', require('./components/ComponentName.vue').default);
-// Vue.component('modal', {template: '#modal-template'})
 
 Vue.component('user-display', require('./components/UserDisplay.vue').default);
 Vue.component('login-modal', require('./components/LoginModal.vue').default);
@@ -124,10 +120,10 @@ const gameboard = new Vue({
                 src: '#',
             },
 
-            acceptedImageExtensions : ["png", "jpg", "jpeg", "gif", "svg"],
-            acceptedTextExtensions : ["txt", "rtf", "json"],
-            acceptedVideoExtensions : ["mp4", "webM", "Ogg"],
-            acceptedAudioExtensions : ["mp3", "wav", "Ogg"],
+            acceptedImageExtensions: ["png", "jpg", "jpeg", "gif", "svg"],
+            acceptedTextExtensions: ["txt", "rtf", "json"],
+            acceptedVideoExtensions: ["mp4", "webM", "Ogg"],
+            acceptedAudioExtensions: ["mp3", "wav", "Ogg"],
 
             lastTransaction: window.gameboard_lastTransaction,
             parties: JSON.parse(window.gameboard_parties),
@@ -145,31 +141,33 @@ const gameboard = new Vue({
 
     mounted() {
         Event.$on('initAttachmentlog', (data) => {
-                if ('filename' in data) {
-                    this.attachmentmodal.filename = data.filename;
-                    this.attachmentmodal.created_at = data.created_at;
-                    if ('exportablebase64' in data) {
-                        this.attachmentmodal.base64string = data.exportablebase64;
-                        if ( this.acceptedImageExtensions.indexOf(data.extension) !== -1){
-                            this.attachmentmodal.isimage = true;
-                        }
-                        else if ( this.acceptedTextExtensions.indexOf(data.extension) !== -1){
-                            this.attachmentmodal.istext = true;
-                        }
-                        else if ( this.acceptedVideoExtensions.indexOf(data.extension) !== -1){
-                            this.attachmentmodal.isvideo = true;
-                        }
-                        else if ( this.acceptedAudioExtensions.indexOf(data.extension) !== -1){
-                            this.attachmentmodal.isaudio = true;
-                        }
-                        else if ( data.extension === "pdf"){
-                            this.attachmentmodal.ispdf = true;
-                        }
-                        else{
-                            this.attachmentmodal.message = l('theme.cantpreviewfile');
-                        }
-                        this.showAttachmentModal = true;
+                if ('filename' in data && 'exportablebase64' in data) {
+                    this.attachmentmodal = {
+                        'filename': data.filename,
+                        'created_at': data.created_at,
+                        'base64string' : data.exportablebase64,
+                        'message' : '',
                     }
+
+                    const extensionMap = [
+                        {extension: 'pdf', isType: 'ispdf'},
+                        {extension: 'jpg', isType: 'isimage'},
+                        {extension: 'jpeg', isType: 'isimage'},
+                        {extension: 'png', isType: 'isimage'},
+                        {extension: 'gif', isType: 'isimage'},
+                        {extension: 'txt', isType: 'istext'},
+                        {extension: 'mp4', isType: 'isvideo'},
+                        {extension: 'mp3', isType: 'isaudio'}
+                    ];
+
+                    // Match the "extension" from the data.extension with one that is in the map
+                    const match = extensionMap.find(({extension: ext}) => ext === data.extension);
+                    if (match) {
+                        this.attachmentmodal[match.isType] = true;
+                    } else {
+                        this.attachmentmodal.message = l('theme.cantpreviewfile');
+                    }
+                    this.showAttachmentModal = true;
                 }
             }
         );
@@ -204,20 +202,19 @@ const gameboard = new Vue({
             var color = '';
             switch (this.user.role) {
                 case 'purple':
-                    color = 'text-purple-400';
+                    color = 'purplecolor';
                     break;
                 case 'red':
-                    color = 'text-sec-600';
+                    color = 'redcolor';
                     break;
                 default:
-                    color = 'text-blue-500';
+                    color = 'bluecolor';
                     break;
             }
             this.titleColor = color;
 
             // Setup other stuff
             this.setupStream();
-            //setInterval(this.readFeeds.bind(this), 3000);
             this.setupOffsets();
 
             // checker if scroll can be shown
@@ -266,8 +263,6 @@ const gameboard = new Vue({
             if (type == 'action' || type == 'actionsilent') {
 
                 // Note: actionsilent purpose is for multiply changes of actions in one time; do not update screen
-
-                // Prepare some data before sending it off to the TransactionController
 
                 // get exisiting action
                 var action = this.parties[transaction.partyId]['actions'][transaction.id];
@@ -321,7 +316,7 @@ const gameboard = new Vue({
 
                 this.rerenderAll();
 
-            }else if (type == 'attack') {
+            } else if (type == 'attack') {
 
                 if (transaction.id in this.attacks) {
 
@@ -335,7 +330,6 @@ const gameboard = new Vue({
                     });
 
                 } else {
-
                     this.logConsole('Create new attack');
 
                     // Create new
@@ -347,8 +341,7 @@ const gameboard = new Vue({
 
                 this.rerenderAll();
 
-            }
-            else if (type == 'system') {
+            } else if (type == 'system') {
                 notification = TransactionNotificationController.process('system', transaction, context);
             }
 
@@ -359,7 +352,6 @@ const gameboard = new Vue({
         },
 
         processAction(action, processRole, calcOffsets) {
-
             action.start = this.moment(action.start);
             action.weight = action.delay + action.length + action.extension;
             action.end = this.moment(action.start).add(action.delay + action.length + action.extension, 'seconds');
@@ -384,7 +376,6 @@ const gameboard = new Vue({
                 this.logConsole("Initializing update stream.");
 
             try {
-
                 // force close of running thread if loaded
                 if (this.es != null) {
                     this.logConsole("Stream; reset last EventSource call");
@@ -392,9 +383,6 @@ const gameboard = new Vue({
                 }
 
                 this.es = new EventSource("/api/feed/" + this.lastTransaction);
-
-                //this.es.addEventListener("open", event => {
-                //}, false);
 
                 this.es.addEventListener("message", event => {
                     this.logConsole("Stream; received message");
@@ -521,6 +509,7 @@ const gameboard = new Vue({
             }
             var path = '/api/setting';
             var method = 'POST';
+
             // simple sent to server setting - no show to user of errors
             this.logConsole('submitScroll scroll');
             const response = await fetch(path, {
@@ -534,52 +523,6 @@ const gameboard = new Vue({
                 .then(response => response.json())
                 .catch(err => {
                     console.debug('A fatal error has occured! ' + err);
-                });
-        },
-
-        async readFeeds() {
-            var tmp = {
-                _token: this.csrfToken,
-                mode: 'readfeeds',
-                hash: this.lastTransaction
-            }
-            var path = '/api/feed/' + this.lastTransaction;
-            var method = 'POST';
-            const response = await fetch(path, {
-                method: method,
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(tmp)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.debug(data);
-                    if ('result' in data && data.result == false && 'message' in data)
-                        this.triggerError(data.message);
-                    else {
-                        if ('result' in data && data.result == true && 'transactions' in data) {
-                            /*
-                            var transactions = JSON.parse(data.transactions);
-                            if (transactions.length > 0) {
-                                console.debug('transactions: ',transactions);
-                                this.logConsole('Received transacions count=' + transactions.length)
-                                for(var i = 0; i < transactions.length; i++) {
-                                    this.processTransaction(transactions[i]);
-                                }
-                                if ('lastTransaction' in data) {
-                                    this.lastTransaction = data.lastTransaction;
-                                }
-                            } else {
-                                //this.logConsole('No transacions')
-                            }
-                            */
-                        }
-                    }
-                })
-                .catch(err => {
-                    console.debug('A error has occured:  ' + err);
                 });
         },
 

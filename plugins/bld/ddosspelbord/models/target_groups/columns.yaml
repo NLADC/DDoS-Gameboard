@@ -1,0 +1,10 @@
+columns:
+    name:
+        label: name
+        type: text
+    sortnr:
+        label: sortnr
+        type: number
+    graphresponsetimeclipvalue:
+        label: graphresponsetimeclipvalue
+        type: text

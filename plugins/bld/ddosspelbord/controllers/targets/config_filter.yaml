@@ -1,0 +1,16 @@
+scopes:
+  party_id:
+    label: 'Parties'
+    type: group
+    conditions: 'party_id in (:filtered)'
+    modelClass: bld\ddosspelbord\models\Parties
+    options: getPartyOptions
+  groups:
+      label: 'Group'
+      type: group
+      conditions: 'groups in (:filtered)'
+      modelClass: bld\ddosspelbord\models\Target_groups
+      options: getGroupsOptions
+
+
+

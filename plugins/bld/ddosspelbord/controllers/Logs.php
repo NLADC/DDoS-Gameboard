@@ -1,12 +1,16 @@
 <?php namespace Bld\Ddosspelbord\Controllers;
 
+use bld\ddosspelbord\Models\Measurement;
+use Bld\Ddosspelbord\Models\Settings;
+use bld\ddosspelbord\Models\Target;
 use Db;
 use App\Action;
 use Bld\Ddosspelbord\Models\Roles;
 use ApplicationException;
 use Redirect;
 use Session;
-
+use Flash;
+use Config;
 use Response;
 use stdClass;
 use DateTime;
@@ -31,6 +35,14 @@ class Logs extends Controller
     public $listConfig = 'config_list.yaml';
     public $formConfig = 'config_form.yaml';
 
+    public static function GetAllowedFiletypes() {
+        $filetypesfromsetting = explode(',',  Settings::get('acceptedfiletypes'));
+        // Strip spaces from string
+        $filetypesfromsetting = str_replace(' ', '', $filetypesfromsetting);
+        // If user did not enter any filetypes than revert to default ones defined in config.
+        return (empty($filetypesfromsetting[0]) ? Config::get('bld.ddosspelbord::acceptedfiletypes') : $filetypesfromsetting);
+    }
+
     public function __construct()
     {
         parent::__construct();
@@ -54,16 +66,15 @@ class Logs extends Controller
     public function onDownload()
     {
         // redirect for forcing browser into download
-        return Redirect::to('/backend/bld/ddosspelbord/logs/download/');
+        return Redirect::to('/backend/bld/ddosspelbord/logs/getdownload/');
     }
 
-    public function download()
-    {
+    public function getdownload() {
         // download file
-        hLog::logLine("D-Download...");
+        hLog::logLine("D-getdownload...");
 
         // Setting temp CSV path
-        $csvfilename = 'LoggingExportOn:' . date('YmdHis') . '.csv';
+        $csvfilename = 'LoggingExportOn-' . date('YmdHis') . '.csv';
         $tmpcsv = temp_path($csvfilename);
 
         // Temp directory for the attachments
@@ -75,11 +86,18 @@ class Logs extends Controller
 
         $party_ids = Session::get(SESSION_LOGS_FILTER_PARTIES);
         if ($party_ids) $party_ids = unserialize($party_ids);
+
         $logs = \Bld\Ddosspelbord\Models\Logs::orderBy('timestamp');
+        $measurements = Measurement::orderBy('timestamp');
+        $targets = Target::orderBy('name');
+
         if (is_array($party_ids) && count($party_ids) > 0) {
             hLog::logLine("D-Use parties filter");
             $logs = $logs->join('bld_ddosspelbord_users', 'bld_ddosspelbord_users.id', '=', 'bld_ddosspelbord_logs.user_id')
                 ->whereIn('bld_ddosspelbord_users.party_id', $party_ids);
+            $measurements  = $measurements->join('bld_ddosspelbord_targets', 'bld_ddosspelbord_targets.id', '=', 'bld_ddosspelbord_measurements.target_id')
+                ->whereIn('bld_ddosspelbord_targets.party_id', $party_ids);
+            $targets = $targets->whereIn('party_id', $party_ids);
         } else {
             hLog::logLine("D-No party filter");
         }
@@ -93,40 +111,47 @@ class Logs extends Controller
             hLog::logLine("D-No user filter");
         }
 
-        $logs = $logs->get();
-        $parties = $users = [];
-        $loglines = 'timestamp;party;user;role;log;attachments' . "\n";
-        foreach ($logs as $log) {
-            if (!isset($users[$log->user_id])) {
-                $user = Spelbordusers::find($log->user_id);
-                $users[$user->id] = $user;
-            }
-            $user = $users[$log->user_id];
+        try {
 
-            if (!isset($parties[$user->party_id])) {
-                $party = Parties::find($user->party_id);
-                if ($party) {
-                    $parties[$party->id] = $party;
-                } else {
-                    // observer log?!
-                    $parties[0] = (object)[
-                        'name' => NO_PARTY_NAME,
-                    ];
+            $logs = $logs->select('bld_ddosspelbord_logs.*')->get();
+            $parties = $users = [];
+            $loglines = 'timestamp;party;user;role;log;attachments' . "\n";
+            foreach ($logs as $log) {
+                if (!isset($users[$log->user_id])) {
+                    $user = Spelbordusers::find($log->user_id);
+                    if (!$user) {
+                        $user = new stdClass();
+                        $user->party_id = $user->role_id = 0;
+                        $user->name = '?';
+                    }
+                    $users[$log->user_id] = $user;
                 }
-            }
-            $party = $parties[$user->party_id];
+                $user = $users[$log->user_id];
 
-            $role = Roles::find($user->role_id);
-            $f = [];
+                if (!isset($parties[$user->party_id])) {
+                    $party = Parties::find($user->party_id);
+                    if ($party) {
+                        $parties[$party->id] = $party;
+                    } else {
+                        // observer log?!
+                        $parties[0] = (object)[
+                            'name' => NO_PARTY_NAME,
+                        ];
+                    }
+                }
+                $party = $parties[$user->party_id];
 
-            // Getting all attachments from a log
-            foreach ($log->attachments as $attachment) {
+                $role = Roles::find($user->role_id);
+                $f = [];
+
+                // Getting all attachments from a log
+                foreach ($log->attachments as $attachment) {
                     $orgattachmentname = $attachment->file_name;
                     $filepath = $attachment->getLocalPath();
                     $file = new stdClass();
                     if (file_exists($filepath)) {
-                        if ($username = Spelbordusers::find($log->user_id)->name) {
-                            $file->filename = preg_replace('/\s+/', '_', $attachment->created_at) . "_" .  $username . ":" .  $attachment->file_name;
+                        if ($user->name != '?') {
+                            $file->filename = preg_replace('/\s+/', '_', $attachment->created_at) . "_" .  $user->name . ":" .  $attachment->file_name;
                             $file->filename = preg_replace('/\:/', '-', $file->filename);
                         }
                         else {
@@ -139,53 +164,90 @@ class Logs extends Controller
                         continue;
                     }
 
-                // This part is all about creating attachment files for the downloadable zip
-                $tmpattachment = temp_path() . "/". $tmpdirname . "/attachments/" . $file->filename;
-                file_put_contents($tmpattachment, file_get_contents($filepath));
+                    // This part is all about creating attachment files for the downloadable zip
+                    $tmpattachment = temp_path() . "/". $tmpdirname . "/attachments/" . $file->filename;
+                    file_put_contents($tmpattachment, file_get_contents($filepath));
 
-                // Removing the tmp
-                unset($tmpattachment);
+                    // Removing the tmp
+                    unset($tmpattachment);
 
-                // This is a temporary variable wich collect filenames to add in the CSV
-                $f[] = $orgattachmentname;
+                    // This is a temporary variable wich collect filenames to add in the CSV
+                    $f[] = $orgattachmentname;
+                }
+                // These will land in the CSV
+                $attachmentnames =  implode(", ", $f);
+                unset($f);
+
+                // Building the CSV
+                $loglines .= "$log->timestamp;";
+                $loglines .= "$party->name;";
+                $loglines .= "$user->name;";
+                $loglines .= ($role) ? "$role->name;" : '';
+                $log = str_replace("\n", '[CR]', $log->log);
+                $log = addslashes($log);
+                $loglines .= "$log;";
+                $loglines .= "$attachmentnames\n";
             }
-            // These will land in the CSV
-            $attachmentnames =  implode(", ", $f);
-            unset($f);
 
-            // Building the CSV
-            $loglines .= "$log->timestamp;";
-            $loglines .= "$party->name;";
-            $loglines .= "$user->name;";
-            $loglines .= ($role) ? "$role->name;" : '';
-            $log = str_replace("\n", '[CR]', $log->log);
-            $log = addslashes($log);
-            $loglines .= "$log;";
-            $loglines .= "$attachmentnames\n";
+            // Creating the actual CSV with the logging in it
+            file_put_contents($tmpcsv, $loglines);
+
+            // dump measurements
+            hLog::logLine("D-Get targets");
+            $targets = $targets->get();
+            $measurelines = 'timestamp/ms;';
+            foreach ($targets as $target) {
+                $measurelines .= (($target) ? $target->name:'?').';';
+            }
+            //hLog::logLine("D-header measurements: $measurelines");
+            $measurelines .= "\n";
+            $measurements = $measurements->select('timestamp')->distinct()->get();
+            hLog::logLine("D-count.measurements: ".count($measurements));
+            foreach ($measurements as $measurement) {
+                $measurelines .= $measurement->timestamp.';';
+                foreach ($targets as $target) {
+                    $targetmeasure = Measurement::where('timestamp',$measurement->timestamp)
+                        ->where('target_id',$target->id)
+                        ->first();
+                    $responsetime =  (($targetmeasure) ? $targetmeasure->responsetime : '');
+                    if ($responsetime) $responsetime = number_format($responsetime, 3, ',', '');
+                    $measurelines .= $responsetime.';';
+                }
+                $measurelines .= "\n";
+            }
+            $csvmeasurements = 'MeasurementsExportOn-' . date('YmdHis') . '.csv';
+            $tmpmeasurements = temp_path($csvmeasurements);
+            file_put_contents($tmpmeasurements, $measurelines);
+
+            // Generating a temp ZIP filename
+            $zipfilename = 'download-' . date('YmdHis') . '.zip';
+
+            // Setting the path in memory where the zip is going to be created
+            $tmpzip = temp_path($zipfilename);
+
+            // Creating the zip that will be downloaded
+            Zip::make($tmpzip, [$tmpcsv, $tmpmeasurements, $tmpdir]);
+
+            // Cleaning temporary attachments, not the zip
+            FilesystemUtils::removeDirectory($tmpdir);
+
+            // Removing the duplicate CSV it is already in the zip
+            if (file_exists($tmpcsv)) {
+                unlink($tmpcsv);
+            }
+
+            // Starting the download
+            hLog::logLine("D-Response download $zipfilename");
+
+            return Response::download($tmpzip, $zipfilename);
+
+        } catch (\Exception $error) {
+            hLog::logLine("E-Error: " . $error->getMessage(). ', line: '.$error->getLine());
+
+            Flash::error($error->getMessage());
+
+            return Redirect::to('/backend/bld/ddosspelbord/logs');
         }
-
-        // Creating the actual CSV with the logging in it
-        file_put_contents($tmpcsv, $loglines);
-
-        // Generating a temp ZIP filename
-        $zipfilename = 'download-' . date('YmdHis') . '.zip';
-
-        // Setting the path in memory where the zip is going to be created
-        $tmpzip = temp_path($zipfilename);
-
-        // Creating the zip that will be downloaded
-        Zip::make($tmpzip, [$tmpcsv, $tmpdir]);
-
-        // Cleaning temporary attachments, not the zip
-        FilesystemUtils::removeDirectory($tmpdir);
-
-        // Removing the duplicate CSV it is already in the zip
-        if (file_exists($tmpcsv)) {
-            unlink($tmpcsv);
-        }
-
-        // Starting the download
-        return Response::download($tmpzip, $zipfilename);
     }
 
     public function onResetTimestampsToday()

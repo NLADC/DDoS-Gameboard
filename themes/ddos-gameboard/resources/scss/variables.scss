@@ -14,12 +14,20 @@
   --bg-prim: #ffa144;
   --text-black: #22292f;
   --color_started: #00b700;
+  --color_dragover: rgba(0, 183, 0, 0.2);
   --color_resumed: #88b400;
   --color_paused: #df8b45;
   --color_stopped: #b49924;
   --color_loaded: #dff0f3;
   --header-color: rgb(248, 113, 113);
+  --purplecolor: rgb(167, 139, 250);
+  --redcolor: #f51b25;
+  --orangecolor: #ffac00;
+  --greencolor: var(--color_started);
+  --bluecolor: rgb(59, 130, 246);
 }
+
+
 
 :root {
   --gray_1: #f6f6f6;

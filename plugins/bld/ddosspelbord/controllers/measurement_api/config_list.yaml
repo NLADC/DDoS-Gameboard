@@ -1,0 +1,12 @@
+list: $/bld/ddosspelbord/models/measurement_api/columns.yaml
+modelClass: bld\ddosspelbord\models\Measurement_api
+title: Measurement_api
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+recordsPerPage: 20
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'bld/ddosspelbord/measurement_api/update/:id'

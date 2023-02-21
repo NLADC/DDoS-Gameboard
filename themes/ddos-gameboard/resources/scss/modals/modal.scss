@@ -19,7 +19,7 @@
   width: 80%;
   max-height: 100%;
   overflow: auto;
-  flex-basis: 650px;
+  flex-basis: 40.625em;
   background-color: rgba(255, 255, 255, .16);
   background: #383838;
   margin-top: 3rem;
@@ -79,12 +79,12 @@
     }
   }
   &.modal-medium {
-    flex-basis: 650px;
+    flex-basis: 40.625em;
     margin: 40px;
     max-height: calc(100% - 40px);
   }
   &.modal-large {
-    flex-basis: 940px;
+    flex-basis: 58.75em;
     margin: 40px;
     max-height: calc(100% - 40px);
   }

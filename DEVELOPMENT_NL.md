@@ -95,6 +95,7 @@ Alle api bestanden met de functies zijn te vinden in ``plugins/bld/ddosspelbord/
 ### gameboard.js
 
 Dit Js bestand is het hoogste niveau van je VueJS. Vanuit hier worden alle .vue bestanden samengevoegd tot één werkende javascript.
+Voor het targets dashboard is het gameboard-targets.js
 
 Vanuit "layous\ddos-gameboard.htm" wordt met het onderstaande stukje HTML alle via gameboard.js dus alle Vue ingeladen.
 
@@ -141,6 +142,7 @@ Dit wordt gedaan door zaken toe te voegen aan het prototype, normaal gebruik je 
 ```js
 Vue.prototype.logmaxfilesize = window.gameboard_logmaxfilesize;
 Vue.prototype.logmaxfiles = window.gameboard_logmaxfiles;
+Vue.prototype.acceptedFileTypes = window.gameboard_acceptedfiletypes.split(',');
 ```
 
 *Let op hier is gameboard de variabel die meegegeven wordt vanuit de backend
@@ -154,7 +156,6 @@ in AttachmentModal.vue
 ```vue
 methods: {
     close() {
-        this.$emit('close')
         Event.$emit('emptyAttachmentsmodal');
     }
 }
@@ -508,25 +509,27 @@ Deze worden bijvoorbeeld zo aangeroepen:
 {{ 'site.newpass'|_ }}
 ```
 
-### Op maat taal strings voor VUE
-Voor strings in Vue wordt gebruik gemaakt van een json die webpack verplaatst naar de public map. 
-Vanuit het layout wordt in de header de json globaal ingeladen onder het variabel window.lang. Hierin staat de globaal bereikbare functie 
-l". Dit betekent dat je in Vue het volgende kan doen.
-
-```vue
-<h3 v-html="l('theme.help')"> </h3>
-```
-
-Vue zal de functie 'l' aanroepen met de naam van een language string, vervolgens zal lang.js kijken welke taal er geslecteeerd staat en dan de string vanuit de correcte lang serveren.
-
-Bij het toevoegen, wijzigen of verwijderen van deze lang strings is het belangrijk dat je de volgende commando's uitvoert elke keer:
+Bij het toevoegen, wijzigen of verwijderen van deze lange strings is het belangrijk dat je telkens de volgende commando's uitvoert:
 ```shell
 php artisan translate:scan --purge
 php artisan cache:clear
 ```
 
-## Security
+### Custom lang strings for VUE
+Lang strings in Vue verwijzen naar dezelfde /lang/lang.yaml die wordt gebruikt door de vertaal-plug-in.
+De plugin zal de yaml data beschikbaar maken in de variabele `window.lang`.
+Het venster bevat ook de globaal bereikbare functie `l()`. Dit betekent dat je in Vue het volgende kunt doen.
 
+```vue
+<h3 v-html="l('theme.help')"> </h3>
+```
+
+Vue zal de functie `l` aanroepen met de naam van een taalstring, dan zal lang.js controleren welke taal is geselecteerd en dan de string uit de juiste taal weergeven.
+
+#### Warning
+Bewerken van de taal strings via de backend `/backend/winter/translate/messages` heeft geen effect op de strings in Vue, Maak gebruik van de `/themes/ddos-gameboard/lang/lang.yaml`
+
+## Security
 De backend en bijbehorende api's zorgen voor de beveiliging dat de eindgebruiker ingelogd moet zijn en alleen kan zien wat hij mag zijn volgens functionele regels van het spelbord.
 
 Zet dus nooit (alleen) beperkingen over wat eindgebruiker wel en niet mag in VueJS. Dit is uit te lezen voor een client, altijd de Data via API's uitwisselen. Waar de PHP dan bepaald wat wel en niet mag. 
@@ -534,3 +537,66 @@ VueJS is compleet te muteren en modificeren met simpelweg chrome inspector tools
 
 Denk altijd via de methode "security by design".
 
+
+## Measurement API
+
+De functionele opzet is als voklgt
+- je hebt een exercise met een naam en een start (first) en stop tijd
+- je hebt een party
+- die heeft 1 of meerdere targets (Ip of domain)
+- aan een target wordt ook het type gekoppeld (webserver, dns of smtp)
+- voor een target zijn 1 of meerdere metingen toe te voegen
+- dit gebeurt door een measurement_api definitie aan een targetmeting toe te voegen
+- een measurement_api kent ook het type (webserver, dns of smtp)
+- per measuement_api en type wordt er een configjson definitie onderkend
+- voor RIPE bevat deze dus de (json code voor) definitions, probes en zaken zoals start/stop/oneoff
+
+Voor een exercise
+
+Is de exercise met de parties en targets zo gedefinieerd, dan moeten in RIPE de measurements worden aangemaakt. Dit kan via een plugin console commando:
+
+#### Measurement API with CLI commands
+
+```shell
+php artisan ddosgameboard:measurementAPI
+```
+
+Geef je de optie -h mee, dan wordt er (summier) help info getoond.
+
+Wanneer je de Measurements API definities goed hebt opgezet (zie bijlage voor voorbeeld configjson  code), dan kunnen de metingen in RIPE ALTAS worden aangemaakt met:
+```shell
+php artisan ddosgameboard:measurementAPI create
+```
+Dit commando zal:
+Kijken of de exercise in de toekomst ligt
+Per parties, per target, per measument definitie de meeting in RIPE ATLAS aanmaken
+(bestaat de meeting al voor de tijdsperiode, dan wordt deze NIET twee keer aangemaakt)
+
+In de RIPE ATLAS website kun je aangemaakte metingen terugvinden. En eventueel weer weghalen (DELETE) wanneer alleen voor testen.
+
+Tijdens een exercise
+
+Een commando waarmee je een Cronjob kan emuleren
+```shell
+php artisan ddosgameboard:measurementAPI measure
+```
+Dit command kijkt naar exercise, parties, targets en measurement definities en zet de metingen in RIPE ATLAS om in waarden in de measurements tabel.
+
+Hierbij wordt de responsetijd van alle probes metingen cumulatief verzameld per minuut (gemiddelde).
+
+De code
+
+De volgende code is erbij gekomen:
+- classes\measurements\ripe\ripeMeasurements.php
+- console\measurementAPI.php
+- helpers\hCurl.php
+
+Ik heb de code gisteren in elkaar gezet voor de snelheid, hier en daar mag meer dessign pattern factory worden toegepast. Dat komt mogelijk nog, nu gaat het erom dat het werkt zo en te overzien is.
+
+RIPE ATLAS metingen bekijken
+
+Met het volgende commando kun je de vertaling van RIPE metingen naar gameboard waarden per minuut volgen:
+
+$> php artisan ddosgameboard:measurementAPI show -m <mid>
+
+Met <mid> is het measurement ID nummer in RIPE ATLAS, bijvoorbeeld 49131119.

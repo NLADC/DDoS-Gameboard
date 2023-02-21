@@ -1,0 +1,48 @@
+description="DDoS gamboard layout"
+
+[localePicker]
+==
+use Winter\Translate\Classes\Translator;
+protected $translator;
+
+function onStart()
+{
+$this->translator = Translator::instance();
+$this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale();
+}
+==
+{% set CurrentLanguage = SelectedLanguage %}
+
+<!DOCTYPE html>
+<html lang="nl-nl" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Anti-DDoS coalitie Open Source DDoS gameboard">
+    <meta name="keywords" content="DDoS, Gameboard, open source">
+    <meta name="author" content="First version; belastingdienst & SvSnet">
+    <title>{{ 'theme.ddosgameboard'|_ }}</title>
+    <!-- scripts -->
+    <script src="{{ 'assets/js/gameboard-targets.js'|theme }}" defer></script>
+    <!-- styling -->
+    <link href="{{ 'assets/css/fonts.css'|theme }}" rel="stylesheet">
+    <link href="{{ 'assets/css/gameboard.css'|theme }}" rel="stylesheet">
+    <link href="{{ 'assets/css/theme.css'|theme }}" rel="stylesheet">
+    <!-- global data -->
+    <script type="text/javascript" defer>
+        window.gameboard_locale = '{{CurrentLanguage}}';
+        window.targetsdashboard_graphmaxresponsetime = {{targetsdashboard.data.graphmaxresponsetime|raw }};
+        window.targetsdashboard_measurements = '{{ targetsdashboard.data.measurements|raw }}';
+        window.targetsdashboard_latesttimestamp = '{{ targetsdashboard.data.latesttimestamp }}';
+        window.targetsdashboard_access = '{{ targetsdashboard.data.access }}';
+        window.targetsdashboard_firsttime = '{{ targetsdashboard.firsttime }}';
+        window.targetsdashboard_endtime = '{{ targetsdashboard.endtime }}';
+        window.targetsdashboard_groups = "{{ targetsdashboard.data.groups|raw }}";
+        window.targetsdashboard_csrfToken = "{{ targetsdashboard.data.csrftoken|raw }}";
+        window.lang = {{ targetsdashboard.data.lang|raw }};
+    </script>
+</head>
+<body class="el-0">
+{% page %}
+</body>
+</html>

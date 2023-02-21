@@ -88,11 +88,68 @@ Zorg voor een nginx of apache configuratie die in de hoofdmap uitkomt:
 
 Extra toevoegen als uitzondering (onderaan nginx config):
 
-```shell
+```
 location ~ ^/json/.* { try_files $uri 404; }
 location ~ ^/img/.* { try_files $uri 404; }
 location ~ ^/fonts/.* { try_files $uri 404; }
 location ~ ^/favicon.ico { try_files $uri 404; }
+
+# status page
+location ~ ^/(status|ping)$ {
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_index index.php;
+    include fastcgi_params;
+    fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+}
+
+location /bootstrap {
+  rewrite ^/bootstrap/.* /index.php break;
+}
+
+location /config {
+  rewrite ^/config/.* /index.php break;
+}
+
+location /vendor {
+  rewrite ^/vendor/.* /index.php break;
+}
+
+location /storage {
+  rewrite ^/storage/cms/.* /index.php break;
+  rewrite ^/storage/logs/.* /index.php break;
+  rewrite ^/storage/framework/.* /index.php break;
+  rewrite ^/storage/temp/protected/.* /index.php break;
+  rewrite ^/storage/app/uploads/protected/.* /index.php break;
+  rewrite ^/storage/app/uploads/public/.* /index.php break;
+}
+
+location / {
+  if (-e $request_filename){
+    rewrite !^index.php /index.php break;
+  }
+  if (-e $request_filename){
+    rewrite !^index.php /index.php break;
+  }
+  if (!-e $request_filename){
+    rewrite ^(.*)$ /index.php break;
+  }
+}
+
+# Pass the phpmyadmin PHP scripts to FastCGI server
+location ~ ^/phpmyadmin/(.+\.php)$ {
+    allow 127.0.0.1;
+    allow 87.251.37.123;
+    deny all;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    fastcgi_param PATH_INFO $fastcgi_path_info;
+    fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include fastcgi_params;
+}
 ```
 
 #### apache config
@@ -110,12 +167,24 @@ Voeg het volgende toe aan je VirtualHost (d.w.z. regel onder #LogLevel info ssl:
 
 Apache werkt pas naar behoren na het enablen van de mod rewrite:
 
+Vergeet niet de toegang naar phpmyadmin uit te zetten bij het opleveren van het ddosspelbord
+
+
 ```shell
 sudo a2enmod rewrite
 sudo systemctl apache2 restart
 ```
 
 Configuratie staat al in .htacces en apache zou die automatish moeten overnemen
+
+#### tijdszone server
+
+Zet de tijdszone naar de correcte tijd:
+Bijvoorbeeld amsterdam:
+```shell
+timedatectl set-ntp true
+timedatectl set-timezone Europe/Amsterdam
+```
 
 #### Wintercms instaleren
 Nu kun je WinterCMS installeren door de gegevens in te vullen in de installatie via script
@@ -259,6 +328,14 @@ in de terminal voer in
 ```shell
 npm install
 npm update
+npm run prod
+```
+
+#### initialize language
+Vergeet niet de language strings the initen
+```shell
+php artisan translate:scan --purge
+php artisan cache:clear
 ```
 
 Nu zijn alle package's gereed om te beginnen. 

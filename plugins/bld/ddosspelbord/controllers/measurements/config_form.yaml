@@ -1,0 +1,10 @@
+name: Measurements
+form: $/bld/ddosspelbord/models/measurement/fields.yaml
+modelClass: bld\ddosspelbord\Models\Measurement
+defaultRedirect: bld/ddosspelbord/measurements
+create:
+    redirect: 'bld/ddosspelbord/measurements/update/:id'
+    redirectClose: bld/ddosspelbord/measurements
+update:
+    redirect: bld/ddosspelbord/measurements
+    redirectClose: bld/ddosspelbord/measurements

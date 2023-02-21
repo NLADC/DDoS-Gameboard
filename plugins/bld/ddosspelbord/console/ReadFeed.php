@@ -36,7 +36,7 @@ class ReadFeed extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosspelbord:readfeed';
+    protected $name = 'ddosgameboard:readfeed';
 
     /**
      * @var string The console command description.

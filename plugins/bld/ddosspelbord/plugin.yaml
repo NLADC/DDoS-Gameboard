@@ -45,3 +45,29 @@ navigation:
         url: bld/ddosspelbord/attacks
         icon: icon-soccer-ball-o
         order: 750
+    Monitor:
+        label: Monitor
+        url: bld/ddosspelbord/targets
+        icon: icon-globe
+        order: 760
+        sideMenu:
+            Targets:
+                label: Targets
+                url: bld/ddosspelbord/targets
+                icon: icon-globe
+                order: 1
+            Target_groups:
+                label: 'Target groups'
+                url: bld/ddosspelbord/target_groups
+                icon: icon-group
+                order: 3
+            Measurement_api:
+                label: 'Measurement API'
+                url: bld/ddosspelbord/measurement_api
+                icon: icon-globe
+                order: 5
+            Measurements:
+                label: Measurements
+                url: bld/ddosspelbord/measurements
+                icon: icon-clock-o
+                order: 9

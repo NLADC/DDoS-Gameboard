@@ -1,0 +1,32 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    type:
+        label: Type
+        span: auto
+        type: dropdown
+        default: dns
+        options:
+            server: 'Server'
+            dns: 'DNS name service'
+            smtp: 'SMTP (mail) service'
+    description:
+        label: Description
+        size: small
+        span: full
+        type: textarea
+    apikey:
+        label: APIkey
+        span: auto
+        type: text
+    billingemail:
+        label: 'Billing email'
+        span: auto
+        type: text
+    configjson:
+        label: Configjson
+        type: textarea
+        size: giant
+        span: full

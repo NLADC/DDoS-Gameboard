@@ -43,7 +43,7 @@
                         class="material-icons text-sm">delete</span></a>
                   </div>
                 </li>
-                <h5 v-if="proxy.attachments.length">Uncommitted Attachments: </h5>
+                <h5 v-if="proxy.attachments.length" v-html="l('theme.uncommittedattachments')"></h5>
                 <li class="attachmentholder" v-for="attachment in proxy.attachments" :key="attachment.id">
                   <p class="attachmentlink">{{ attachment.name }}</p>
                 </li>
@@ -64,7 +64,7 @@
 
             <div class="flex items-center justify-between">
               <button type="reset" @click="close()"
-                      class="w-1/2 py-2 px-4 rounded-r focus:outline-none focus:shadow-outline">Cancel
+                      class="w-1/2 py-2 px-4 rounded-r focus:outline-none focus:shadow-outline" v-html="l('theme.cancel')">
               </button>
               <button type="submit" id="idLogSubmitButton" :class="{disabled : proxy.log === ''}"
                       :disabled="proxy.log === ''"
@@ -165,7 +165,7 @@ export default {
     onAttachmentsChange(e) {
       var maxfilesize = 12288 * 1024; // 12mb fallback when if global setting check below fails
       var maxfiles = 10;
-      var acceptedExtensions = ["png", "jpg", "gif", "svg", "txt", "mp4", "csv", "gif", "json", "pdf", "zip"];
+      var acceptedExtensions = ["png", "jpg", "gif", "svg", "txt", "mp4", "csv", "gif", "json", "pdf"];
       if (this.logmaxfilesize) {
         maxfilesize = this.logmaxfilesize;
       }
@@ -227,8 +227,6 @@ export default {
 
     getLogs() {
       var granularity = this.editing.granularity;
-      //var start = this.moment(this.editing.timestamp).subtract(granularity / 2, 'minutes');
-      //var end = this.moment(this.editing.timestamp).add(granularity / 2, 'minutes');
       var start = this.moment(this.editing.timestamp);
       var end = this.moment(this.editing.timestamp).add(granularity, 'minutes');
       var logs = [];

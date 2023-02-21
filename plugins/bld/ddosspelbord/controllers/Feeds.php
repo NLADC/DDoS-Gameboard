@@ -255,7 +255,7 @@ class Feeds extends Controller {
             } else {
                 self::$_settings['lasthash'] = $hash;
             }
-            Spelbordusers::where('id',$user['id'])->update([
+            Spelbordusers::where('id',$user->id)->update([
                 'updated_at' => date('Y-m-d H:i:s'),
                 'settings' => serialize(self::$_settings),
             ]);
@@ -267,7 +267,7 @@ class Feeds extends Controller {
 
         $user = Spelbordusers::getOnAuth();
         if ($user) {
-            Spelbordusers::where('id',$user['id'])->update([
+            Spelbordusers::where('id',$user->id)->update([
                 'updated_at' => date('Y-m-d H:i:s'),
                 'settings' => '',
             ]);

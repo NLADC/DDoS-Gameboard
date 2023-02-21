@@ -1,0 +1,24 @@
+fields:
+  target_id:
+    label: target
+    span: auto
+    type: number
+  average_ttc:
+    label: Average Time To Connect
+    span: auto
+    type: number
+  average_rt:
+    label: Average Response Time
+    span: auto
+    type: number
+  succesrate:
+    label: Succes Rate in percentage
+    span: auto
+    type: number
+    step: 1
+    min: 1
+    max: 100
+  errorcodes:
+    label: Error Code's
+    span: auto
+    type: text

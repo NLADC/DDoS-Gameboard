@@ -1,0 +1,10 @@
+name: Target
+form: $/bld/ddosspelbord/models/target/fields.yaml
+modelClass: bld\ddosspelbord\Models\Target
+defaultRedirect: bld/ddosspelbord/targets
+create:
+    redirect: 'bld/ddosspelbord/targets/update/:id'
+    redirectClose: bld/ddosspelbord/targets
+update:
+    redirect: bld/ddosspelbord/targets
+    redirectClose: bld/ddosspelbord/targets

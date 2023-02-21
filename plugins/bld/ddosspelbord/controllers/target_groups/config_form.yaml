@@ -1,0 +1,10 @@
+name: Target_groups
+form: $/bld/ddosspelbord/models/target_groups/fields.yaml
+modelClass: bld\ddosspelbord\models\Target_groups
+defaultRedirect: bld/ddosspelbord/target_groups
+create:
+    redirect: 'bld/ddosspelbord/target_groups/update/:id'
+    redirectClose: bld/ddosspelbord/target_groups
+update:
+    redirect: bld/ddosspelbord/target_groups
+    redirectClose: bld/ddosspelbord/target_groups

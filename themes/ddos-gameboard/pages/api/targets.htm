@@ -1,0 +1,16 @@
+title = "Targets"
+url = "/api/targets"
+is_hidden = 0
+
+[session]
+security = "all"
+
+[ddosspelbord_targets]
+==
+<?php
+use bld\ddosspelbord\components\ddosspelbord_targets;
+function onStart() {
+    return (new ddosspelbord_targets)->streamMeasurements();
+}
+==
+?>

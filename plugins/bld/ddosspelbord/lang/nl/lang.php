@@ -18,6 +18,8 @@
     'timestamp' => 'Tijdstempel:',
     'user' => 'Gebruiker:',
     'party' => 'Partij:',
-    'sendpasswordresetmail' => 'Verstuur wachtwoord reset mail',
+    'sendpasswordresetmail' => 'Verstuur welkom & wachtwoord reset mail',
     'sendpasswordresetmail_conformation' => 'Wil je deze gebruikers echt een wachtwoord reset email sturen?',
+    'sendpasswordresetmail_success' => 'De reset mail(s) zijn verzonden',
+
 ];

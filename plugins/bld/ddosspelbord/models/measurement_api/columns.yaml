@@ -1,0 +1,16 @@
+columns:
+    type:
+        label: Type
+    name:
+        label: name
+        type: text
+    description:
+        label: description
+        type: text
+    billingemail:
+        label: 'billing email'
+        type: text
+    updated_at:
+        label: updated_at
+        type: datetime
+

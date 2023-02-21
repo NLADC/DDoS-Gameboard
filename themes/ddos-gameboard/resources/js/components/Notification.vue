@@ -3,7 +3,7 @@
 	<div class="flex flex-row">
 		<div class="w-8 text-left"><span class="icon material-icons">{{ icon }}</span></div>
 		<div class="title flex-grow font-bold">{{ title }}</div>
-		<div class="w-8 text-right"><button class="material-icons" @click="close()">clear</button></div>
+		<div class="w-8 text-right"><button class="material-icons" @click="close()">X</button></div>
 	</div>
 	<div v-if="message" class="message pl-8" v-html="message"></div>
     <lottie-player v-if="title == 'Countdown'" class="" src="/json/countdown.json" background="transparent" speed="0.4" autoplay></lottie-player>

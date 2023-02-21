@@ -5,7 +5,7 @@
 	<h3>Gameboard control</h3>
 
 	<button type="button" class="btn btn-primary mb-6" @click="submitForm('refreshAll')">Refresh ALL</button>
-    <button type="submit" class="btn btn-primary mb-6" @click="submitForm('refreshGuest')">Refresh GUEST</button>
+  <button type="submit" class="btn btn-primary mb-6" @click="submitForm('refreshGuest')">Refresh GUEST</button>
 	<button type="submit" class="btn btn-primary mb-6" @click="submitForm('refreshBlue')">Refresh BLUE</button>
 	<button type="submit" class="btn btn-primary mb-6" @click="submitForm('refreshRed')">Refresh RED</button>
 	<button type="submit" class="btn btn-primary mb-6" @click="submitForm('refreshPurple')">Refresh PURPLE</button>

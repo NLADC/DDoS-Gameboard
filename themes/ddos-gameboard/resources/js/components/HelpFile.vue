@@ -75,7 +75,6 @@
 <script>
     export default {
         props: {
-            /*csrf: String,*/
             show: Boolean
         },
 

@@ -26,12 +26,12 @@ return Redirect::to($loginUrl);
     <notification-box v-if="showNotification" @notify-off="notifyOff" :notifications="notifications"></notification-box>
 
     {% if gameboard.title!='' %}
-
     <div id="game-header">
         <div class="game-header-inner">
             <div id="mainmenu" class="ghmenu-item">
                 <h1 title="Gameboard release {{ gameboard.version }}"
-                    class="inline-block font-light lg:text-4xl md:text-3xl sm:text-1xl" :class="titleColor">@{{ gameboard.title }}</h1>
+                    class="inline-block font-light lg:text-4xl md:text-3xl sm:text-1xl" :class="titleColor">
+                    @{{ gameboard.title }}</h1>
                 <div class="menu-icons">
                     <button v-if="user.role == 'purple'" @click="showLiveLogModal = true" title="Show live log"
                             class="material-icons">list
@@ -46,6 +46,10 @@ return Redirect::to($loginUrl);
                     <button @click="showHelpFile = true" title="Show help" class="material-icons mi-help-outline">
                         help_outline
                     </button>
+                    <a href="/targetdashboard" title="Show Target Dashboard" class="material-icons mi-help-outline">
+                        language
+                    </a>
+
                 </div>
             </div>
             <div id="timer" class="ghmenu-item">
@@ -99,12 +103,14 @@ return Redirect::to($loginUrl);
     <parties-select :show="showPartiesSelect" :parties="parties" :csrf="csrfToken"
                     @close="showPartiesSelect = false"></parties-select>
     <actions-list :show="showActionsList" :parties="parties" @close="showActionsList = false"></actions-list>
-    <quick-logging :show="showQuickLogging" :logs="logs" :rerender="reRender.quicklogs" :rerenderattacks="reRender.attacks" :attacks="attacks" :acceptedFileTypes="acceptedFileTypes"
-                   :user="user" :csrf="csrfToken" :parties="parties" @rerendered="reRender.quicklogs = false" @rerenderattacks="reRender.attacks = false"
-                   @close="showQuickLogging = false" @update-log="updateLog" @update-attack="updateAttack"></quick-logging>
+    <quick-logging :show="showQuickLogging" :logs="logs" :rerender="reRender.quicklogs"
+                   :rerenderattacks="reRender.attacks" :attacks="attacks" :acceptedFileTypes="acceptedFileTypes"
+                   :user="user" :csrf="csrfToken" :parties="parties" @rerendered="reRender.quicklogs = false"
+                   @rerenderattacks="reRender.attacks = false"
+                   @close="showQuickLogging = false" @update-log="updateLog"
+                   @update-attack="updateAttack"></quick-logging>
     <help-file :show="showHelpFile" @close="showHelpFile = false"></help-file>
-    <attachment-modal :show="showAttachmentModal" :attachmentmodal="attachmentmodal" @close="showAttachmentModal = false"></attachment-modal>
-
-
+    <attachment-modal :show="showAttachmentModal" :attachmentmodal="attachmentmodal"
+                      @close="showAttachmentModal = false"></attachment-modal>
     {% endif %}
 </div>

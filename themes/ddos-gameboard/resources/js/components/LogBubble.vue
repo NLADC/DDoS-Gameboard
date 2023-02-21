@@ -9,7 +9,8 @@
         <div class="message">{{ log.log }}</div>
         <div class="attachments">
           <li v-for="attachment in attachments" :key="log.attachments.id">
-            <a class="attachmentlink" @click="openAttachmenModel((attachment.id), $event.target)">{{ attachment.file_name }}
+            <a class="attachmentlink"
+               @click="openAttachmenModel((attachment.id), $event.target)">{{ attachment.file_name }}
               <div class="loading_animation"></div>
             </a>
 
@@ -17,16 +18,22 @@
         </div>
         <div class="flex">
           <div class="timestamp">{{ this.moment(log.timestamp).format('HH:mm') }}</div>
-          <div class="author">
+          <div class="author"
+               :class="{'purplecolor': this.isPurpleParty(),
+                'redcolor': this.isRedParty(),
+                'bluecolor': this.isBlueParty(),
+       }"
+          >
             {{ log.user.party.name }} - {{ log.user.name }}
           </div>
         </div>
       </div>
-      <div v-if="log.showedit" class="editlogbutton w-1/12 text-right">
-        <span class="material-icons text-sm">edit</span>
+      <div v-if=" log.showedit
+          " class="editlogbutton w-1/12 text-right">
+          <span class="material-icons text-sm">edit</span>
+        </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -53,15 +60,21 @@ export default {
       setTimeout(this.scrollBottom, 1000);
     },
 
-    isRedParty(){
+    isRedParty() {
       if (this.log.user !== undefined) {
         return this.log.user.role === "red";
       }
     },
 
-    isBlueParty(){
+    isBlueParty() {
       if (this.log.user !== undefined) {
         return this.log.user.role === "blue";
+      }
+    },
+
+    isPurpleParty() {
+      if (this.log.user !== undefined) {
+        return this.log.user.role === "purple";
       }
     },
 

@@ -1,0 +1,17 @@
+columns:
+    timestamp:
+        label: Time stamp
+        type: datetime
+        format: 'Y-m-d H:i:s'
+    target_id:
+        label: Target
+        type: text
+        relation: target
+        select: name
+        searchable: true
+    responsetime:
+        label: Responsetime
+        type: number
+    ipv:
+        label: Ipversion
+        type: text

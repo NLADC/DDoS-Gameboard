@@ -20,6 +20,7 @@ define('DB_TABLE_PARTIES','bld_ddosspelbord_parties');
 define('DB_TABLE_ROLES','bld_ddosspelbord_roles');
 define('DB_TABLE_USERS','bld_ddosspelbord_users');
 define('DB_TABLE_TRANSACTIONS','bld_ddosspelbord_transactions');
+define('DB_TABLE_MEASUREMENTS','bld_ddosspelbord_measurements');
 
 define ('DB_ROLE_PURPLE', 'purple');
 define ('DB_ROLE_BLUE', 'blue');

@@ -2,6 +2,7 @@ const mix = require('laravel-mix');
 const postCssImport = require('postcss-import');
 const tailwind = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
+const Chart = require('chart.js');
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -20,10 +21,14 @@ mix
             postCssImport(),
             tailwind('tailwind.config.js'),
             autoprefixer(),
-        ]
+        ],
+        externals: {
+            moment: 'moment'
+        }
     })
     .js('themes/ddos-gameboard/resources/js/gameboard.js', 'public/themes/ddos-gameboard/assets/js/')
     .js('themes/ddos-gameboard/resources/js/gameboard-lite.js', 'public/themes/ddos-gameboard/assets/js/')
+    .js('themes/ddos-gameboard/resources/js/gameboard-targets.js', 'public/themes/ddos-gameboard/assets/js/')
     .js('themes/ddos-gameboard/resources/vendor/jquery.js', 'public/themes/ddos-gameboard/assets/vendor/')
     .sass('themes/ddos-gameboard/resources/scss/theme.scss', 'public/themes/ddos-gameboard/assets/css/')
     .postCss('themes/ddos-gameboard/resources/css/gameboard.css', 'public/themes/ddos-gameboard/assets/css/')
@@ -37,7 +42,6 @@ mix
     ], 'public/themes/ddos-gameboard/assets/css/fonts.css')
     .copy('themes/ddos-gameboard/resources/fonts', 'public/themes/ddos-gameboard/assets/fonts')
     .copy('themes/ddos-gameboard/resources/json', 'public/json')
-    .copy('themes/ddos-gameboard/lang/lang.json', 'public/json')
     .copy('themes/ddos-gameboard/resources/img', 'public/img')
     .copy('themes/ddos-gameboard/resources/favicon.ico', 'public/favicon.ico')
     .sourceMaps()

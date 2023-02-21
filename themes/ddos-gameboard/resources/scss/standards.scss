@@ -1,6 +1,90 @@
 a {
   @include linkstates;
 }
+
+h1.page-heading {
+  color: var(--header-color);
+  font-size: 1.5rem;
+  line-height: 2rem;
+  max-width: 1400px;
+  margin: 40px auto 24px;
+  .material-icons {
+    font-size: 1em;
+  }
+  button.material-icons {
+    @include linkstates();
+    color: var(--gray_1);
+  }
+}
+
 hr.divider {
   margin: 24px 0;
+}
+
+.purplecolor {
+  color: var(--purplecolor);
+}
+
+.redcolor {
+  color: var(--redcolor);
+}
+
+.orangecolor {
+  color: var(--orangecolor);
+}
+
+.greencolor {
+  color: var(--greencolor);
+}
+
+
+.bluecolor {
+  color: var(--bluecolor);
+}
+
+.flex_table_header {
+  padding: 0 4px 8px;
+  margin: 0;
+}
+
+.flex-table {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.flex-cel {
+  margin: 6px 0;
+  padding: 2px 12px;
+  border: 1px rgb(255 255 255 / 52%) solid;
+  border-top: none;
+  border-bottom: none;
+}
+
+.flex_title_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  h1, h2, h3, h4, h5 {
+    padding: 0 12px;
+  }
+  button, i {
+    padding: 4px 6px;
+  }
+  .material-icons, button.material-icons {
+    font-size: 1.5em;
+  }
+
+  button.material-icons {
+    @include linkstates();
+    color: var(--gray_1);
+  }
+}
+
+.form-control {
+  background: transparent;
+  color: white;
+  border-bottom: 1px white solid;
 }

@@ -106,7 +106,6 @@ class create_database extends Migration
             $table->text('settings')->nullable();
             $table->dateTime('heartbeat')->nullable();
         });
-
     }
 
     public function down()

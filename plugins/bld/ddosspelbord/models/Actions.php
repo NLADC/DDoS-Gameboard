@@ -233,14 +233,14 @@ class Actions extends Model
                 ->orderBy('start','ASC')
                 ->first();
 
-            if ($action->start != $start) {
+            if ($action && $action->start != $start) {
                 hLog::logLine("D-resetStartTime; party=$party->name; first action [$action->tag]; UPDATE; action start=$action->start");
 
                 $action->start = $start;
                 // trigger the reset job
                 $action->save();
             } else {
-                hLog::logLine("D-resetStartTime; party=$party->name; first action [$action->tag], NO UPDATE needed");
+                if ($action) hLog::logLine("D-resetStartTime; party=$party->name; first action [$action->tag], NO UPDATE needed");
             }
 
         }

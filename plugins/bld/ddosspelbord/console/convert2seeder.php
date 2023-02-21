@@ -5,7 +5,6 @@ namespace bld\ddosspelbord\console;
 use Db;
 use Schema;
 use Illuminate\Console\Command;
-use abuseio\scart\models\Input;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -14,7 +13,7 @@ class convert2seeder extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosspelbord:convert2seeder';
+    protected $name = 'ddosgameboard:convert2seeder';
 
     /**
      * @var string The console command description.
@@ -73,7 +72,7 @@ class convert2seeder extends Command
 
         } else {
 
-            $this->info("Use: abuseio:convert2seeder -t <table> -i y\n-t required; database table name\n-i optional; if y then also index (id) in output" );
+           // $this->info("Use: abuseio:convert2seeder -t <table> -i y\n-t required; database table name\n-i optional; if y then also index (id) in output" );
 
         }
 

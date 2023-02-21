@@ -36,14 +36,7 @@ export class TransactionNotificationController {
             var command = transaction.command;
 
             if (command == 'Countdown') {
-
-                /*
-                setInterval(function() {
-                    location.reload();
-                }.bind(this), 2500);
-                */
-
-                notification = {
+				notification = {
                     type: transaction.type,
                     title: 'Countdown',
                     message: [transaction.message]
@@ -154,7 +147,6 @@ export class TransactionNotificationController {
 
 	static renderNotification(notification) {
 		if (notification.title.includes('Gifcountdown'))
-			//notification.message ='<img src="/img/count-down-movie-countdown.gif">';
             notification.message ='';
 		else {
 			var renderedMsg = '';

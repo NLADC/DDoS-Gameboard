@@ -1,0 +1,45 @@
+columns:
+    enabled:
+        label: Enabled
+        type: switch
+    party:
+        label: 'Party'
+        type: text
+        relation: parties
+        select: name
+        searchable: true
+    name:
+        label: name
+        type: text
+        searchable: true
+    target:
+        label: target
+        type: text
+        searchable: true
+    ipv:
+        label: IPversion
+        type: text
+    type:
+        label: type
+        type: text
+        searchable: true
+    groups:
+        label: group
+        type: text
+        searchable: true
+    measurement:
+        label: 'Measurement'
+        type: text
+        relation: measurement_api
+        select: name
+        searchable: true
+    threshold_orange:
+        label: 'Threshold orange'
+        type: text
+    threshold_red:
+        label: 'Threshold red'
+        type: text
+    updated_at:
+        label: 'Last update'
+        type: datetime
+        format: 'Y-m-d H:i:s'

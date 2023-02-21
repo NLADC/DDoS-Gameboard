@@ -1,5 +1,8 @@
-//This function is for transferring the language strings in /json/lang.json to the Vue components
-window.l = function (stringname) {
+// This function is looping through the language strings in the window.lang object to the Vue components
+// The stings from window.lang reside in /lang/lang.yaml
+
+window.
+    l = function (stringname) {
     //loop through the top level
     if (window.lang) {
         for (let key in window.lang) {
@@ -11,10 +14,10 @@ window.l = function (stringname) {
                     }
                 }
             } else {
-                console.log('set lang not found in lang.json');
+                console.error('set language keyname: "' + stringname + '" not found in lang.yaml');
             }
         }
     } else {
-        console.log('lang.json empty');
+        console.error('window.lang');
     }
 }

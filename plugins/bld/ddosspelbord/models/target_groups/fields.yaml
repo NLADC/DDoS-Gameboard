@@ -1,0 +1,13 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    sortnr:
+        label: Sortnr
+        span: left
+        type: number
+    graphresponsetimeclipvalue:
+        label: Graphresponsetimeclipvalue
+        span: auto
+        type: number

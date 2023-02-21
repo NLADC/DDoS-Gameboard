@@ -12,11 +12,12 @@ use Redirect;
 use Response;
 use Bld\Ddosspelbord\Controllers\Feeds;
 use Bld\Ddosspelbord\Models\Logs;
+use Bld\Ddosspelbord\Controllers\Logs as LogsController;
 use Bld\Ddosspelbord\Models\spelbordusers;
 use Cms\Classes\ComponentBase;
 use bld\ddosspelbord\helpers\hLog;
 use System\Models\File as File;
-use bld\ddosspelbord\helpers\base64Helper as base64Helper;
+use bld\ddosspelbord\helpers\base64Helper;
 
 class ddosspelbord_log extends ComponentBase
 {
@@ -63,6 +64,8 @@ class ddosspelbord_log extends ComponentBase
         $alog = [];
         $result = false;
         $message = '';
+
+        $acceptedfiletypes = LogsController::GetAllowedFiletypes();
 
         try {
             // get gameboard user
@@ -138,7 +141,7 @@ class ddosspelbord_log extends ComponentBase
                                             $rawdata = base64_decode($raw64data);
                                             $filename = $logattachments[$i]['filename'];
                                             $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                                            if (in_array($ext, Config::get('bld.ddosspelbord::acceptedfiletypes'))) {
+                                            if (in_array($ext, $acceptedfiletypes)) {
                                                 $file = (new File)->fromData($rawdata, $filename);
                                                 $logmaxfilesizeinmb = Settings::get('logmaxfilesize');
                                                 $logmaxfilesize = $logmaxfilesizeinmb * 1024 * 1024;
@@ -157,10 +160,10 @@ class ddosspelbord_log extends ComponentBase
                                     }
                                     $hasattachments = true;
                                 }
-                                
+
                                 // get vue code values & create transaction
                                 $alog = ddosspelbord_data::getSpelbordLog($log, $hasattachments);
-                                hlog::logLine("submitLog.alog=" . print_r($alog,true ));
+                                //hlog::logLine("submitLog.alog=" . print_r($alog,true ));
                                 (new Feeds())->createTransaction(TRANSACTION_TYPE_LOG, $alog);
 
                                 $result = true;

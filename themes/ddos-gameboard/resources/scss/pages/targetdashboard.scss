@@ -1,0 +1,60 @@
+#targetsdashboard {
+  padding: 0 40px;
+  h1.page-heading {
+    width: 100%;
+    text-align: center;
+    font-size: 2em;
+  }
+  .chartTitle {
+    color: var(--header-color);
+    font-size: 1.5em;
+  }
+}
+
+.graphwrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  &.hidegraph {
+    max-height: 0;
+    width: 0;
+    flex-basis: 0;
+    .measurements_graph {
+      flex-basis: 0;
+    }
+    .chart-wrapper {
+      flex-basis: 0;
+    }
+  }
+}
+
+#measurements {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
+.measurements_graph {
+  position: relative;
+  margin: 0 auto;
+  flex-flow: wrap;
+  display: flex;
+  padding: 0 0 32px 0;
+  max-width: 109.375em;
+}
+
+.chart-wrapper {
+  flex-basis: 109.375em;
+  width: 100%;
+  height: 22.5em;
+  position: relative;
+  padding: 0;
+  margin: 0 auto;
+  .chart {
+
+  }
+}
+.chartdata {
+  flex-shrink: 1;
+  padding: 24px 24px 0 24px;
+}

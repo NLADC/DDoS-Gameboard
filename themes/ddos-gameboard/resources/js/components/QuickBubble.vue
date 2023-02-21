@@ -14,7 +14,12 @@
     </div>
     <div class="flex">
       <div class="timestamp">{{ this.moment(log.timestamp).format('HH:mm') }}</div>
-      <div class="author">
+      <div class="author"
+           :class="{'purplecolor': this.isPurpleParty(),
+                'redcolor': this.isRedParty(),
+                'bluecolor': this.isBlueParty(),
+       }"
+      >
         {{ log.user.party.name }} - {{ log.user.name }}
       </div>
     </div>
@@ -47,6 +52,24 @@ export default {
     hideError() {
       this.isError = false;
       this.errorMsg = '';
+    },
+
+    isRedParty() {
+      if (this.log.user !== undefined) {
+        return this.log.user.role === "red";
+      }
+    },
+
+    isBlueParty() {
+      if (this.log.user !== undefined) {
+        return this.log.user.role === "blue";
+      }
+    },
+
+    isPurpleParty() {
+      if (this.log.user !== undefined) {
+        return this.log.user.role === "purple";
+      }
     },
 
     toggleAttachmentlinks(remove = false) {

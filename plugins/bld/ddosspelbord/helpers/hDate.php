@@ -12,8 +12,4 @@ class hDate {
         $date->setTimezone(new DateTimeZone('Europe/Amsterdam'));
         return $date->format($format);
     }
-
-
-
-
 }

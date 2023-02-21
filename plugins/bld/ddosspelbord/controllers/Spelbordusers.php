@@ -83,6 +83,7 @@ class Spelbordusers extends Controller
                             $user = User::withTrashed()->find($spelborduser->user_id);
                             if ($user) $user->delete();
                             break;
+
                         case 'sendreset':
                             $user = User::withTrashed()->find($spelborduser->user_id);
                             if ($user) $this->SendResetPasswordEmail($user);
@@ -106,6 +107,42 @@ class Spelbordusers extends Controller
 
         return $this->listRefresh();
     }
+
+    public function onSendreset()
+    {
+        if (
+            ($checkedIds = post('checked')) &&
+            is_array($checkedIds) &&
+            count($checkedIds)
+        ) {
+
+            try {
+
+                foreach ($checkedIds as $userId) {
+                    if (!$spelborduser = \Bld\Ddosspelbord\Models\Spelbordusers::find($userId)) {
+                        continue;
+                    }
+
+                    $user = User::withTrashed()->find($spelborduser->user_id);
+                    if ($user) $this->SendResetPasswordEmail($user);
+
+                }
+
+                Flash::success(Lang::get('bld.ddosspelbord::lang.sendpasswordresetmail_success'));
+
+            } catch (\Exception $err) {
+
+                Flash::error("Error action '$bulkAction': " . $err->getMessage());
+
+            }
+
+        } else {
+            Flash::error(Lang::get('winter.user::lang.users.' . $bulkAction . '_selected_empty'));
+        }
+
+        return $this->listRefresh();
+    }
+
     protected function SendResetPasswordEmail($user) {
         if (!$user || $user->is_guest) {
             throw new ApplicationException(Lang::get(/*A user was not found with the given credentials.*/'winter.user::lang.account.invalid_user'));

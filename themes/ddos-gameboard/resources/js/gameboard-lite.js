@@ -1,13 +1,5 @@
 /**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
+ * Vueless lite version for forgotpassword of other lite pages
  */
 
 require('./bootstrap');
-require('./lang');
-
-import Vue from 'vue';
-window.Event = new Vue();
-
-Vue.prototype.l = window.l;

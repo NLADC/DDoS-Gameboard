@@ -2,7 +2,6 @@
     'plugin' => [
         'name' => 'DDoSspelbord',
         'description' => '',
-
     ],
     'export' => 'Export',
     'import' => 'Import',
@@ -19,6 +18,8 @@
     'timestamp' => 'Timestamp:',
     'user' => 'User:',
     'party' => 'Party:',
-    'sendpasswordresetmail' => 'Send Password reset mail',
+    'sendpasswordresetmail' => 'Send Welcome & Password reset mail',
     'sendpasswordresetmail_conformation' => 'Do you really want to send these users a reset password email',
+    'sendpasswordresetmail_success' => 'Reset mail(s) successfull sent',
+
 ];

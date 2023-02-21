@@ -13,7 +13,6 @@ $this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale()
 ==
 {% set CurrentLanguage = SelectedLanguage %}
 
-
 <!DOCTYPE html>
 <html lang="nl-nl" class="h-full">
 <head>
@@ -33,7 +32,6 @@ $this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale()
     <link href="{{ 'assets/css/fonts.css'|theme }}" rel="stylesheet">
     <link href="{{ 'assets/css/gameboard.css'|theme }}" rel="stylesheet">
     <link href="{{ 'assets/css/theme.css'|theme }}" rel="stylesheet">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"> </script>
     <script type="text/javascript" defer>
         window.gameboard_locale = '{{CurrentLanguage}}';
     </script>

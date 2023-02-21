@@ -16,8 +16,8 @@ class Plugin extends PluginBase {
     public function pluginDetails()
     {
         return [
-            'name'        => 'DDoS Spelbord',
-            'description' => 'DDoS Spelbord',
+            'name'        => 'DDoS gameboard',
+            'description' => 'DDoS gameboard',
             'author'      => 'Anti-DDoS Coalitie',
             'icon'        => 'icon-database',
             'homepage'    => 'https://antiddoscoalitie.nl'
@@ -28,6 +28,9 @@ class Plugin extends PluginBase {
 
         $this->registerConsoleCommand('ddosspelbord.readFeed', 'bld\ddosspelbord\console\readFeed');
         $this->registerConsoleCommand('ddosspelbord.convert2seeder', 'bld\ddosspelbord\console\convert2seeder');
+        $this->registerConsoleCommand('ddosspelbord.measurementAPI', 'bld\ddosspelbord\console\measurementAPI');
+        $this->registerConsoleCommand('ddosspelbord.testMeasurements', 'bld\ddosspelbord\console\testMeasurements');
+        $this->registerConsoleCommand('ddosspelbord.analyzeAPI', 'bld\ddosspelbord\console\analyzeAPI');
 
     }
 
@@ -36,6 +39,7 @@ class Plugin extends PluginBase {
             'bld\ddosspelbord\components\ddosspelbord_attachments' => 'ddosspelbord_attachments',
             'bld\ddosspelbord\components\ddosspelbord_attack' => 'ddosspelbord_attack',
             'bld\ddosspelbord\components\ddosspelbord_data' => 'ddosspelbord_data',
+            'bld\ddosspelbord\components\ddosspelbord_targets' => 'ddosspelbord_targets',
             'bld\ddosspelbord\components\ddosspelbord_login' => 'ddosspelbord_login',
             'bld\ddosspelbord\components\ddosspelbord_feed' => 'ddosspelbord_feed',
             'bld\ddosspelbord\components\ddosspelbord_log' => 'ddosspelbord_log',
@@ -91,6 +95,12 @@ class Plugin extends PluginBase {
                 'order' => 750,
             ],
         ];
+    }
+
+    public function registerSchedule($schedule) {
+
+        $schedule->command('ddosgameboard:measurementAPI measure')->withoutOverlapping()->everyMinute();
+
     }
 
 

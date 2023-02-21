@@ -24,9 +24,29 @@
                         class="focus:outline-none focus:shadow-outline bg-white text-black w-75 "
                         v-model="proxy.log" name="log" rows="2" cols="40"
                         :class="{'border-red-500' : errors[0]}"
-                        placeholder="Write your log here; enter key is submit; shift-enter is newline"></textarea>
+                        placeholder="Write your log here; enter key is submit; shift-enter is newline"
+                        @paste="pasteFromClipboard($event)"
+                    ></textarea>
           <div class="upload-log-attachments">
-            <input type="file" ref="uploadfiles" multiple @change="onAttachmentsChange" name="attachments">
+            <div class="draganddropfiles" @dragover="dragover" @dragleave="dragleave" @drop="drop">
+              <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
+                     class="w-px h-px opacity-0 overflow-hidden absolute" @change="onAttachmentsChange" ref="file">
+              <label for="assetsFieldHandle" class="block cursor-pointer">
+                <div>
+                  <span v-html="l('theme.dropfilesor')"></span> <span class="underline"><span
+                    v-html="l('theme.clickhere')"></span></span>
+                </div>
+              </label>
+              <ul id="attachmentoverview" v-if="showAttachmentoverview" class="mt-4" v-cloak>
+                <li class="text-sm p-1" v-for="file in proxy.attachments">
+                  {{ file.filename }}
+                </li>
+              </ul>
+              <a v-if="showAttachmentoverview" class="ml-2" type="button" @click="removeattachments()"
+                 title="Remove file"><span class="underline" v-html="l('theme.removeall')">Remove all</span></a>
+
+            </div>
+
           </div>
           <span class="input-error">{{ errors[0] }}</span>
         </validation-provider>
@@ -62,28 +82,28 @@
       <i v-on:click="showCurrentAttacks = false;" v-if="showCurrentAttacks" id="loadCurrentattacks"
          title="Load current attacks"
          class="material-icons">unfold_less</i>
-      <input id="AttackName" v-model="attackproxy.name" :disabled="stopWatchisRecording"
-             :class="{loaded: stopWatchisRecording}" type="search">
+      <input id="AttackName" v-model="attackproxy.name" :disabled="stopwatchisRecording"
+             :class="{loaded: stopwatchisRecording}" type="search">
       <div class="buttons">
         <i class="recordicon"
-           :class="{ recording: stopWatchisRecording }"
-           @click="startStopwatch()">
+           :class="{ recording: stopwatchisRecording }"
+           @click="performStopwatchAction('start')">
         </i>
         <i class="material-icons pause"
-           :class="{ disabled: !stopWatchisRecording }"
+           :class="{ disabled: !stopwatchisRecording }"
            v-if="!stopwatchPaused"
-           @click="!!stopWatchisRecording && pauseStopwatch()">
+           @click="!!stopwatchisRecording && performStopwatchAction('pause')">
           pause
         </i>
         <i class="material-icons play"
-           :class="{ disabled: !stopWatchisRecording }"
+           :class="{ disabled: !stopwatchisRecording }"
            v-if="stopwatchPaused"
-           @click="!!stopWatchisRecording && resumeStopwatch()">
+           @click="!!stopwatchisRecording && performStopwatchAction('resume')">
           play_arrow
         </i>
         <i class="material-icons stop"
-           :class="{ disabled: !stopWatchisRecording }"
-           @click="!!stopWatchisRecording && stopStopwatch()">
+           :class="{ disabled: !stopwatchisRecording }"
+           @click="!!stopwatchisRecording && performStopwatchAction('stop')">
           stop
         </i>
         <i class="material-icons refresh" @click="initStopwatch()">refresh</i>
@@ -106,8 +126,10 @@ export default {
   },
 
   data: () => ({
+    filelist: [],
     isError: false,
     errorMsg: '',
+    showAttachmentoverview: false,
     proxy: {
       id: 0,
       log: '',
@@ -127,11 +149,19 @@ export default {
     activeLogs: {},
     showStopwatch: false,
     stopwatchPaused: false,
-    stopWatchisRecording: false,
+    stopwatchisRecording: false,
     showCurrentAttacks: false,
+    maxfilesize: 12288 * 1024, // 12mb fallback when if global setting check below fails
+    maxfiles: 10,
+    acceptedExtensions: ["png", "jpg", "gif", "svg", "txt", "mp4", "csv", "gif", "json", "pdf"],
   }),
 
   mounted() {
+    // Getting global settings from the backend, otherwise remain as det in the data in this Vue component.
+    if (this.logmaxfiles) this.maxfiles = this.logmaxfiles;
+    if (this.logmaxfilesize) this.maxfilesize = this.logmaxfilesize
+    if (this.acceptedFileTypes && Array.isArray(this.acceptedFileTypes)) this.acceptedExtensions = this.acceptedFileTypes;
+
     setInterval(this.timer.bind(this), 1000);
   },
 
@@ -160,7 +190,7 @@ export default {
     },
     activeLogs: {
       handler() {
-        this.scrollBottomTImeout();
+        this.scrollBottomTimeout();
       }
     },
     activeattacks: {
@@ -171,77 +201,138 @@ export default {
   },
 
   methods: {
-
-    onAttachmentsChange(e) {
-      // Fallback values when global are not loaded
-      var maxfilesize = 12288 * 1024; // 12mb fallback when if global setting check below fails
-      var maxfiles = 10;
-      var acceptedExtensions = ["png", "jpg", "gif", "svg",  "txt", "mp4", "csv", "gif", "json", "pdf", "zip"];
-      if (this.logmaxfilesize) {
-        maxfilesize = this.logmaxfilesize;
-      }
-
-      if (this.logmaxfiles) {
-        maxfiles = this.logmaxfiles;
-      }
-
-      if (this.acceptedFileTypes && this.acceptedFileTypes.constructor === Array) {
-        acceptedExtensions = this.acceptedFileTypes;
-      }
-
-      this.proxy.attachments = e.target.files || e.dataTransfer.files;
-      if (!this.proxy.attachments.length)
-        return;
-      if (this.proxy.attachments.length > maxfiles) {
-        this.removeattachments();
-        alert("Quicklog: Max " + maxfiles + " attachments allowed");
-      }
-      for (let i = 0; i < Object.keys(this.proxy.attachments).length; i++) {
-        let filetype = this.proxy.attachments[i].name.split('.').pop().toLowerCase();
-        if (acceptedExtensions.indexOf(filetype) !== -1) {
-          if (this.proxy.attachments[i].size > maxfilesize) {
-            e.preventDefault();
-            alert('File: ' + this.proxy.attachments[i].name + ' too big (> ' + Math.round(maxfilesize / 1024 / 1024) + 'mb )');
-            this.removeattachments();
-            return;
-          } else {
-            this.createattachments(this.proxy.attachments[i], i);
-          }
-        } else {
-          e.preventDefault();
-          alert('File: ' + this.proxy.attachments[i].name + ' type is now allowed. Accapted filtetypes are: ' + acceptedExtensions);
-          this.removeattachments();
-          return;
-        }
-
-      }
+    /**
+     * This function helps toggle the html when the drag and drop field is empty or filled with files, it also signals the vue to update.
+     */
+    hasProxyAttachments() {
+      this.showAttachmentoverview = Object.keys(this.proxy.attachments).length > 0;
     },
 
+    pasteFromClipboard(event) {
+      // Don't paste the filename in the log
+      event.preventDefault();
+
+      if (event.clipboardData == false) {
+        if (typeof (event.callback) == "function") {
+          console.error('Paste event: No clipboard data')
+          event.callback(undefined);
+        }
+      }
+      let clipboarditems = event.clipboardData.files;
+
+      if (clipboarditems == undefined) {
+        if (typeof (event.callback) == "function") {
+          event.callback(undefined);
+          console.error('pastevent: clipboarditems are undifined')
+        }
+      }
+
+      this.onAttachmentsChange(event, clipboarditems);
+    },
+
+    onAttachmentsChange(event, files) {
+      // Update Vue html
+      this.hasProxyAttachments();
+
+      if (!files) return;
+      // If there are already proxy attachments don't overwrite their index.
+      let highestindex = Object.keys(this.proxy.attachments).length || 0;
+      if (highestindex + files.length > this.maxfiles) {
+        files = [];
+        alert("Quicklog: Max " + this.maxfiles + " attachments allowed");
+        return;
+      } else {
+        for (let i = 0; i < Object.keys(files).length; i++) {
+          let filetype = files[i].name.split('.').pop().toLowerCase();
+          if (this.acceptedExtensions.indexOf(filetype) !== -1) {
+            if (files[i].size > this.maxfilesize) {
+              alert('File: ' + files[i].name + ' too big (> ' + Math.round(this.maxfilesize / 1024 / 1024) + 'mb )');
+              return;
+            } else {
+              // If all is set right then we can finally create an attachment in the attachment
+              this.createattachments(files[i], i + highestindex);
+            }
+          } else {
+            alert('File: ' + files[i].name + ' type is not allowed. Accepted filetypes are: ' + this.acceptedExtensions);
+            return;
+          }
+        }
+      }
+      // For the v-if on the #showattachments <ul>
+      this.hasProxyAttachments();
+    },
+
+    /**
+     * There are only 2 thing we want to save, the name and its data, the rest is not of interest or kept in the log.
+     * @param file = file type from a filelist
+     * @param i = the index where it must be added to the proxy.attachments very important if there are already attachments in there
+     */
     createattachments(file, i) {
       //var attachments = new attachments();
       var reader = new FileReader();
 
-      reader.onload = (e) => {
-        if (this.proxy.attachments[i]) {
-          this.proxy.attachments[i]['rawdata'] = e.target.result;
+      this.proxy.attachments[i] = {};
+      reader.onload = (event) => {
+        if (this.filelist) {
+          this.proxy.attachments[i]['rawdata'] = event.target.result;
         }
       };
       reader.readAsDataURL(file);
       this.proxy.attachments[i]['filename'] = file.name;
+      this.hasProxyAttachments();
     },
 
+
     removeattachments: function () {
-      this.$refs.uploadfiles.value = null;
+      this.filelist = [];
+      this.proxy.attachments = {};
+      // For the v-if on the #showattachments <ul>
+      this.hasProxyAttachments();
+    },
+
+    remove(i) {
+      this.filelist.splice(i, 1);
+      // For the v-if on the #showattachments <ul>
+      this.hasProxyAttachments();
+    },
+
+    dragover(event) {
+      event.preventDefault();
+      // Add some visual fluff to show the user can drop its files
+      if (!event.currentTarget.classList.contains('dragover')) {
+        event.currentTarget.classList.remove('dragleave');
+        event.currentTarget.classList.add('dragover');
+      }
+    },
+    dragleave(event) {
+      // Clean up
+      event.currentTarget.classList.add('dragleave');
+      event.currentTarget.classList.remove('dragover');
+    },
+    drop(event) {
+      event.preventDefault();
+      let files = event.dataTransfer.files;
+      this.onAttachmentsChange(event, files); // Trigger the onAttachmentsChange event manually
+      // Clean up
+      event.currentTarget.classList.add('dragleave');
+      event.currentTarget.classList.remove('dragover');
+    },
+
+    toggleAttachmentlinks(remove = false) {
+      var attachmentlinks = document.querySelectorAll('a.attachmentlink');
+      for (let i = 0; i < Object.keys(attachmentlinks).length; i++) {
+        attachmentlinks[i].classList.toggle('disabled', !remove);
+      }
     },
 
     timer() {
       this.now = this.proxy.timestamp = this.moment().format('HH:mm');
     },
 
-    handleEnter(e) {
-      if (!e.shiftKey) {
+    handleEnter(event) {
+      if (!event.shiftKey) {
         this.submitForm();
-        e.preventDefault();
+        event.preventDefault();
       }
     },
 
@@ -257,8 +348,6 @@ export default {
       var logs = [];
       Object.entries(this.logs).forEach(function (log, idx) {
         log = log[1];
-        //console.debug('log.user='+log.user.name+', user='+this.user.name);
-        //if (log.user.name == this.user.name)
         logs.push(log);
       }.bind(this));
 
@@ -273,8 +362,6 @@ export default {
       var attacks = [];
       Object.entries(this.attacks).forEach(function (attack, idx) {
         attack = attack[1];
-        //console.debug('attack.user='+attack.user.name+', user='+this.user.name);
-        //if (attack.user.name == this.user.name)
         attacks.push(attack);
       }.bind(this));
 
@@ -288,7 +375,7 @@ export default {
       var quicklog = document.getElementById('idQuickLogBox');
       if (quicklog) quicklog.scrollTop = quicklog.scrollHeight;
     },
-    scrollBottomTImeout() {
+    scrollBottomTimeout() {
       // note: after 1 sec, else html not ready
       setTimeout(this.scrollBottom, 1000);
     },
@@ -316,109 +403,102 @@ export default {
       };
     },
 
+    /**
+     * this function will fill the stopwatch name field with the action that is currenlty assigned to users party
+     */
     initStopwatch() {
-      this.resetStopWatch();
+      this.performStopwatchAction('reset');
       if (this.showStopwatch) {
-        if (this.parties && Object.keys(this.parties).length > 0
-            && this.user && Object.keys(this.user).length > 0) {
-          let parties = Object.values(this.parties);
-          for (let i = 0; i < Object.keys(parties).length; i++) {
-            if (parties[i].id === this.user.party_id) {
-              let actions = Object.values(parties[i].actions);
-              let now = this.moment();
-              for (let i = 0; i < Object.keys(actions).length; i++) {
-                if (actions[i].start.diff(now) > 0) {
-                  let previ = i - 1;
-                  if (previ < 0) {
-                    this.attackproxy.name = '';
-                  } else {
-                    this.attackproxy.name = actions[previ].name;
-                  }
-                  break;
-                }
-              }
-            }
-          }
+        const party = Object.values(this.parties || {}).find(p => p.id === this.user.party_id);
+        if (party) {
+          const actions = Object.values(party.actions || {});
+          const now = this.moment();
+          const previousAction = actions.slice().reverse().find(a => a.start.diff(now) < 0);
+          this.attackproxy.name = previousAction ? previousAction.name : '';
         }
+      }
+    }
+    ,
 
+    performStopwatchAction(action) {
+      switch (action) {
+        case 'start':
+          if (!this.stopwatchisRecording && !this.attackproxy.name) {
+            this.triggerError('Empty attack name - please write something');
+            return;
+          } else {
+            this.attackproxy.status = "started";
+            this.stopwatchisRecording = true;
+            this.handleAttackChanges();
+          }
+          break;
+        case
+        'pause':
+          if (this.stopwatchisRecording) {
+            this.stopwatchPaused = true;
+            this.attackproxy.status = "paused";
+            this.handleAttackChanges();
+          }
+          break;
+        case
+        'resume':
+          if (this.stopwatchisRecording) {
+            this.stopwatchPaused = false;
+            this.attackproxy.status = "resumed";
+            this.handleAttackChanges();
+          }
+          break;
+        case
+        'stop':
+          if (this.stopwatchisRecording) {
+            this.attackproxy.status = "stopped";
+            this.stopwatchPaused = false;
+            this.handleAttackChanges();
+            this.performStopwatchAction('reset');
+            this.initStopwatch();
+          }
+          break;
+        case
+        'reset':
+          this.attackproxy.id = '';
+          this.attackproxy.name = '';
+          this.attackproxy.status = '';
+          this.attackproxy.starttime = '';
+          this.attackproxy.endtime = '';
+          this.stopwatchPaused = false;
+          this.stopwatchisRecording = false;
+          break;
       }
     },
 
-    startStopwatch() {
-      if (!this.attackproxy.name) {
-        this.triggerError('Empty attack name - please write something');
-      } else if (!this.stopWatchisRecording) {
-        this.attackproxy.status = "started";
-        this.stopWatchisRecording = true;
-        this.handleAttackChanges();
-      }
-    },
-
-    pauseStopwatch() {
-      if (!this.attackproxy.name) {
-        this.triggerError('Empty attack name - please write something');
-      } else if (this.stopWatchisRecording) {
-        let name = this.attackproxy.name;
-        this.stopwatchPaused = true;
-        this.attackproxy.status = "paused";
-        this.handleAttackChanges();
-      }
-    },
-
-    resumeStopwatch() {
-      if (!this.attackproxy.name) {
-        this.triggerError('Empty attack name - please write something');
-      } else if (this.stopWatchisRecording) {
-        this.stopwatchPaused = false;
-        this.attackproxy.status = "resumed";
-        this.handleAttackChanges();
-      }
-    },
-
-    stopStopwatch() {
-      if (!this.attackproxy.name) {
-        this.triggerError('Empty attack name - please write something');
-      } else if (this.stopWatchisRecording) {
-        this.attackproxy.status = "stopped";
-        this.stopwatchPaused = false;
-        this.handleAttackChanges();
-        this.resetStopWatch();
-        this.initStopwatch();
-      }
-    },
-
-    resetStopWatch() {
-      this.attackproxy.id = '';
-      this.attackproxy.name = '';
-      this.attackproxy.status = '';
-      this.attackproxy.starttime = '';
-      this.attackproxy.endtime = '';
-      this.stopwatchPaused = false;
-      this.stopWatchisRecording = false;
-    },
-
+    /**
+     * To load an attack that has already been created
+     * @param attack
+     */
     loadAttack(attack) {
-      this.attackproxy.id = attack.id;
-      this.attackproxy.name = attack.name;
-      this.attackproxy.status = attack.status;
-      this.attackproxy.starttime = attack.created_at;
+      const {id, name, status, created_at} = attack;
+      this.attackproxy = {id, name, status, starttime: created_at};
+
       this.stopwatchPaused = false;
-      this.stopWatchisRecording = true;
-      if (this.attackproxy.status.includes("started") || this.attackproxy.status.includes("resumed")) {
-        this.stopWatchisRecording = true;
+
+      if (status.includes("started") || status.includes("resumed")) {
+        this.stopwatchisRecording = true;
         this.stopwatchPaused = false;
-      }
-      if (this.attackproxy.status.includes("paused")) {
-        this.stopWatchisRecording = true;
+      } else if (status.includes("paused")) {
+        this.stopwatchisRecording = true;
         this.stopwatchPaused = true;
-      }
-      if (this.attackproxy.status.includes("stopped")) {
-        this.stopWatchisRecording = false;
+      } else if (status.includes("stopped")) {
+        this.stopwatchisRecording = false;
         this.stopwatchPaused = false;
       }
-      this.toggleAttackClasses(attack.id);
+
+      this.toggleAttackClasses(id);
     },
 
+    /**
+     * this will toggle a loaded class in the input field for a attack name
+     * @param attackid
+     */
     toggleAttackClasses(attackid) {
       try {
         let currentattacks = document.querySelectorAll('.currentattack');
@@ -504,6 +584,7 @@ export default {
     },
     async submitForm() {
       this.hideError();
+
       if (this.proxy.log) {
         var tmp = {
           _token: this.csrf,
@@ -551,17 +632,9 @@ export default {
       }
       this.removeattachments();
     },
-    toggleAttachmentlinks(remove = false) {
-      var attachmentlinks = document.querySelectorAll('a.attachmentlink');
-      for (let i = 0; i < Object.keys(attachmentlinks).length; i++) {
-        if (remove) {
-          attachmentlinks[i].classList.remove('disabled');
-        } else {
-          attachmentlinks[i].classList.add('disabled');
-        }
-      }
-    },
-  },
+
+  }
+  ,
 
 }
 </script>

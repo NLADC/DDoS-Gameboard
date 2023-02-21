@@ -1,0 +1,55 @@
+fields:
+    enabled:
+        type: switch
+        span: full
+        default: true
+    party_id:
+        label: Party
+        span: auto
+        type: dropdown
+    name:
+        label: Name
+        span: auto
+        type: text
+    target:
+        label: Target (ip or hostname)
+        span: left
+        type: text
+    ipv:
+        label: IPversion
+        span: auto
+        type: dropdown
+        default: ipv4
+        options:
+            4: IPv4
+            6: IPv6
+    groups:
+        label: Group
+        span: auto
+        type: dropdown
+    type:
+        label: Type
+        span: left
+        type: dropdown
+        default: server
+        options:
+            server: 'Server'
+            dns: 'DNS name service'
+            smtp: 'SMTP (mail) service'
+    measurement_api_id:
+        label: 'Measurement API'
+        type: dropdown
+        span: auto
+        dependsOn: type
+    threshold_orange:
+        label: 'Threshold orange'
+        span: left
+        type: text
+        comment: 'in milliseconds'
+    threshold_red:
+        label: 'Threshold red'
+        span: auto
+        comment: 'in milliseconds'
+
+
+
