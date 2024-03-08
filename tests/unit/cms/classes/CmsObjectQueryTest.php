@@ -27,7 +27,7 @@ class CmsObjectQueryTest extends TestCase
         $this->assertCount(1, $pages->all());
 
         $page = $pages->first();
-        $this->assertEquals('/with-components', $page->url);
+        $this->assertEquals('/with-scheduler', $page->url);
     }
 
     public function testWithComponent()
@@ -41,7 +41,7 @@ class CmsObjectQueryTest extends TestCase
 
     public function testWithComponentCallback()
     {
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Archive.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Archive.php';
 
         $pages = Page::withComponent('testArchive', function ($component) {
             return $component->property('posts-per-page') == '69';
@@ -83,7 +83,7 @@ class CmsObjectQueryTest extends TestCase
             "optional-short-php-tags",
             "throw-php",
             "with-component",
-            "with-components",
+            "with-scheduler",
             "with-content",
             "with-layout",
             "with-partials",

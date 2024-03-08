@@ -7,7 +7,7 @@ Zonder watcher veranderd er niets aan de SCSS, Vue, Js, Assets enzovoort... wann
 Bij elke save in een bestand zal deze gecompiled en overgezet worden naar de public map. Nu kun je beginnen met developen vanuit de hoofdmap.
 
 ```shell
-npm run watch-poll
+ npm run watch-poll
 ```
 
 ### Webpack
@@ -109,8 +109,8 @@ Vanuit "layous\ddos-gameboard.htm" wordt met het onderstaande stukje HTML alle v
 Vue componenten bevinden zich in /resources/js/components/ en worden ingeladen in het gameboard.js op deze manier:
 
 ```js
-Vue.component('timeline', require('./components/Timeline.vue').default);
-Vue.component('party', require('./components/Party.vue').default);
+Vue.component('timeline', require('./scheduler/Timeline.vue').default);
+Vue.component('party', require('./scheduler/Party.vue').default);
 ```
 
 Zoals al eerder genoemd, kun je via de home.htm variabelen inladen door ze mee te geven als attribute:

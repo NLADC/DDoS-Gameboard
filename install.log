@@ -1,0 +1,89 @@
+[2022-09-09 11:05:12+02:00] INFO: Installer API request received {"method":"GET","endpoint":"checkPhpExtensions"} 
+[2022-09-09 11:05:12+02:00] INFO: Installer API request received {"method":"GET","endpoint":"checkApi"} 
+[2022-09-09 11:05:12+02:00] INFO: Installer API request received {"method":"GET","endpoint":"checkPhpVersion"} 
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "curl" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Trying Winter CMS API  
+[2022-09-09 11:05:12+02:00] NOTICE: Compared PHP version {"installed":"8.1.2","needed":"8.0.2"} 
+[2022-09-09 11:05:12+02:00] NOTICE: PHP version requirement met.  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "json" extension  
+[2022-09-09 11:05:12+02:00] INFO: Winter API request {"method":"GET","uri":"ping"} 
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "pdo" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "zip" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "mbstring" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "fileinfo" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "openssl" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "gd" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "filter" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "hash" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Checking PHP "dom" extension  
+[2022-09-09 11:05:12+02:00] NOTICE: Required PHP extensions are installed.  
+[2022-09-09 11:05:13+02:00] NOTICE: Response received from Winter CMS API {"response":"pong"} 
+[2022-09-09 11:05:13+02:00] NOTICE: Winter CMS API connection successful.  
+[2022-09-09 11:06:10+02:00] INFO: Installer API request received {"method":"GET","endpoint":"checkWriteAccess"} 
+[2022-09-09 11:06:10+02:00] NOTICE: Current working directory is writable.  
+[2022-09-09 11:06:10+02:00] INFO: Installer API request received {"method":"POST","endpoint":"checkDatabase"} 
+[2022-09-09 11:06:10+02:00] NOTICE: Check database connection  
+[2022-09-09 11:06:10+02:00] NOTICE: Found 38 table(s) {"tables":"backend_access_log, backend_user_groups, backend_user_preferences, backend_user_roles, backend_user_throttle, backend_users, backend_users_groups, bld_ddosspelbord_actions, bld_ddosspelbord_logs, bld_ddosspelbord_parties, bld_ddosspelbord_roles, bld_ddosspelbord_transactions, bld_ddosspelbord_users, cache, cms_theme_data, cms_theme_logs, cms_theme_templates, deferred_bindings, failed_jobs, jobs, migrations, sessions, system_event_logs, system_files, system_mail_layouts, system_mail_partials, system_mail_templates, system_parameters, system_plugin_history, system_plugin_versions, system_request_logs, system_revisions, system_settings, user_groups, user_throttle, users, users_groups, winter_user_mail_blockers"} 
+[2022-09-09 11:06:10+02:00] ERROR: Database is not empty. {"code":500,"exception":null} 
+[2022-09-09 11:07:20+02:00] INFO: Installer API request received {"method":"POST","endpoint":"checkDatabase"} 
+[2022-09-09 11:07:20+02:00] INFO: Installer API request received {"method":"GET","endpoint":"checkWriteAccess"} 
+[2022-09-09 11:07:20+02:00] NOTICE: Check database connection  
+[2022-09-09 11:07:20+02:00] NOTICE: Current working directory is writable.  
+[2022-09-09 11:07:20+02:00] NOTICE: Found 0 table(s) {"tables":""} 
+[2022-09-09 11:07:20+02:00] NOTICE: Database connection established and verified empty  
+[2022-09-09 11:07:20+02:00] INFO: Installer API request received {"method":"POST","endpoint":"downloadWinter"} 
+[2022-09-09 11:07:20+02:00] NOTICE: Try downloading Winter CMS archive  
+[2022-09-09 11:07:20+02:00] NOTICE: Downloading Winter ZIP via cURL {"url":"https://github.com/wintercms/winter/archive/refs/heads/1.2.zip"} 
+[2022-09-09 11:07:22+02:00] NOTICE: Winter CMS ZIP file downloaded {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/winter.zip"} 
+[2022-09-09 11:07:22+02:00] INFO: Installer API request received {"method":"POST","endpoint":"extractWinter"} 
+[2022-09-09 11:07:22+02:00] NOTICE: Begin extracting Winter CMS archive  
+[2022-09-09 11:07:32+02:00] NOTICE: Move subfoldered files into position {"subfolder":"winter-1.2/"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Remove ZIP subfolder {"subfolder":"winter-1.2/"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Make artisan command-line tool executable {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/artisan"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Remove Composer Merge plugin from composer.json if found  
+[2022-09-09 11:07:32+02:00] NOTICE: Found merge plugin in required packages - removing  
+[2022-09-09 11:07:32+02:00] NOTICE: Found merge plugin config in "extra" config definition - removing  
+[2022-09-09 11:07:32+02:00] INFO: Installer API request received {"method":"POST","endpoint":"lockDependencies"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Create Composer instance  
+[2022-09-09 11:07:32+02:00] NOTICE: Set memory limit to 1.5GB  
+[2022-09-09 11:07:32+02:00] NOTICE: Set work directory for Composer {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Create home/cache directory for Composer {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/.composer"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Set home/cache directory for Composer {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/.composer"} 
+[2022-09-09 11:07:32+02:00] NOTICE: Run Composer "update" command - generate only a lockfile  
+[2022-09-09 11:07:36+02:00] NOTICE: Locked Composer packages {"numPackages":112,"lockFile":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/composer.lock"} 
+[2022-09-09 11:07:36+02:00] INFO: Installer API request received {"method":"POST","endpoint":"installDependencies"} 
+[2022-09-09 11:07:36+02:00] NOTICE: Create Composer instance  
+[2022-09-09 11:07:36+02:00] NOTICE: Set memory limit to 1.5GB  
+[2022-09-09 11:07:36+02:00] NOTICE: Set work directory for Composer {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms"} 
+[2022-09-09 11:07:36+02:00] NOTICE: Set home/cache directory for Composer {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/.composer"} 
+[2022-09-09 11:07:36+02:00] NOTICE: Run Composer "install" command - install from lockfile  
+[2022-09-09 11:07:55+02:00] NOTICE: Installed Composer packages {"numPackages":112} 
+[2022-09-09 11:07:55+02:00] INFO: Installer API request received {"method":"POST","endpoint":"setupConfig"} 
+[2022-09-09 11:07:55+02:00] NOTICE: Booting Laravel framework  
+[2022-09-09 11:07:55+02:00] NOTICE: Loading autoloader  
+[2022-09-09 11:07:57+02:00] NOTICE: Bootstrapping kernel  
+[2022-09-09 11:07:57+02:00] NOTICE: Rewriting config {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/config/app.php"} 
+[2022-09-09 11:07:57+02:00] NOTICE: Rewriting config {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/config/cms.php"} 
+[2022-09-09 11:07:57+02:00] NOTICE: Rewriting config {"path":"/media/psf/sharedfolder/ddos-gameboard/.wintercms/config/database.php"} 
+[2022-09-09 11:07:57+02:00] NOTICE: Flushing OPCache  
+[2022-09-09 11:07:58+02:00] INFO: Installer API request received {"method":"POST","endpoint":"runMigrations"} 
+[2022-09-09 11:07:58+02:00] NOTICE: Booting Laravel framework  
+[2022-09-09 11:07:58+02:00] NOTICE: Loading autoloader  
+[2022-09-09 11:07:58+02:00] NOTICE: Bootstrapping kernel  
+[2022-09-09 11:07:58+02:00] NOTICE: Running artisan "config:clear" command  
+[2022-09-09 11:07:58+02:00] NOTICE: Command finished. {"output":"\n   INFO  Configuration cache cleared successfully.  \n\n"} 
+[2022-09-09 11:07:58+02:00] NOTICE: Running database migrations  
+[2022-09-09 11:07:59+02:00] NOTICE: Command finished. {"output":"Migrating application and plugins...\nMigration table created\nSystem\n   INFO  Running migrations.  \n\n  2013_10_01_000001_Db_Deferred_Bindings ........................... 12ms DONE\n  2013_10_01_000002_Db_System_Files ................................. 5ms DONE\n  2013_10_01_000003_Db_System_Plugin_Versions ....................... 2ms DONE\n  2013_10_01_000004_Db_System_Plugin_History ........................ 4ms DONE\n  2013_10_01_000005_Db_System_Settings .............................. 2ms DONE\n  2013_10_01_000006_Db_System_Parameters ............................ 3ms DONE\n  2013_10_01_000007_Db_System_Add_Disabled_Flag ..................... 1ms DONE\n  2013_10_01_000008_Db_System_Mail_Templates ........................ 3ms DONE\n  2013_10_01_000009_Db_System_Mail_Layouts .......................... 1ms DONE\n  2014_10_01_000010_Db_Jobs ......................................... 3ms DONE\n  2014_10_01_000011_Db_System_Event_Logs ............................ 2ms DONE\n  2014_10_01_000012_Db_System_Request_Logs .......................... 1ms DONE\n  2014_10_01_000013_Db_System_Sessions .............................. 3ms DONE\n  2015_10_01_000014_Db_System_Mail_Layout_Rename .................... 2ms DONE\n  2015_10_01_000015_Db_System_Add_Frozen_Flag ....................... 1ms DONE\n  2015_10_01_000016_Db_Cache ........................................ 2ms DONE\n  2015_10_01_000017_Db_System_Revisions ............................. 5ms DONE\n  2015_10_01_000018_Db_FailedJobs ................................... 1ms DONE\n  2016_10_01_000019_Db_System_Plugin_History_Detail_Text ........... 88ms DONE\n  2016_10_01_000020_Db_System_Timestamp_Fix ........................ 18ms DONE\n  2017_08_04_121309_Db_Deferred_Bindings_Add_Index_Session .......... 1ms DONE\n  2017_10_01_000021_Db_System_Sessions_Update ....................... 1ms DONE\n  2017_10_01_000022_Db_Jobs_FailedJobs_Update ....................... 4ms DONE\n  2017_10_01_000023_Db_System_Mail_Partials ......................... 1ms DONE\n  2017_10_23_000024_Db_System_Mail_Layouts_Add_Options_Field ........ 1ms DONE\n  2021_10_01_000025_Db_Add_Pivot_Data_To_Deferred_Bindings .......... 1ms DONE\n\nBackend\n   INFO  Running migrations.  \n\n  2013_10_01_000001_Db_Backend_Users ................................ 9ms DONE\n  2013_10_01_000002_Db_Backend_User_Groups .......................... 2ms DONE\n  2013_10_01_000003_Db_Backend_Users_Groups ......................... 3ms DONE\n  2013_10_01_000004_Db_Backend_User_Throttle ........................ 4ms DONE\n  2014_01_04_000005_Db_Backend_User_Preferences ..................... 3ms DONE\n  2014_10_01_000006_Db_Backend_Access_Log ........................... 1ms DONE\n  2014_10_01_000007_Db_Backend_Add_Description_Field ................ 2ms DONE\n  2015_10_01_000008_Db_Backend_Add_Superuser_Flag ................... 4ms DONE\n  2016_10_01_000009_Db_Backend_Timestamp_Fix ........................ 6ms DONE\n  2017_10_01_000010_Db_Backend_User_Roles ........................... 5ms DONE\n  2018_12_16_000011_Db_Backend_Add_Deleted_At ....................... 0ms DONE\n\nCms\n   INFO  Running migrations.  \n\n  2014_10_01_000001_Db_Cms_Theme_Data ............................... 3ms DONE\n  2016_10_01_000002_Db_Cms_Timestamp_Fix ............................ 2ms DONE\n  2017_10_01_000003_Db_Cms_Theme_Logs ............................... 5ms DONE\n  2018_11_01_000001_Db_Cms_Theme_Templates .......................... 4ms DONE\n\nSeeded System \nSeeded Backend \nWinter.Demo\n - v1.0.1:  First version of Demo\n\n\\Backend\\Database\\Seeds\\DatabaseSeeder reported:\n - The following password has been automatically generated for the \"admin\" account: eXzU0AxlvhHnzpSaVU2P7e\n"} 
+[2022-09-09 11:07:59+02:00] INFO: Installer API request received {"method":"POST","endpoint":"createAdmin"} 
+[2022-09-09 11:07:59+02:00] NOTICE: Booting Laravel framework  
+[2022-09-09 11:07:59+02:00] NOTICE: Loading autoloader  
+[2022-09-09 11:07:59+02:00] NOTICE: Bootstrapping kernel  
+[2022-09-09 11:07:59+02:00] NOTICE: Finding initial admin account  
+[2022-09-09 11:07:59+02:00] NOTICE: Changing admin account to details provided in installation  
+[2022-09-09 11:07:59+02:00] INFO: Installer API request received {"method":"POST","endpoint":"cleanUp"} 
+[2022-09-09 11:07:59+02:00] NOTICE: Removing installation files  
+[2022-09-09 11:07:59+02:00] NOTICE: Removing temporary installation folders  
+[2022-09-09 11:08:00+02:00] NOTICE: Removing core development files  
+[2022-09-09 11:08:00+02:00] NOTICE: Moving files from temporary work directory to final installation path {"workDir":"/media/psf/sharedfolder/ddos-gameboard/.wintercms","installDir":"/media/psf/sharedfolder/ddos-gameboard"} 
+[2022-09-09 11:08:00+02:00] NOTICE: Removing work directory  
+[2022-09-09 11:08:00+02:00] NOTICE: Installation complete!  

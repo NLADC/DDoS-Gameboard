@@ -13,11 +13,11 @@ class ControllerTest extends TestCase
         Model::clearBootedModels();
         Model::flushEventListeners();
 
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Archive.php';
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Post.php';
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/MainMenu.php';
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/ContentBlock.php';
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Comments.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Archive.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Post.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/MainMenu.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/ContentBlock.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Comments.php';
         include_once base_path() . '/tests/fixtures/plugins/winter/tester/classes/Users.php';
     }
 
@@ -304,7 +304,7 @@ class ControllerTest extends TestCase
         $details = $component->componentDetails();
 
         $content = <<<ESC
-<div>LAYOUT CONTENT<p>This page uses components.</p>
+<div>LAYOUT CONTENT<p>This page uses scheduler.</p>
     <h3>Lorum ipsum</h3>
     <p>Post Content #1</p>
     <h3>La Playa Nudista</h3>
@@ -320,11 +320,11 @@ ESC;
 
     public function testComponentAliases()
     {
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Archive.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Archive.php';
 
         $theme = Theme::load('test');
         $controller = new Controller($theme);
-        $response = $controller->run('/with-components')->getContent();
+        $response = $controller->run('/with-scheduler')->getContent();
         $page = self::getProtectedProperty($controller, 'page');
 
         $this->assertArrayHasKey('firstAlias', $page->components);
@@ -334,7 +334,7 @@ ESC;
         $component2 = $page->components['secondAlias'];
 
         $content = <<<ESC
-<div>LAYOUT CONTENT<p>This page uses components.</p>
+<div>LAYOUT CONTENT<p>This page uses scheduler.</p>
     <h3>Lorum ipsum</h3>
     <p>Post Content #1</p>
     <h3>La Playa Nudista</h3>
@@ -395,7 +395,7 @@ ESC;
         $details = $component->componentDetails();
 
         $content = <<<ESC
-<div>LAYOUT CONTENT<p>This page uses components.</p>
+<div>LAYOUT CONTENT<p>This page uses scheduler.</p>
     <h3>Lorum ipsum</h3>
     <p>Post Content #1</p>
     <h3>La Playa Nudista</h3>
@@ -421,7 +421,7 @@ ESC;
         $details = $component->componentDetails();
 
         $content = <<<ESC
-<div>LAYOUT CONTENT<p>This page uses components.</p>
+<div>LAYOUT CONTENT<p>This page uses scheduler.</p>
     <h3>Lorum ipsum</h3>
     <p>Post Content #1</p>
     <h3>La Playa Nudista</h3>

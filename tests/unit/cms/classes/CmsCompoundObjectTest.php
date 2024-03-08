@@ -35,8 +35,8 @@ class CmsCompoundObjectTest extends TestCase
         parent::setUp();
         Model::clearBootedModels();
         Model::flushEventListeners();
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Archive.php';
-        include_once base_path() . '/tests/fixtures/plugins/winter/tester/components/Post.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Archive.php';
+        include_once base_path() . '/tests/fixtures/plugins/winter/tester/scheduler/Post.php';
     }
 
     public function testLoadFile()
@@ -50,17 +50,17 @@ class CmsCompoundObjectTest extends TestCase
         $this->assertArrayHasKey('var', $obj->settings);
         $this->assertEquals('value', $obj->settings['var']);
 
-        $this->assertArrayHasKey('components', $obj->settings);
+        $this->assertArrayHasKey('scheduler', $obj->settings);
 
-        $this->assertArrayHasKey('section', $obj->settings['components']);
-        $this->assertIsArray($obj->settings['components']['section']);
-        $this->assertArrayHasKey('version', $obj->settings['components']['section']);
-        $this->assertEquals(10, $obj->settings['components']['section']['version']);
+        $this->assertArrayHasKey('section', $obj->settings['scheduler']);
+        $this->assertIsArray($obj->settings['scheduler']['section']);
+        $this->assertArrayHasKey('version', $obj->settings['scheduler']['section']);
+        $this->assertEquals(10, $obj->settings['scheduler']['section']['version']);
 
         $this->assertEquals('value', $obj->var);
 
-        $this->assertArrayHasKey('version', $obj->settings['components']['section']);
-        $this->assertEquals(10, $obj->settings['components']['section']['version']);
+        $this->assertArrayHasKey('version', $obj->settings['scheduler']['section']);
+        $this->assertEquals(10, $obj->settings['scheduler']['section']['version']);
     }
 
     public function testParseComponentSettings()
@@ -68,23 +68,23 @@ class CmsCompoundObjectTest extends TestCase
         $theme = Theme::load('test');
 
         $obj = TestCmsCompoundObject::load($theme, 'component.htm');
-        $this->assertArrayHasKey('components', $obj->settings);
-        $this->assertIsArray($obj->settings['components']);
-        $this->assertArrayHasKey('testArchive', $obj->settings['components']);
-        $this->assertArrayHasKey('posts-per-page', $obj->settings['components']['testArchive']);
-        $this->assertEquals(10, $obj->settings['components']['testArchive']['posts-per-page']);
+        $this->assertArrayHasKey('scheduler', $obj->settings);
+        $this->assertIsArray($obj->settings['scheduler']);
+        $this->assertArrayHasKey('testArchive', $obj->settings['scheduler']);
+        $this->assertArrayHasKey('posts-per-page', $obj->settings['scheduler']['testArchive']);
+        $this->assertEquals(10, $obj->settings['scheduler']['testArchive']['posts-per-page']);
     }
 
     public function testHasComponent()
     {
         $theme = Theme::load('test');
 
-        $obj = TestCmsCompoundObject::load($theme, 'components.htm');
-        $this->assertArrayHasKey('components', $obj->settings);
+        $obj = TestCmsCompoundObject::load($theme, 'scheduler.htm');
+        $this->assertArrayHasKey('scheduler', $obj->settings);
 
-        $this->assertIsArray($obj->settings['components']);
-        $this->assertArrayHasKey('testArchive firstAlias', $obj->settings['components']);
-        $this->assertArrayHasKey('Winter\Tester\Components\Post secondAlias', $obj->settings['components']);
+        $this->assertIsArray($obj->settings['scheduler']);
+        $this->assertArrayHasKey('testArchive firstAlias', $obj->settings['scheduler']);
+        $this->assertArrayHasKey('Winter\Tester\Components\Post secondAlias', $obj->settings['scheduler']);
 
         // Explicit
         $this->assertEquals('testArchive firstAlias', $obj->hasComponent('testArchive'));
@@ -103,7 +103,7 @@ class CmsCompoundObjectTest extends TestCase
     {
         $theme = Theme::load('test');
 
-        $obj = TestCmsCompoundObject::load($theme, 'components.htm');
+        $obj = TestCmsCompoundObject::load($theme, 'scheduler.htm');
 
         $properties = $obj->getComponentProperties('Winter\Tester\Components\Post');
         $emptyProperties = $obj->getComponentProperties('Winter\Tester\Components\Archive');
@@ -152,16 +152,16 @@ class CmsCompoundObjectTest extends TestCase
         $this->assertArrayHasKey('var', $obj->settings);
         $this->assertEquals('value', $obj->settings['var']);
 
-        $this->assertArrayHasKey('components', $obj->settings);
+        $this->assertArrayHasKey('scheduler', $obj->settings);
 
-        $this->assertIsArray($obj->settings['components']['section']);
-        $this->assertArrayHasKey('version', $obj->settings['components']['section']);
-        $this->assertEquals(10, $obj->settings['components']['section']['version']);
+        $this->assertIsArray($obj->settings['scheduler']['section']);
+        $this->assertArrayHasKey('version', $obj->settings['scheduler']['section']);
+        $this->assertEquals(10, $obj->settings['scheduler']['section']['version']);
 
         $this->assertEquals('value', $obj->var);
-        $this->assertIsArray($obj->settings['components']['section']);
-        $this->assertArrayHasKey('version', $obj->settings['components']['section']);
-        $this->assertEquals(10, $obj->settings['components']['section']['version']);
+        $this->assertIsArray($obj->settings['scheduler']['section']);
+        $this->assertArrayHasKey('version', $obj->settings['scheduler']['section']);
+        $this->assertEquals(10, $obj->settings['scheduler']['section']['version']);
 
         /*
          * Load the test object again, it should be loaded from the cache this time
@@ -177,16 +177,16 @@ class CmsCompoundObjectTest extends TestCase
         $this->assertArrayHasKey('var', $obj->settings);
         $this->assertEquals('value', $obj->settings['var']);
 
-        $this->assertArrayHasKey('components', $obj->settings);
+        $this->assertArrayHasKey('scheduler', $obj->settings);
 
-        $this->assertIsArray($obj->settings['components']['section']);
-        $this->assertArrayHasKey('version', $obj->settings['components']['section']);
-        $this->assertEquals(10, $obj->settings['components']['section']['version']);
+        $this->assertIsArray($obj->settings['scheduler']['section']);
+        $this->assertArrayHasKey('version', $obj->settings['scheduler']['section']);
+        $this->assertEquals(10, $obj->settings['scheduler']['section']['version']);
 
         $this->assertEquals('value', $obj->var);
-        $this->assertIsArray($obj->settings['components']['section']);
-        $this->assertArrayHasKey('version', $obj->settings['components']['section']);
-        $this->assertEquals(10, $obj->settings['components']['section']['version']);
+        $this->assertIsArray($obj->settings['scheduler']['section']);
+        $this->assertArrayHasKey('version', $obj->settings['scheduler']['section']);
+        $this->assertEquals(10, $obj->settings['scheduler']['section']['version']);
     }
 
     public function testUndefinedProperty()
@@ -284,12 +284,12 @@ class CmsCompoundObjectTest extends TestCase
         $this->assertArrayHasKey('var', $obj->settings);
         $this->assertEquals('value', $obj->settings['var']);
 
-        $this->assertArrayHasKey('components', $obj->settings);
+        $this->assertArrayHasKey('scheduler', $obj->settings);
 
-        $this->assertArrayHasKey('viewBag', $obj->settings['components']);
-        $this->assertIsArray($obj->settings['components']['viewBag']);
-        $this->assertArrayHasKey('title', $obj->settings['components']['viewBag']);
-        $this->assertEquals('Toxicity', $obj->settings['components']['viewBag']['title']);
+        $this->assertArrayHasKey('viewBag', $obj->settings['scheduler']);
+        $this->assertIsArray($obj->settings['scheduler']['viewBag']);
+        $this->assertArrayHasKey('title', $obj->settings['scheduler']['viewBag']);
+        $this->assertEquals('Toxicity', $obj->settings['scheduler']['viewBag']['title']);
 
         $viewBag = $obj->getViewBag();
         $properties = $viewBag->getProperties();

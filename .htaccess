@@ -1,5 +1,4 @@
 <IfModule mod_rewrite.c>
-
     <IfModule mod_negotiation.c>
         Options -MultiViews
     </IfModule>
@@ -64,7 +63,6 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
-
      ##
      ## Configuration when runnign html root at the base folder instead of public
      ##
@@ -89,6 +87,5 @@
 #
 #    # Otherwise rewrite request to the MVC app in "public" directory
 #    RewriteRule (.*) public/index.php?$1 [QSA,L]
-
 
 </IfModule>

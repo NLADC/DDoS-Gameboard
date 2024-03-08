@@ -1,3 +1,23 @@
+<!--
+  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
+  -
+  - This file is part of the DDoS gameboard.
+  -
+  - DDoS gameboard is free software; you can redistribute it and/or modify
+  - it under the terms of the GNU General Public License as published by
+  - the Free Software Foundation; either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - DDoS gameboard is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  - GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with this program; If not, see @link https://www.gnu.org/licenses/.
+  -
+  -->
+
 <template>
   <div v-if="show" :class="{'shake animated': isError}" class="quicklogging-box">
 
@@ -28,7 +48,7 @@
                         @paste="pasteFromClipboard($event)"
                     ></textarea>
           <div class="upload-log-attachments">
-            <div class="draganddropfiles" @dragover="dragover" @dragleave="dragleave" @drop="drop">
+            <div class="draganddropfiles" @dragover="dragover" @dragleave="dragleave" @drop="drop"  >
               <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
                      class="w-px h-px opacity-0 overflow-hidden absolute" @change="onAttachmentsChange" ref="file">
               <label for="assetsFieldHandle" class="block cursor-pointer">
@@ -37,16 +57,14 @@
                     v-html="l('theme.clickhere')"></span></span>
                 </div>
               </label>
-              <ul id="attachmentoverview" v-if="showAttachmentoverview" class="mt-4" v-cloak>
-                <li class="text-sm p-1" v-for="file in proxy.attachments">
-                  {{ file.filename }}
+              <ul id="attachmentoverview" ref="AttachmentOverview" v-if="showAttachmentoverview" class="mt-4" v-cloak>
+                <li class="text-sm p-1" v-for="filename in filenames">
+                  {{ filename }}
                 </li>
               </ul>
               <a v-if="showAttachmentoverview" class="ml-2" type="button" @click="removeattachments()"
                  title="Remove file"><span class="underline" v-html="l('theme.removeall')">Remove all</span></a>
-
             </div>
-
           </div>
           <span class="input-error">{{ errors[0] }}</span>
         </validation-provider>
@@ -130,6 +148,7 @@ export default {
     isError: false,
     errorMsg: '',
     showAttachmentoverview: false,
+    filenames: [],
     proxy: {
       id: 0,
       log: '',
@@ -166,6 +185,11 @@ export default {
   },
 
   watch: {
+    filenames: {
+      handler(newVal) {
+      },
+      deep: true, // Watch changes within the array
+    },
     rerender: {
       handler() {
         console.debug('Watch quicklogs rerender called');
@@ -228,13 +252,19 @@ export default {
       }
 
       this.onAttachmentsChange(event, clipboarditems);
+      // To speed up updating ul#attachmentoverview
+      this.$nextTick(() => {
+        this.hasProxyAttachments();
+        const AttachmentOverview = this.$refs.AttachmentOverview;
+        AttachmentOverview.click();
+      });
     },
 
     onAttachmentsChange(event, files) {
       // Update Vue html
       this.hasProxyAttachments();
 
-      if (!files) return;
+      if (!files) files = event.target.files;
       // If there are already proxy attachments don't overwrite their index.
       let highestindex = Object.keys(this.proxy.attachments).length || 0;
       if (highestindex + files.length > this.maxfiles) {
@@ -279,12 +309,14 @@ export default {
       };
       reader.readAsDataURL(file);
       this.proxy.attachments[i]['filename'] = file.name;
+      this.filenames.push(file.name);
       this.hasProxyAttachments();
     },
 
 
     removeattachments: function () {
       this.filelist = [];
+      this.$set(this, 'filenames', []); // because of the watcher this must be cleared this way
       this.proxy.attachments = {};
       // For the v-if on the #showattachments <ul>
       this.hasProxyAttachments();

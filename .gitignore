@@ -45,8 +45,8 @@ error-output.txt
 /themes/demo
 /themes/ddos-gameboard/assets
 /vendor
-/themes/nbip
-/plugins/nbip
+/filestorage/themes/nbip
+/filestorage/nbip
 
 # needed for lottieplayer packages
 !/public/json

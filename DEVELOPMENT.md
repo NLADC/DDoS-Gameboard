@@ -7,7 +7,7 @@ Without a watcher, the SCSS, Vue, Js, Assets, etc... won't change when you chang
 With every save in a file it will be compiled and transferred to the public folder. Now you can start developing from the main folder.
 
 ```shell
-npm run watch poll
+ npm run watch-poll
 ```
 
 ### Web pack
@@ -109,8 +109,8 @@ From "layous\ddos-gameboard.htm" all Vue is loaded via gameboard.js with the pie
 Vue components are located in /resources/js/components/ and are loaded into the gameboard.js like this:
 
 ```js
-Vue.component('timeline', require('./components/Timeline.vue').default);
-Vue.component('party', require('./components/Party.vue').default);
+Vue.component('timeline', require('./scheduler/Timeline.vue').default);
+Vue.component('party', require('./scheduler/Party.vue').default);
 ```
 
 As mentioned before, you can load variables via the home.htm by passing them as an attribute:
