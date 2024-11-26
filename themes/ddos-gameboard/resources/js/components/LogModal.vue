@@ -1,448 +1,511 @@
-<!--
-  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  -
-  - This file is part of the DDoS gameboard.
-  -
-  - DDoS gameboard is free software; you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
-  - the Free Software Foundation; either version 3 of the License, or
-  - (at your option) any later version.
-  -
-  - DDoS gameboard is distributed in the hope that it will be useful,
-  - but WITHOUT ANY WARRANTY; without even the implied warranty of
-  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  - GNU General Public License for more details.
-  -
-  - You should have received a copy of the GNU General Public License
-  - along with this program; If not, see @link https://www.gnu.org/licenses/.
-  -
-  -->
-
 <template>
-  <transition name="modal" v-if="show">
-    <div class="modal-mask">
-      <div :class="{'shake animated': isError}" class="modal modal-large log-modal">
+    <transition name="modal" v-if="show">
+        <div class="modal-mask">
+            <div :class="{'shake animated': isError}" class="modal modal-large log-modal">
 
-        <div class="modal-header">
-          <h3 class="text-xl lg:text-4xl sm:text-2xl xm:text-1xl" >
-            <span v-html="l('theme.logbook')"></span>
-            <span >{{ editing.title }}</span>
-          </h3>
+                <div class="modal-header">
+                    <h3 class="text-xl lg:text-4xl sm:text-2xl xm:text-1xl">
+                        <span v-html="l('theme.logbook')"></span> :
+                        <span>{{ editing.title }}</span>
+                    </h3>
 
-          <button type="reset" @click="close()" class="btn btn-secondary btn-small close-button">X</button>
-        </div>
-
-        <div class="log-box">
-          <log-bubble v-for="log in activeLogs" @edit-log="editLog" :key="logs[log.id].id" :log="log"></log-bubble>
-        </div>
-
-        <validation-observer v-slot="{ handleSubmit, reset }" id="LogModalForm">
-          <form @submit.prevent="handleSubmit(submitForm)" @reset.prevent="reset">
-
-            <div class="mb-3">
-              <validation-provider name="log" rules="" v-slot="{ errors }">
-                <textarea v-model="proxy.log" name="log" rows="10" :class="{'border-red-500' : errors[0]}"
-                          class="focus:outline-none focus:shadow-outline" placeholder="Write your log here"></textarea>
-                <div class="upload-log-attachments">
-                  <input type="file" ref="uploadfiles" multiple @change="onAttachmentsChange" name="attachments">
+                    <button type="reset" @click="close()" class="btn btn-secondary btn-small close-button">X</button>
                 </div>
-                <span class="input-error">{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
 
-            <div id="logmodalattachments" class="mb-3">
-              <validation-provider name="attachments" rules="" v-slot="{ errors }">
-                <h4><span v-html="l('theme.attachments')"></span>:</h4>
-                <li class="attachmentholder" v-for="attachment in orgattachments" :key="attachment.id">
-                  <a class="attachmentlink"
-                     @click="openAttachmenModel((attachment.id), $event.target)">{{ attachment.file_name }}
-                    <div class="loading_animation"></div>
-                  </a>
-                  <div class="attachmentmodifiers">
-                    <a @click="softDeleteAttachment(attachment.id, $event)" class="removeattachment btn btn-tiny"><span
-                        class="material-icons text-sm">delete</span></a>
-                  </div>
-                </li>
-                <h5 v-if="proxy.attachments.length" v-html="l('theme.uncommittedattachments')"></h5>
-                <li class="attachmentholder" v-for="attachment in proxy.attachments" :key="attachment.id">
-                  <p class="attachmentlink">{{ attachment.name }}</p>
-                </li>
-                <span class="input-error">{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
+                <div class="log-box">
+                    <log-bubble v-for="log in activeLogs" @editLog="editLog" :key="logs[log.id].id"
+                                :log="log"></log-bubble>
+                </div>
 
-            <div :class="{'mb-4': !isError, 'mb-3': isError}">
-              <validation-provider name="log" rules="" v-slot="{ errors }">
-                <h4><span v-html="l('theme.timestamp')"></span>:</h4>
-                <input v-model="proxy.timestamp" name="timestamp" :class="{'border-red-500' : errors[0]}"
-                       class="focus:outline-none focus:shadow-outline" placeholder="Timestamp">
-                <span class="input-error">{{ errors[0] }}</span>
-              </validation-provider>
-            </div>
+                <Form @submit="submitForm">
+                    <div class="mb-3">
+             <textarea type="textarea"
+                       v-on:keydown.enter="handleEnter"
+                       class="focus:outline-none focus:shadow-outline bg-white text-black w-75 "
+                       v-model="proxy.log" name="log" rows="2" cols="40"
+                       placeholder="Write your log here; enter key is submit; shift-enter is newline"
+                       @paste="pasteFromClipboard($event)"
+             ></textarea>
+                        <ErrorMessage name="log" class="input-error"/>
+                        <div class="upload-log-attachments">
+                            <div class="draganddropfiles" @dragover="dragover" @dragleave="dragleave" @drop="drop">
+                                <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
+                                       class="w-px h-px opacity-0 overflow-hidden absolute"
+                                       @change="onAttachmentsChange"
+                                       ref="file">
+                                <label for="assetsFieldHandle" class="block cursor-pointer">
+                                    <div>
+                                        <span v-html="l('theme.dropfilesor')"></span> <span class="underline"><span
+                                        v-html="l('theme.clickhere')"></span></span>
+                                    </div>
+                                </label>
+                                <ul id="attachmentoverview" ref="AttachmentOverview" v-if="showAttachmentoverview"
+                                    class="mt-4" v-cloak>
+                                    <li class="text-sm p-1" v-for="filename in filenames">
+                                        {{ filename }}
+                                    </li>
+                                </ul>
+                                <a v-if="showAttachmentoverview" class="ml-2" type="button" @click="removeattachments()"
+                                   title="Remove file"><span class="underline" v-html="l('theme.removeall')"></span></a>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="w-full mb-3 text-center text-red-500" v-if="isError">{{ errorMsg }}</div>
+                    <div id="logmodalattachments" class="mb-3">
+                        <div class="attachments-wrapper">
+                            <div class="message">{{ proxy.log.log }}</div>
+                            <div class="attachments">
+                                <li v-for="attachment in proxy.log.attachments" :key="proxy.log.attachments.id">
+                                    <a class="attachmentlink"
+                                       @click="openAttachmenModel((attachment.id), $event.target)">{{
+                                            attachment.file_name
+                                        }}
+                                        <div class="loading_animation"></div>
+                                    </a>
 
-            <div class="flex items-center justify-between">
-              <button type="reset" @click="close()"
-                      class="w-1/2 py-2 px-4 rounded-r focus:outline-none focus:shadow-outline" v-html="l('theme.cancel')">
-              </button>
-              <button type="submit" id="idLogSubmitButton" :class="{disabled : proxy.log === ''}"
-                      :disabled="proxy.log === ''"
-                      class="w-1/2 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-l focus:outline-none focus:shadow-outline">
-                <span v-html="l('theme.log')"></span>
-              </button>
+                                </li>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full mb-3 text-center text-red-500" v-if="isError">{{ errorMsg }}</div>
+
+                    <div class="flex items-center justify-between">
+                        <button type="reset" @click="close()"
+                                class="w-1/2 py-2 px-4 rounded-r focus:outline-none focus:shadow-outline"
+                                v-html="l('theme.cancel')">
+                        </button>
+                        <button type="submit" id="idLogSubmitButton"
+                                :disabled="(proxy.log === '' && Object.keys(proxy.attachments).length === 0)"
+                                class="w-1/2 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-l focus:outline-none focus:shadow-outline">
+                            <span v-html="l('theme.log')"></span>
+                        </button>
+                    </div>
+                </Form>
             </div>
-          </form>
-        </validation-observer>
-      </div>
-    </div>
-  </transition>
+        </div>
+    </transition>
 </template>
 
 <script>
 export default {
-  props: {
-    show: Boolean,
-    csrf: String,
-    logs: Object,
-    user: Object,
-    editing: Object
-  },
-
-  data: () => ({
-    isError: false,
-    errorMsg: '',
-    proxy: {
-      log: '',
-      timestamp: '',
-      id: 0,
-      attachments: {},
-      deletefilesbyid: [],
-    },
-    orgattachments: {},
-    spawnTime: null,
-    submitdisabled: false,
-  }),
-
-  watch: {
-    show: {
-      handler() {
-        if (this.show) {
-          this.setFields();
-          this.spawnTime = Date.now();
-        }
-      }
-    }
-  },
-
-  computed: {
-    activeLogs() {
-      return this.getLogs();
-    },
-  },
-
-  methods: {
-    triggerError(msg) {
-      this.isError = true;
-      this.errorMsg = msg;
+    props: {
+        show: Boolean,
+        csrf: String,
+        logs: Object,
+        user: Object,
+        editing: Object
     },
 
-    hideError() {
-      this.isError = false;
-      this.errorMsg = '';
+    data: () => ({
+        isError: false,
+        errorMsg: '',
+        showAttachmentoverview: false,
+        filenames: [],
+        proxy: {
+            log: '',
+            timestamp: '',
+            id: 0,
+            attachments: {},
+            deletefilesbyid: [],
+        },
+        orgattachments: {},
+        spawnTime: null,
+        submitdisabled: false,
+        maxfilesize: 12288 * 1024, // 12mb fallback when if global setting check below fails
+        maxfiles: 10,
+        acceptedExtensions: ["png", "jpg", "gif", "svg", "txt", "mp4", "csv", "gif", "json", "pdf"], // falback values
+    }),
+
+    mounted() {
+        // Getting global settings from the backend, otherwise remain as det in the data in this Vue component.
+        if (this.logmaxfiles) this.maxfiles = this.logmaxfiles;
+        if (this.logmaxfilesize) this.maxfilesize = this.logmaxfilesize
+        if (this.acceptedFileTypes && Array.isArray(this.acceptedFileTypes)) this.acceptedExtensions = this.acceptedFileTypes;
+
+        setInterval(this.timer.bind(this), 1000);
     },
 
-    setFields() {
-      this.proxy = {
-        id: 0,
-        log: '',
-        timestamp: this.moment(this.editing.timestamp).format('HH:mm:ss'),
-        attachments: this.proxy.attachments,
-        deletefilesbyid: '',
-      };
-      this.orgattachments = {};
-      this.setSubmitButton('Log');
-    },
-
-    resetFields() {
-      this.proxy = {
-        log: '',
-        timestamp: '',
-        attachments: '',
-        deletefilesbyid: '',
-      };
-      this.orgattachments = '';
-    },
-
-    close() {
-      if ((Date.now() - this.spawnTime) > 350) {
-        this.hideError();
-        this.resetFields();
-        this.$emit('close');
-      }
-    },
-
-    onAttachmentsChange(e) {
-      var maxfilesize = 12288 * 1024; // 12mb fallback when if global setting check below fails
-      var maxfiles = 10;
-      var acceptedExtensions = ["png", "jpg", "gif", "svg", "txt", "mp4", "csv", "gif", "json", "pdf"];
-      if (this.logmaxfilesize) {
-        maxfilesize = this.logmaxfilesize;
-      }
-
-      if (this.logmaxfiles) {
-        maxfiles = this.logmaxfiles;
-      }
-
-      if (this.acceptedFileTypes && this.acceptedFileTypes.constructor === Array) {
-        acceptedExtensions = this.acceptedFileTypes;
-      }
-
-      this.proxy.attachments = e.target.files || e.dataTransfer.files;
-      if (this.proxy.attachments !== undefined) {
-        if (!this.proxy.attachments.length)
-          return;
-        if (this.proxy.attachments.length > maxfiles) {
-          this.removeattachments();
-          alert("Quicklog: Max " + maxfiles + " attachments allowed");
-        }
-        for (let i = 0; i < Object.keys(this.proxy.attachments).length; i++) {
-          let filetype = this.proxy.attachments[i].name.split('.').pop().toLowerCase();
-          if (acceptedExtensions.indexOf(filetype) !== -1) {
-            if (this.proxy.attachments[i].size > maxfilesize) {
-              e.preventDefault();
-              alert('File: ' + this.proxy.attachments[i].name + ' too big (> ' + Math.round(maxfilesize / 1024 / 1024) + 'mb )');
-              this.removeattachments();
-              return;
-            } else {
-              this.createattachments(this.proxy.attachments[i], i);
+    watch: {
+        show: {
+            handler() {
+                if (this.show) {
+                    this.setFields();
+                    this.spawnTime = Date.now();
+                }
             }
-          } else {
-            e.preventDefault();
-            alert('File: ' + this.proxy.attachments[i].name + ' type is not allowed. accepted filetypes are: ' + JSON.stringify(acceptedExtensions));
-            this.removeattachments();
-            return;
-          }
-
         }
-      }
     },
 
-    createattachments(file, i) {
-      //var attachments = new attachments();
-      var reader = new FileReader();
-
-      reader.onload = (e) => {
-        if (this.proxy.attachments[i]) {
-          this.proxy.attachments[i]['rawdata'] = e.target.result;
-        }
-      };
-      reader.readAsDataURL(file);
-      this.proxy.attachments[i]['filename'] = file.name;
+    computed: {
+        activeLogs() {
+            return this.getLogs();
+        },
     },
 
-    removeattachments: function () {
-      this.$refs.uploadfiles.value = null;
-    },
+    methods: {
+        /**
+         * This function helps toggle the html when the drag and drop field is empty or filled with files, it also signals the vue to update.
+         */
+        hasProxyAttachments() {
+            this.showAttachmentoverview = Object.keys(this.proxy.attachments).length > 0;
+        },
 
-    getLogs() {
-      var granularity = this.editing.granularity;
-      var start = this.moment(this.editing.timestamp);
-      var end = this.moment(this.editing.timestamp).add(granularity, 'minutes');
-      var logs = [];
-      Object.entries(this.logs).forEach(function (log, idx) {
-        log = log[1];
-        log.showedit = (log.user.name == this.user.name);
-        if (log.timestamp >= start && log.timestamp < end)
-          logs.push(log);
-      }.bind(this));
+        pasteFromClipboard(event) {
+            // Get the clipboard data
+            const clipboardData = event.clipboardData || window.clipboardData;
 
-      logs.sort(function (a, b) {
-        return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
-      });
+            // if we are not pasting text proceed
+            if (!(clipboardData.types.includes('text/plain'))) {
+                // Prevent filenames from pasting into chat
+                event.preventDefault();
 
-      return logs;
-    },
 
-    editLog(log) {
-      console.debug('editLog: ', log);
+                if (event.clipboardData == false) {
+                    if (typeof (event.callback) == "function") {
+                        console.error('Paste event: No clipboard data')
+                        event.callback(undefined);
+                    }
+                }
+                let clipboarditems = event.clipboardData.files;
 
-      this.proxy.log = log.log;
-      this.proxy.timestamp = this.moment(log.timestamp).format('HH:mm:ss');
-      this.proxy.id = log.id;
-      this.proxy.attachments = '';
-      this.proxy.deletefilesbyid = [];
-      this.orgattachments = log.attachments;
-
-      this.setSubmitButton('Update');
-    },
-
-    hasorgattachments() {
-      if (this.orgattachments) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-
-    setSubmitButton(txt) {
-      var elm = document.getElementById('idLogSubmitButton');
-      if (elm) elm.innerText = txt;
-    },
-
-    async submitForm() {
-      this.hideError();
-
-      // Checking for max files again, or the user can add more files to an already large pile of files.
-      var maxfiles = 10;
-      if (this.logmaxfiles) {
-        maxfiles = this.logmaxfiles;
-      }
-      if (this.proxy.log && this.orgattachments) {
-        if (Object.keys(this.proxy.attachments).length + Object.keys(this.orgattachments).length > maxfiles) {
-          this.removeattachments();
-          alert("Quicklog: Max " + maxfiles + " attachments allowed");
-          this.deleteAttachments();
-          this.resetFields();
-          return;
-        }
-      }
-
-      var dt = this.moment(this.proxy.timestamp, 'HH:mm:ss');
-      if (this.proxy.log && dt.isValid()) {
-        var tmp = {
-          _token: this.csrf,
-          id: this.proxy.id,
-          log: this.proxy.log,
-          attachments: this.proxy.attachments,
-          hasorgattachments: this.hasorgattachments(),
-          deletefilesbyid: this.proxy.deletefilesbyid,
-          timestamp: this.moment(this.proxy.timestamp, 'HH:mm:ss').format('HH:mm:ss')
-        }
-
-        this.deleteAttachments();
-        this.resetFields();
-
-        var path = '/api/log';
-        var method = 'POST';
-
-        const response = await fetch(path, {
-          method: method,
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(tmp)
-        })
-            .then(response => response.json())
-            .then(data => {
-              if ('result' in data && data.result == false && 'message' in data)
-                this.triggerError(data.message);
-              else {
-                if ('result' in data && data.result == true && 'log' in data) {
-                  var log = JSON.parse(data.log);
-                  // update directly local -> update by stream can be seconds..
-                  this.$emit('update-log', log);
+                if (clipboarditems == undefined) {
+                    if (typeof (event.callback) == "function") {
+                        event.callback(undefined);
+                        console.error('pastevent: clipboarditems are undifined')
+                    }
                 }
 
-                this.close();
-              }
-            })
-            .catch(err => {
-              this.triggerError('A fatal error has occured! ' + err);
+                this.onAttachmentsChange(event, clipboarditems);
+                // To speed up updating ul#attachmentoverview
+                this.$nextTick(() => {
+                    this.hasProxyAttachments();
+                    const AttachmentOverview = this.$refs.AttachmentOverview;
+                    AttachmentOverview.click();
+                });
+            }
+        },
+
+        onAttachmentsChange(event, files) {
+            // Update Vue html
+            this.hasProxyAttachments();
+
+            if (!files) files = event.target.files;
+            // If there are already proxy attachments don't overwrite their index.
+            let highestindex = Object.keys(this.proxy.attachments).length || 0;
+            if (highestindex + files.length > this.maxfiles) {
+                files = [];
+                alert("Quicklog: Max " + this.maxfiles + " attachments allowed");
+                return;
+            } else {
+                for (let i = 0; i < Object.keys(files).length; i++) {
+                    let filetype = files[i].name.split('.').pop().toLowerCase();
+                    if (this.acceptedExtensions.indexOf(filetype) !== -1) {
+                        if (files[i].size > this.maxfilesize) {
+                            alert('File: ' + files[i].name + ' too big (> ' + Math.round(this.maxfilesize / 1024 / 1024) + 'mb )');
+                            return;
+                        } else {
+                            // If all is set right then we can finally create an attachment in the attachment
+                            this.createattachments(files[i], i + highestindex);
+                        }
+                    } else {
+                        alert('File: ' + files[i].name + ' type is not allowed. Accepted filetypes are: ' + this.acceptedExtensions);
+                        return;
+                    }
+                }
+            }
+            // For the v-if on the #showattachments <ul>
+            this.hasProxyAttachments();
+        },
+
+        /**
+         * There are only 2 thing we want to save, the name and its data, the rest is not of interest or kept in the log.
+         * @param file = file type from a filelist
+         * @param i = the index where it must be added to the proxy.attachments very important if there are already attachments in there
+         */
+        createattachments(file, i) {
+            //var attachments = new attachments();
+            var reader = new FileReader();
+
+            this.proxy.attachments[i] = {};
+            reader.onload = (event) => {
+                if (this.filelist) {
+                    this.proxy.attachments[i]['rawdata'] = event.target.result;
+                }
+            };
+            reader.readAsDataURL(file);
+            this.proxy.attachments[i]['filename'] = file.name;
+            this.filenames.push(file.name);
+            this.hasProxyAttachments();
+        },
+
+
+        removeattachments: function () {
+            this.filelist = [];
+            this.filenames = [];
+            this.proxy.attachments = {};
+            // For the v-if on the #showattachments <ul>
+            this.hasProxyAttachments();
+        },
+
+        remove(i) {
+            this.filelist.splice(i, 1);
+            // For the v-if on the #showattachments <ul>
+            this.hasProxyAttachments();
+        },
+
+        dragover(event) {
+            event.preventDefault();
+            // Add some visual fluff to show the user can drop its files
+            if (!event.currentTarget.classList.contains('dragover')) {
+                event.currentTarget.classList.remove('dragleave');
+                event.currentTarget.classList.add('dragover');
+            }
+        },
+        dragleave(event) {
+            // Clean up
+            event.currentTarget.classList.add('dragleave');
+            event.currentTarget.classList.remove('dragover');
+        },
+        drop(event) {
+            event.preventDefault();
+            let files = event.dataTransfer.files;
+            this.onAttachmentsChange(event, files); // Trigger the onAttachmentsChange event manually
+            // Clean up
+            event.currentTarget.classList.add('dragleave');
+            event.currentTarget.classList.remove('dragover');
+        },
+
+        toggleAttachmentlinks(remove = false) {
+            var attachmentlinks = document.querySelectorAll('a.attachmentlink');
+            for (let i = 0; i < Object.keys(attachmentlinks).length; i++) {
+                attachmentlinks[i].classList.toggle('disabled', !remove);
+            }
+        },
+
+        timer() {
+            this.now = this.proxy.timestamp = this.moment().format('HH:mm');
+        },
+
+        handleEnter(event) {
+            if (!event.shiftKey) {
+                this.submitForm();
+                event.preventDefault();
+            }
+        },
+
+        isRedParty() {
+            if (this.user !== undefined) {
+                return this.user.role === "red";
+            } else {
+                return false;
+            }
+        },
+
+        getLogs() {
+            var granularity = this.editing.granularity;
+            var start = this.moment(this.editing.timestamp);
+            var end = this.moment(this.editing.timestamp).add(granularity, 'minutes');
+            var logs = [];
+            Object.entries(this.logs).forEach(function (log, idx) {
+                log = log[1];
+                log.showedit = (log.user.name == this.user.name);
+                if (log.timestamp >= start && log.timestamp < end)
+                    logs.push(log);
+            }.bind(this));
+
+            logs.sort(function (a, b) {
+                return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
             });
 
-      } else {
-
-        if (!dt.isValid()) {
-          this.triggerError('Time value not valid');
-        } else {
-          this.triggerError('Empty log (text) - please write something');
-        }
-      }
-    },
-
-    async openAttachmenModel(id, target) {
-      this.hideError();
-      var path = '/api/attachments';
-      var method = 'POST';
-      var tmp = {
-        id: id,
-      }
-      let parentfound = false;
-
-      if (target) {
-        target.classList.add('loading');
-        parentfound = true;
-        this.toggleAttachmentlinks();
-
-      }
-      const response = await fetch(path, {
-        method: method,
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
+            return logs;
         },
-        body: JSON.stringify(tmp)
-      })
-          .then(response => response.json())
-          .then(data => {
-            if ('result' in data && data.result === false && 'message' in data)
-              this.triggerError(data.message);
-            else {
-              if ('result' in data && data.result === true) {
-                Event.$emit('initAttachmentlog', data.file);
-              }
+
+        triggerError(msg) {
+            this.isError = true;
+            this.errorMsg = msg;
+        },
+
+        hideError() {
+            this.isError = false;
+            this.errorMsg = '';
+        },
+
+        setFields() {
+            this.proxy = {
+                id: 0,
+                log: '',
+                timestamp: this.moment(this.editing.timestamp).format('HH:mm:ss'),
+                attachments: this.proxy.attachments,
+                deletefilesbyid: '',
+            };
+            this.orgattachments = {};
+            this.setSubmitButton('Log');
+        },
+
+        resetFields() {
+            this.proxy = {
+                log: '',
+                timestamp: '',
+                attachments: {},
+                deletefilesbyid: '',
+            };
+            this.orgattachments = '';
+        },
+
+        close() {
+            if ((Date.now() - this.spawnTime) > 350) {
+                this.hideError();
+                this.resetFields();
+                this.$emit('close');
             }
-            if (parentfound) {
-              target.classList.remove('loading');
+        },
+        editLog(log) {
+            console.debug('editLog: ', log);
+
+            this.proxy.log = log.log;
+            this.proxy.timestamp = this.moment(this.editing.timestamp).format('HH:mm:ss'),
+            this.proxy.id = log.id;
+            this.proxy.attachments = {};
+            this.proxy.deletefilesbyid = [];
+            this.orgattachments = log.attachments;
+
+            this.setSubmitButton('Update');
+        },
+
+        hasorgattachments() {
+            if (this.orgattachments) {
+                return true;
+            } else {
+                return false;
             }
-            this.toggleAttachmentlinks(true);
-          })
-          .catch(err => {
-            this.triggerError('A fatal error has occured! ' + err);
-          });
+        },
 
-    },
-    toggleAttachmentlinks(remove = false) {
-      var attachmentlinks = document.querySelectorAll('a.attachmentlink');
-      for (let i = 0; i < Object.keys(attachmentlinks).length; i++) {
-        if (remove) {
-          attachmentlinks[i].classList.remove('disabled');
-        } else {
-          attachmentlinks[i].classList.add('disabled');
-        }
-      }
-    },
+        setSubmitButton(txt) {
+            var elm = document.getElementById('idLogSubmitButton');
+            if (elm) elm.innerText = txt;
+        },
 
-    softDeleteAttachment(logid, event) {
-      // loop trough log attachments until right id is found and mark for deleting
-      for (let i = 0; i < Object.keys(this.orgattachments).length; i++) {
-        if (this.orgattachments[i].id === logid) {
-          this.orgattachments[i].delete = true;
-        }
-      }
-      // add class so end user gets feedback via styling by class
-      let attachmentholder = event.path[3];
-      if (attachmentholder) {
-        attachmentholder.classList.add("delete");
-      }
-    },
 
-    deleteAttachments() {
-      // loop trough log attachments until right id is found and send to api to delete these files
-      if (this.orgattachments !== undefined) {
-        for (let i = 0; i < Object.keys(this.orgattachments).length; i++) {
-          if (this.orgattachments[i].delete === true) {
-            this.proxy.deletefilesbyid.push(this.orgattachments[i].id);
-            this.orgattachments.splice([i], 1);
-          }
-        }
-      }
-    },
-  }
+        async submitForm() {
+            this.hideError();
+
+            if (this.proxy.log || Object.keys(this.proxy.attachments).length > 0 ) {
+                var tmp = {
+                    _token: this.csrf,
+                    id: this.proxy.id,
+                    log: this.proxy.log,
+                    attachments: this.proxy.attachments,
+                    timestamp: this.moment(this.editing.timestamp).format('HH:mm:ss'),
+                }
+                this.resetFields();
+                var path = '/api/log';
+                var method = 'POST';
+
+                const response = await fetch(path, {
+                    method: method,
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tmp)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.debug(data);
+                        if ('result' in data && data.result == false && 'message' in data)
+                            this.triggerError(data.message);
+                        else {
+                            if ('result' in data && data.result == true && 'log' in data) {
+                                let log = JSON.parse(data.log);
+                                // update directly local -> update by stream can be seconds..
+                                this.logs[log.id] = log;
+                                this.$emit('update-log', log);
+                                // Show message if there is one.
+                                if ('message' in data && data.message.length >= 1) {
+                                    this.triggerError(data.message);
+                                }
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        this.triggerError('A fatal error has occured! ' + err);
+                    });
+
+            } else {
+                this.triggerError('Empty log (text or attachment) - please add something');
+            }
+            this.removeattachments();
+        },
+
+
+        async openAttachmenModel(id, target) {
+            this.hideError();
+            var path = '/api/attachments';
+            var method = 'POST';
+            var tmp = {
+                id: id,
+            }
+            let parentfound = false;
+
+            if (target) {
+                target.classList.add('loading');
+                parentfound = true;
+                this.toggleAttachmentlinks();
+
+            }
+            const response = await fetch(path, {
+                method: method,
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tmp)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if ('result' in data && data.result === false && 'message' in data)
+                        this.triggerError(data.message);
+                    else {
+                        if ('result' in data && data.result === true) {
+                            this.emitter.emit('initAttachmentlog', data.file);
+                        }
+                    }
+                    if (parentfound) {
+                        target.classList.remove('loading');
+                    }
+                    this.toggleAttachmentlinks(true);
+                })
+                .catch(err => {
+                    this.triggerError('A fatal error has occured! ' + err);
+                });
+
+        },
+
+        softDeleteAttachment(logid, event) {
+            // loop trough log attachments until right id is found and mark for deleting
+            for (let i = 0; i < Object.keys(this.orgattachments).length; i++) {
+                if (this.orgattachments[i].id === logid) {
+                    this.orgattachments[i].delete = true;
+                }
+            }
+            // add class so end user gets feedback via styling by class
+            let attachmentholder = event.path[3];
+            if (attachmentholder) {
+                attachmentholder.classList.add("delete");
+            }
+        },
+
+        deleteAttachments() {
+            // loop trough log attachments until right id is found and send to api to delete these files
+            if (this.orgattachments !== undefined) {
+                for (let i = 0; i < Object.keys(this.orgattachments).length; i++) {
+                    if (this.orgattachments[i].delete === true) {
+                        this.proxy.deletefilesbyid.push(this.orgattachments[i].id);
+                        this.orgattachments.splice([i], 1);
+                    }
+                }
+            }
+        },
+    }
 }
 </script>
-
-<style scoped>
-</style>

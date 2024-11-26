@@ -26,6 +26,10 @@ use Route;
 use BackendAuth;
 use System\Classes\PluginBase;
 use Backend\FormWidgets\FileUpload;
+use App;
+use Config;
+use Laravel\Passport\Passport;
+use Illuminate\Foundation\AliasLoader;
 
 include_once (__DIR__ . '/includes/constants.php');
 
@@ -42,6 +46,42 @@ class Plugin extends PluginBase {
             'icon'        => 'icon-database',
             'homepage'    => 'https://antiddoscoalitie.nl'
         ];
+    }
+
+
+    public function boot() {
+
+        Passport::tokensExpireIn(now()->addHours(4));
+        Passport::refreshTokensExpireIn(now()->addDays(2));
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+        Passport::enablePasswordGrant();
+
+        // Setup required packages for passport
+        $this->bootPackages();
+
+
+        // Listen for menu extendItems
+        Event::listen('backend.menu.extendItems', function($manager) {
+
+            // remove menu items when not admin
+            $user = BackendAuth::getUser();
+            if ($user->is_superuser!==1) {
+                // DYNAMIC; remove NO ABUSEIO.SCART menu items
+                $menus = $manager->listMainMenuItems();
+                foreach ($menus AS $menukey => $menu) {
+                    if ($menu->owner!='bld.ddosspelbord') {
+                        $manager->removeMainMenuItem($menu->owner, $menu->code);
+                    }
+                }
+            }
+
+        });
+
+        FileUpload::extend(function ($widget) {
+            $path = plugins_path().'/bld/ddosspelbord/widgets/fileupload/partials/';
+            $widget->addViewPath($path);
+            $widget->bindToController();
+        });
     }
 
     public function register() {
@@ -67,7 +107,6 @@ class Plugin extends PluginBase {
             'bld\ddosspelbord\components\ddosspelbord_setting' => 'ddosspelbord_setting',
         ];
     }
-
     public function registerSettings() {
         return [
             'settings' => [
@@ -81,7 +120,6 @@ class Plugin extends PluginBase {
             ],
         ];
     }
-
     public function registerPermissions() {
         return [
             'bld.ddosspelbord.startpage' => [
@@ -109,45 +147,73 @@ class Plugin extends PluginBase {
                 'tab' => 'DDOSSpelbord',
                 'order' => 740,
             ],
+            'bld.ddosspelbord.attacks' => [
+                'label' => 'Attacks',
+                'tab' => 'DDOSSpelbord',
+                'order' => 745,
+            ],
             'bld.ddosspelbord.access_settings' => [
                 'label' => 'Settings',
                 'tab' => 'DDOSSpelbord',
                 'order' => 750,
+            ],
+            'bld.ddosspelbord.access_api' => [
+                'label' => 'Access API calls',
+                'tab' => 'DDOSSpelbord',
+                'order' => 770,
             ],
         ];
     }
 
     public function registerSchedule($schedule) {
 
-        $schedule->command('ddosgameboard:measurementAPI measure')->withoutOverlapping()->everyMinute();
+        // @TODO; remove RIPE measures cronjob; since okt-2024 the measurements are done with CAIDA ARK
+        //$schedule->command('ddosgameboard:measurementAPI measure')->withoutOverlapping()->everyMinute();
 
     }
 
 
-    public function boot() {
-        // Listen for menu extendItems
-        Event::listen('backend.menu.extendItems', function($manager) {
 
-            // remove menu items when not admin
-            $user = BackendAuth::getUser();
-            if ($user->is_superuser!==1) {
-                // DYNAMIC; remove NO ABUSEIO.SCART menu items
-                $menus = $manager->listMainMenuItems();
-                foreach ($menus AS $menukey => $menu) {
-                    if ($menu->owner!='bld.ddosspelbord') {
-                        $manager->removeMainMenuItem($menu->owner, $menu->code);
-                    }
+    /**
+     * Boots (configures and registers) any packages found within this plugin's packages.load configuration value
+     *
+     * @see https://luketowers.ca/blog/how-to-use-laravel-packages-in-october-plugins
+     * @author Luke Towers <info@luketowers.ca>
+     */
+    public function bootPackages()
+    {
+        // Get the namespace of the current plugin to use in accessing the Config of the plugin
+        $pluginNamespace = str_replace('\\', '.', strtolower(__NAMESPACE__));
+
+        // Instantiate the AliasLoader for any aliases that will be loaded
+        $aliasLoader = AliasLoader::getInstance();
+
+        // Get the packages to boot
+        $packages = Config::get($pluginNamespace . '::packages');
+
+        // Boot each package
+        foreach ($packages as $name => $options) {
+            // Setup the configuration for the package, pulling from this plugin's config
+            if (!empty($options['config']) && !empty($options['config_namespace'])) {
+                Config::set($options['config_namespace'], $options['config']);
+            }
+
+            // Register any Service Providers for the package
+            if (!empty($options['providers'])) {
+                foreach ($options['providers'] as $provider) {
+                    App::register($provider);
                 }
             }
 
-        });
-
-        FileUpload::extend(function ($widget) {
-            $path = plugins_path().'/bld/ddosspelbord/widgets/fileupload/partials/';
-            $widget->addViewPath($path);
-            $widget->bindToController();
-        });
+            // Register any Aliases for the package
+            if (!empty($options['aliases'])) {
+                foreach ($options['aliases'] as $alias => $path) {
+                    $aliasLoader->alias($alias, $path);
+                }
+            }
+        }
     }
+
     public function registerMailTemplates()
     {
         return [

@@ -24,11 +24,13 @@ namespace bld\ddosspelbord\Controllers;
 use Backend\Classes\Controller;
 use BackendMenu;
 use Bld\Ddosspelbord\models\Parties;
-use bld\ddosspelbord\Models\Target;
+use bld\ddosspelbord\models\Target;
 use Illuminate\Support\Facades\Redirect;
 
 class Targets extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.attacks'];
+
     public $implement = [
         'Backend\Behaviors\ListController',
         'Backend\Behaviors\FormController'

@@ -41,9 +41,7 @@ class Logs extends Model {
     /**
      * @var array Validation rules
      */
-    public $rules = [
-        'log' => 'required',
-    ];
+    public $rules = [];
 
     protected $hidden = [
         'created_at', 'updated_at'

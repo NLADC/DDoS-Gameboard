@@ -1,32 +1,12 @@
-<!--
-  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  -
-  - This file is part of the DDoS gameboard.
-  -
-  - DDoS gameboard is free software; you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
-  - the Free Software Foundation; either version 3 of the License, or
-  - (at your option) any later version.
-  -
-  - DDoS gameboard is distributed in the hope that it will be useful,
-  - but WITHOUT ANY WARRANTY; without even the implied warranty of
-  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  - GNU General Public License for more details.
-  -
-  - You should have received a copy of the GNU General Public License
-  - along with this program; If not, see @link https://www.gnu.org/licenses/.
-  -
-  -->
-
 <template>
 <transition name="modal" id="login-modal" v-if="show">
 <div class="modal-mask">
 <div :class="{'shake animated': isError}" class="modal">
-	<h3 v-html="l('theme.editingaction')"></h3>
+
+    <h3 v-html="l('theme.editingaction')"></h3>
 
 	<validation-observer v-slot="{ handleSubmit, reset }">
 	<form @submit.prevent="handleSubmit(submitForm)" @reset.prevent="reset">
-
 		<div class="mb-3">
 			<validation-provider name="Name" rules="required" v-slot="{ errors }">
 				<input v-model="proxy.name" name="name" type="text" :class="{'border-red-500' : errors[0]}" class=" focus:outline-none focus:shadow-outline" placeholder="Name">
@@ -55,7 +35,6 @@
 
 		<div class="flex items-center justify-between">
 			<button type="submit" class="w-1/2 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-l focus:outline-none focus:shadow-outline" v-html="l('theme.edit')"></button>
-
 			<button type="reset" @click="close()" class="w-1/2 py-2 px-4 rounded-r focus:outline-none focus:shadow-outline" v-html="l('theme.close')"></button>
 		</div>
 	</form>

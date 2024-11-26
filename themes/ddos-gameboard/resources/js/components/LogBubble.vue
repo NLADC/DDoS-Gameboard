@@ -1,23 +1,3 @@
-<!--
-  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  -
-  - This file is part of the DDoS gameboard.
-  -
-  - DDoS gameboard is free software; you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
-  - the Free Software Foundation; either version 3 of the License, or
-  - (at your option) any later version.
-  -
-  - DDoS gameboard is distributed in the hope that it will be useful,
-  - but WITHOUT ANY WARRANTY; without even the implied warranty of
-  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  - GNU General Public License for more details.
-  -
-  - You should have received a copy of the GNU General Public License
-  - along with this program; If not, see @link https://www.gnu.org/licenses/.
-  -
-  -->
-
 <template>
   <div class="log-bubble" @click="editLog" :title="{'edit log': log.showedit}"
        :class="{'log-bubble-edit': log.showedit,
@@ -28,7 +8,7 @@
       <div :class="{'w-11/12': log.showedit, 'w-full': !log.showedit}">
         <div class="message">{{ log.log }}</div>
         <div class="attachments">
-          <li v-for="attachment in attachments" :key="log.attachments.id">
+          <li v-for="attachment in attachments">
             <a class="attachmentlink"
                @click="openAttachmenModel((attachment.id), $event.target)">{{ attachment.file_name }}
               <div class="loading_animation"></div>
@@ -106,7 +86,7 @@ export default {
 
     editLog: function () {
       if (this.log.showedit) {
-        this.$emit('edit-log', this.log);
+        this.$emit('editLog', this.log);
       }
     },
     toggleAttachmentlinks(remove = false) {
@@ -149,7 +129,7 @@ export default {
               this.triggerError(data.message);
             else {
               if ('result' in data && data.result === true) {
-                Event.$emit('initAttachmentlog', data.file);
+                this.emitter.emit('initAttachmentlog', data.file);
               }
             }
             if (parentfound) {

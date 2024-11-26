@@ -1,4 +1,4 @@
-<?php
+<?php namespace bld\ddosspelbord\models;
 /*
  * Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
  *
@@ -18,8 +18,6 @@
  * along with this program; If not, see @link https://www.gnu.org/licenses/.
  *
  */
-
-namespace bld\ddosspelbord\Models;
 
 use Model;
 

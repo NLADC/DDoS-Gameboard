@@ -1,22 +1,29 @@
-/*
- * Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
- *
- * This file is part of the DDoS gameboard.
- *
- * DDoS gameboard is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * DDoS gameboard is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see @link https://www.gnu.org/licenses/.
- *
- */
+import {createApp} from 'vue';
+
+import UserDisplay from './components/UserDisplay.vue';
+import LoginModal from './components/LoginModal.vue';
+import LogoutButton from './components/LogoutButton.vue';
+import GameCountdown from './components/GameCountdown.vue';
+import Timeline from './components/Timeline.vue';
+import Party from './components/Party.vue';
+import Action from './components/Action.vue';
+import NotificationBox from './components/NotificationBox.vue';
+import Notification from './components/Notification.vue';
+import LogModal from './components/LogModal.vue';
+import LogBubble from './components/LogBubble.vue';
+import SystemModal from './components/SystemModal.vue';
+import TimelineScroller from './components/TimelineScroller.vue';
+import LiveLog from './components/LiveLog.vue';
+import PartiesSelect from './components/PartiesSelect.vue';
+import PartySelect from './components/PartySelect.vue';
+import ActionBubble from './components/ActionBubble.vue';
+import ActionsList from './components/ActionsList.vue';
+import QuickLogging from './components/QuickLogging.vue';
+import QuickBubble from './components/QuickBubble.vue';
+import HelpFile from './components/HelpFile.vue';
+import AttachmentModal from './components/AttachmentModal.vue';
+
+import './security.js';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -25,76 +32,24 @@
  */
 
 require('./bootstrap');
-require('./resposive');
+require('./responsive');
 require('./lang');
-
-import Vue from 'vue';
-import {ValidationObserver, ValidationProvider, extend} from 'vee-validate';
-import * as rules from 'vee-validate/dist/rules';
-import {TransactionNotificationController} from './transactions.js';
-
-window.Event = new Vue();
-
 require('material-icons');
-require('@lottiefiles/lottie-player');
-Vue.prototype.moment = require('moment');
-Vue.prototype.delayedUpdateAllResponsiveFunctions = window.delayedUpdateAllResponsiveFunctions;
-Vue.prototype.l = window.l;
 
-//import variables from global settings
-Vue.prototype.logmaxfilesize = window.gameboard_logmaxfilesize;
-Vue.prototype.logmaxfiles = window.gameboard_logmaxfiles;
-Vue.prototype.acceptedFileTypes = window.gameboard_acceptedfiletypes.split(',');
+import {TransactionNotificationController} from './transactions.js';
+import veeValidatePlugin from './vee-validate-plugin';
+import eventBus from './eventBus'
+import mitt from 'mitt';
 
-// Initialise VeeValidate, install rules and scheduler
-Object.keys(rules).forEach(rule => {
-    extend(rule, rules[rule]);
-});
-
-Vue.component('validation-provider', ValidationProvider);
-Vue.component('validation-observer', ValidationObserver);
-
-/**
- * The following block of code may be used to automatically register your
- * Vue scheduler. It will recursively scan this directory for the Vue
- * scheduler and automatically register them with their "basename".
- *
- * Eg. ./scheduler/ExampleComponent.vue -> <example-component></example-component>
- */
-
-
-Vue.component('user-display', require('./components/UserDisplay.vue').default);
-Vue.component('login-modal', require('./components/LoginModal.vue').default);
-Vue.component('logout-button', require('./components/LogoutButton.vue').default);
-Vue.component('game-countdown', require('./components/GameCountdown.vue').default);
-Vue.component('timeline', require('./components/Timeline.vue').default);
-Vue.component('party', require('./components/Party.vue').default);
-Vue.component('action', require('./components/Action.vue').default);
-Vue.component('notification-box', require('./components/NotificationBox.vue').default);
-Vue.component('notification', require('./components/Notification.vue').default);
-Vue.component('log-modal', require('./components/LogModal.vue').default);
-Vue.component('log-bubble', require('./components/LogBubble.vue').default);
-Vue.component('system-modal', require('./components/SystemModal.vue').default);
-Vue.component('timeline-scroller', require('./components/TimelineScroller.vue').default);
-Vue.component('live-log', require('./components/LiveLog.vue').default);
-Vue.component('parties-select', require('./components/PartiesSelect.vue').default);
-Vue.component('party-select', require('./components/PartySelect.vue').default);
-Vue.component('action-bubble', require('./components/ActionBubble.vue').default);
-Vue.component('actions-list', require('./components/ActionsList.vue').default);
-Vue.component('quick-logging', require('./components/QuickLogging.vue').default);
-Vue.component('quick-bubble', require('./components/QuickBubble').default);
-Vue.component('help-file', require('./components/HelpFile.vue').default);
-Vue.component('attachment-modal', require('./components/AttachmentModal.vue').default);
-
+const emitter = mitt();
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding scheduler to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const gameboard = new Vue({
+const gameboard = {
     el: '#gameboard',
-
     emits: ['updateLog', 'notify'],
 
     data() {
@@ -116,6 +71,10 @@ const gameboard = new Vue({
             firsttime: window.gameboard_firsttime,
             endtime: window.gameboard_endtime,
             access: window.gameboard_access,
+
+            targetdasboardurl: window.gameboard_targetdasboardurl ? window.gameboard_targetdasboardurl : false,
+            allowedInactivityInSeconds: window.gameboard_allowedInactivityInSeconds,
+            allowedNonVisibleInSeconds: window.gameboard_allowedNonVisibleInSeconds,
 
             editingAction: null,
             editingLogs: {},
@@ -140,7 +99,7 @@ const gameboard = new Vue({
                 src: '#',
             },
 
-            acceptedImageExtensions: ["png", "jpg", "jpeg", "gif", "svg"],
+            acceptedImageExtensions: ["png", "jpg", "jpeg", "gif", "svg", "webp", "apng"],
             acceptedTextExtensions: ["txt", "rtf", "json"],
             acceptedVideoExtensions: ["mp4", "webM", "Ogg"],
             acceptedAudioExtensions: ["mp3", "wav", "Ogg"],
@@ -160,13 +119,15 @@ const gameboard = new Vue({
     },
 
     mounted() {
-        Event.$on('initAttachmentlog', (data) => {
+        this.setupAutoLogout();
+
+        this.emitter.on('initAttachmentlog', (data) => {
                 if ('filename' in data && 'exportablebase64' in data) {
                     this.attachmentmodal = {
                         'filename': data.filename,
                         'created_at': data.created_at,
-                        'base64string' : data.exportablebase64,
-                        'message' : '',
+                        'base64string': data.exportablebase64,
+                        'message': '',
                     }
 
                     const extensionMap = [
@@ -191,7 +152,7 @@ const gameboard = new Vue({
                 }
             }
         );
-        Event.$on('emptyAttachmentsmodal', () => {
+        this.emitter.on('emptyAttachmentsmodal', () => {
                 for (var key in this.attachmentmodal) {
                     this.attachmentmodal[key] = null;
                 }
@@ -240,11 +201,17 @@ const gameboard = new Vue({
             // checker if scroll can be shown
             this.checkScroll();
             setInterval(this.checkScroll.bind(this), 3000);
-
         }
     },
 
     methods: {
+        globalIsRequired(value) {
+            if (value && value.trim()) {
+                return true;
+            }
+            return 'This is required';
+        },
+
         checkScroll() {
             var firsttime = new Date(this.firsttime).getTime();
             var now = new Date().getTime();
@@ -482,6 +449,59 @@ const gameboard = new Vue({
             });
         },
 
+        setupAutoLogout() {
+            let idleTimer;
+            const IdleTimeOut = this.allowedInactivityInSeconds ?? 3600; // 3600; // Allow a full hour of inactivity
+
+            let visibleTimer;
+            const visibleTimeOut = this.allowedNonVisibleInSeconds ?? 3600; // This is the allowed seconds for switching a tab or window away from the gameboard
+
+            // Function to set a timer
+            const setTimer = (func, seconds) => {
+                const ms = seconds * 1000;
+                return setTimeout(func, ms); // Return the timer reference
+            };
+
+            // Function to reset the timer
+            const resetTimer = (timer) => {
+                clearTimeout(timer);
+            };
+
+            // Function to set the idle timer
+            const setIdleTimer = () => {
+                resetTimer(idleTimer); // Reset the current idleTimer
+                idleTimer = setTimer(handleIdle, IdleTimeOut); // Assign the new idleTimer
+            };
+
+            // Function that handles the user being idle
+            const handleIdle = () => {
+                console.info("DDOS-GAMEBOARD: No Activity, logging out...");
+                this.logout(); // Call the logout method
+            };
+
+            // Set up event listeners for user activity
+            document.addEventListener("DOMContentLoaded", () => {
+                setIdleTimer(); // Set the idle timer when the page loads
+            });
+
+            document.addEventListener("mousemove", setIdleTimer);
+            document.addEventListener("mousedown", setIdleTimer);
+            document.addEventListener("keypress", setIdleTimer);
+            document.addEventListener("touchstart", setIdleTimer);
+
+            // Handle visibility change (user switching tabs)
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden) {
+                    // Start the visible timer when the tab is hidden
+                    visibleTimer = setTimer(handleIdle, visibleTimeOut);
+                } else {
+                    console.debug("Not logging out due user switching back to Gameboard in time");
+                    resetTimer(visibleTimer); // Clear the visible timer when the user returns
+                }
+            });
+        },
+
+
         canLog() {
             var dolog = false;
             if (this.user.role != 'observer') {
@@ -546,6 +566,24 @@ const gameboard = new Vue({
                 });
         },
 
+
+        async logout() {
+            await fetch('/api/user/logout', {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if ("result" in data && data.result == true) {
+                        window.location.href = "/";
+                    } else {
+                        console.error('Could not log out!');
+                    }
+                })
+                .catch(err => {
+                    console.error('A fatal error has occured. Reload this page.');
+                });
+        },
+
         updateLog: function (log) {
             console.debug('gameboard.updateLog.received: ', log);
             this.logConsole('Create new log');
@@ -577,6 +615,70 @@ const gameboard = new Vue({
 
         },
 
+        async downloadLoggingPurple() {
+            const tmp = {
+                _token: this.csrfToken,
+                user: this.user,
+            };
+            const path = '/api/download';
+            const method = 'POST';
+
+            // Log the action
+            this.logConsole('Downloading log for party: ' + this.party);
+
+            try {
+                const response = await fetch(path, {
+                    method: method,
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(tmp),
+                });
+
+                const contentType = response.headers.get('Content-Type');
+
+                if (contentType && contentType.includes('application/json')) {
+                    // Error response
+                    const data = await response.json();
+                    if ('message' in data) {
+                        this.triggerError(data.message);
+                    } else {
+                        this.triggerError('An error occurred while downloading the file.');
+                    }
+                    return;
+                }
+
+                // Success response
+                // Get the filename from the response headers, if provided
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'downloaded_file';
+
+                if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+                    const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1];
+                    }
+                }
+
+                // Read the response as a Blob
+                const blob = await response.blob();
+
+                // Create a URL for the Blob and trigger a download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename; // Set the filename
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('An error has occurred:', err);
+                this.triggerError('An unexpected error occurred while downloading the file.');
+            }
+        },
+
         notifyOff: function () {
             // function for removing off screen -> else quick log editor is not working anymore
             this.showNotification = false;
@@ -605,4 +707,57 @@ const gameboard = new Vue({
             this.errorMsg = '';
         },
     }
-});
+};
+
+const app = createApp(gameboard);
+
+app.config.globalProperties.moment = require('moment');
+app.config.globalProperties.delayedUpdateAllResponsiveFunctions = window.delayedUpdateAllResponsiveFunctions;
+app.config.globalProperties.l = window.l;
+
+//import variables from global settings
+app.config.globalProperties.logmaxfilesize = window.gameboard_logmaxfilesize;
+app.config.globalProperties.logmaxfiles = window.gameboard_logmaxfiles;
+app.config.globalProperties.acceptedFileTypes = window.gameboard_acceptedfiletypes.split(',');
+app.config.globalProperties.emitter = emitter;
+
+app.use(veeValidatePlugin);
+
+// Initialise VeeValidate, install rules and scheduler
+// Object.keys(rules).forEach(rule => {
+//     extend(rule, rules[rule]);
+// });
+
+/**
+ * The following block of code may be used to automatically register your
+ * Vue scheduler. It will recursively scan this directory for the Vue
+ * scheduler and automatically register them with their "basename".
+ *
+ * Eg. ./scheduler/ExampleComponent.vue -> <example-component></example-component>
+ */
+
+app.component('user-display', UserDisplay);
+app.component('login-modal', LoginModal);
+app.component('logout-button', LogoutButton);
+app.component('game-countdown', GameCountdown);
+app.component('timeline', Timeline);
+app.component('party', Party);
+app.component('action', Action);
+app.component('notification-box', NotificationBox);
+app.component('notification', Notification);
+app.component('log-modal', LogModal);
+app.component('log-bubble', LogBubble);
+app.component('system-modal', SystemModal);
+app.component('timeline-scroller', TimelineScroller);
+app.component('live-log', LiveLog);
+app.component('parties-select', PartiesSelect);
+app.component('party-select', PartySelect);
+app.component('action-bubble', ActionBubble);
+app.component('actions-list', ActionsList);
+app.component('quick-logging', QuickLogging);
+app.component('quick-bubble', QuickBubble);
+app.component('help-file', HelpFile);
+app.component('attachment-modal', AttachmentModal);
+
+app.mount('#gameboard');
+

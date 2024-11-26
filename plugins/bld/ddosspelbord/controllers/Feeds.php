@@ -38,7 +38,7 @@ class Feeds extends Controller {
     /**
      * Handle the incoming request.
      *
-     * note: not used anay
+     * note: not used any
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -90,8 +90,8 @@ class Feeds extends Controller {
                     $userRole = $user->role;
                     $logRole = $transaction->data['user']['role'];
                     $logPartyId = $transaction->data['user']['partyId'];
-                    // only from own party
-                    if (($user->partyId == $logPartyId) && ($userRole == 'purple' || $userRole == $logRole)) {
+                    // only from own party or the logpartyid == 0, then it's a system log
+                    if (($user->partyId == $logPartyId) && ($userRole == 'purple' || $userRole == $logRole) || $logPartyId == 0) {
                         hLog::logLine("D-Process log transaction; for current user(role=$userRole, partyId=$user->partyId)");
                         $result = $transaction;
                     } else {

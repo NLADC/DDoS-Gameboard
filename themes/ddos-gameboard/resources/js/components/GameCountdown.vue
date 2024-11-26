@@ -1,23 +1,3 @@
-<!--
-  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  -
-  - This file is part of the DDoS gameboard.
-  -
-  - DDoS gameboard is free software; you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
-  - the Free Software Foundation; either version 3 of the License, or
-  - (at your option) any later version.
-  -
-  - DDoS gameboard is distributed in the hope that it will be useful,
-  - but WITHOUT ANY WARRANTY; without even the implied warranty of
-  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  - GNU General Public License for more details.
-  -
-  - You should have received a copy of the GNU General Public License
-  - along with this program; If not, see @link https://www.gnu.org/licenses/.
-  -
-  -->
-
 <template>
     <div class="game-countdown" :class="'mode-' + mode" id="game-countdown">
         <div class="wrapper text-xl lg:text-5xl sm:text-2xl xm:text-1xl">
@@ -31,7 +11,7 @@
             <span>:</span>
             <span>{{ seconds < 10 ? '0' + seconds : seconds }}</span>
 
-            <lottie-player v-if="mode == 2" class="player-2 -top-5 lg:-top-1 -right-10 lg:-right-20" src="/json/alarm.json" background="transparent" speed="0.4" loop autoplay></lottie-player>
+<!--            <lottie-player v-if="mode == 2" class="player-2 -top-5 lg:-top-1 -right-10 lg:-right-20" src="/json/alarm.json" background="transparent" speed="0.4" loop autoplay></lottie-player>-->
         </div>
     </div>
 </template>
@@ -98,7 +78,7 @@
               try {
                 this.delayedUpdateAllResponsiveFunctions();
               } catch (err) {
-                console.log("function delayedUpdateAllResponsiveFunctions in resposive.js not found: " + err.message);
+                console.log("function delayedUpdateAllResponsiveFunctions in responsive.js not found: " + err.message);
               }
 
             },

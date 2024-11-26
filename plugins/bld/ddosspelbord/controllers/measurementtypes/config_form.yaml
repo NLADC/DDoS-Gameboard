@@ -1,0 +1,11 @@
+name: MeasurementTypes
+modelClass: bld\ddosspelbord\models\MeasurementType
+form: $/bld/ddosspelbord/models/measurementtype/fields.yaml
+defaultRedirect: bld/ddosspelbord/measurementtypes
+create:
+    redirect: 'bld/ddosspelbord/measurementtypes/update/:id'
+    redirectClose: bld/ddosspelbord/measurementtypes
+update:
+    redirect: bld/ddosspelbord/measurementtypes
+    redirectClose: bld/ddosspelbord/measurementtypes
+preview: {  }

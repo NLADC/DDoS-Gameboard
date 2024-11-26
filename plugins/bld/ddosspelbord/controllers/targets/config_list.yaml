@@ -1,6 +1,6 @@
 title: Target
 list: $/bld/ddosspelbord/models/target/columns.yaml
-modelClass: bld\ddosspelbord\Models\Target
+modelClass: bld\ddosspelbord\models\Target
 noRecordsMessage: 'backend::lang.list.no_records'
 showSetup: true
 showCheckboxes: true

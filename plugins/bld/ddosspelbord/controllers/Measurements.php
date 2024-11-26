@@ -26,6 +26,8 @@ use BackendMenu;
 
 class Measurements extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.attacks'];
+
     public $implement = [        'Backend\Behaviors\ListController',        'Backend\Behaviors\FormController'    ];
 
     public $listConfig = 'config_list.yaml';

@@ -26,6 +26,8 @@ use BackendMenu;
 
 class Actions extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.actions'];
+
     public $implement = [
         'Backend\Behaviors\ListController',
         'Backend\Behaviors\FormController',
@@ -34,7 +36,7 @@ class Actions extends Controller
 
     public $listConfig = 'config_list.yaml';
     public $formConfig = 'config_form.yaml';
-    public $importExportConfig = 'config_import_export.yaml';
+    public $importExportConfig = 'project_import_export.yaml';
 
     public function __construct()
     {

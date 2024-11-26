@@ -41,33 +41,61 @@ navigation:
         icon: icon-list
         order: 740
     Attacks:
-        label: Attacks
+        label: Stopwatch
         url: bld/ddosspelbord/attacks
+        permissions:
+            - bld.ddosspelbord.attacks
         icon: icon-soccer-ball-o
         order: 750
+
     Monitor:
         label: Monitor
         url: bld/ddosspelbord/targets
+        permissions:
+            - bld.ddosspelbord.attacks
         icon: icon-globe
         order: 760
         sideMenu:
             Targets:
                 label: Targets
                 url: bld/ddosspelbord/targets
+                permissions:
+                    - bld.ddosspelbord.attacks
                 icon: icon-globe
-                order: 1
-            Target_groups:
-                label: 'Target groups'
-                url: bld/ddosspelbord/target_groups
-                icon: icon-group
-                order: 3
-            Measurement_api:
-                label: 'Measurement API'
-                url: bld/ddosspelbord/measurement_api
-                icon: icon-globe
-                order: 5
-            Measurements:
-                label: Measurements
-                url: bld/ddosspelbord/measurements
-                icon: icon-clock-o
-                order: 9
+#            Target_groups:
+#                label: 'Target groups'
+#                url: bld/ddosspelbord/target_groups
+#                permissions:
+#                    - bld.ddosspelbord.attacks
+#                icon: icon-group
+            mesurementtypes:
+                label: Mesurements Types
+                url: bld/ddosspelbord/measurementtypes
+                permissions:
+                    - bld.ddosspelbord.attacks
+                icon: icon-binoculars
+            nodelists:
+                label: NodeLists
+                url: bld/ddosspelbord/nodelists
+                permissions:
+                    - bld.ddosspelbord.attacks
+                icon: icon-sitemap
+#            Measurement_api:
+#                label: 'Measurement API'
+#                url: bld/ddosspelbord/measurementapi
+#                permissions:
+#                    - bld.ddosspelbord.attacks
+#                icon: icon-globe
+#            Measurements:
+#                label: Measurements
+#                url: bld/ddosspelbord/measurements
+#                permissions:
+#                    - bld.ddosspelbord.attacks
+#                icon: icon-clock-o
+    Settings:
+        label: Settings
+        url: system/settings/update/bld/ddosspelbord/settings
+        permissions:
+            - bld.ddosspelbord.access_settings
+        icon: icon-cog
+        order: 790

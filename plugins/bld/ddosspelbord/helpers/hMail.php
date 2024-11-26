@@ -43,7 +43,10 @@ class hMail {
 
     public static function sendMail($to,$mailview,$params, $bcc='' ) {
 
-        $from = 'noreply@' . Config::get('bld.ddosspelbord::errors.domain','ddosgameboard.nl');
+        $from = Config::get('bld.ddosspelbord::errors.from','support@nomoreddos.org');
+        if (empty($from)) {
+            $from = 'noreply@' . Config::get('bld.ddosspelbord::errors.domain','nomoreddos.org');
+        }
 
         $alt_email  = Config::get('bld.ddosspelbord::mail.overrule_to','');
         if ($alt_email) {
@@ -83,7 +86,12 @@ class hMail {
 
     public static function sendMailRaw($to,$subject,$body,$from='',$attachment='',$attachmentname='') {
 
-        if ($from=='') $from = Config::get('bld.ddosspelbord::errors.from','support@ddosgameboard.com');
+        if (empty($from)) {
+            $from = Config::get('bld.ddosspelbord::errors.from','support@nomoreddos.org');
+        }
+        if (empty($from)) {
+            $from = 'noreply@' . Config::get('bld.ddosspelbord::errors.domain','nomoreddos.org');
+        }
 
         $alt_email  = Config::get('bld.ddosspelbord::mail.overrule_to','');
         if ($alt_email) {

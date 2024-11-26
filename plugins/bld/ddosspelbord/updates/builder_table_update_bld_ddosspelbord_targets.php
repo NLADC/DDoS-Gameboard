@@ -30,15 +30,19 @@ class BuilderTableUpdateBldDdosspelbordTargets extends Migration
     {
         Schema::table('bld_ddosspelbord_targets', function($table)
         {
-            $table->integer('measurement_api_id')->nullable()->unsigned();
+            $table->integer('measurement_type_id')->nullable()->unsigned();
+            $table->boolean('enabled')->nullable()->change();
+            $table->dropColumn('type');
         });
     }
-    
+
     public function down()
     {
         Schema::table('bld_ddosspelbord_targets', function($table)
         {
-            $table->dropColumn('measurement_api_id');
+            $table->dropColumn('measurement_type_id');
+            $table->boolean('enabled')->nullable(false)->change();
+            $table->string('type', 40);
         });
     }
 }

@@ -24,7 +24,7 @@ namespace bld\ddosspelbord\console;
 use DateTime;
 use DateTimeZone;
 use bld\ddosspelbord\helpers\hLog;
-use bld\ddosspelbord\Models\Measurement;
+use bld\ddosspelbord\models\Measurement;
 use Bld\Ddosspelbord\models\Settings;
 use bld\ddosspelbord\models\Target;
 use Bld\Ddosspelbord\models\Parties;
@@ -44,8 +44,8 @@ class testMeasurements extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosgameboard:testMeasurements';
-    protected $signature = 'ddosgameboard:testMeasurements {mode? : reset, run}
+    protected $name = 'ddosspelbord:testMeasurements';
+    protected $signature = 'ddosspelbord:testMeasurements {mode? : reset, run}
         {--s|sec= : timestamp interval seconds (default 60)}
         {--c|clip= : clipping ms (default 200ms)}
         ';
@@ -148,7 +148,7 @@ class testMeasurements extends Command
 
         if ($showhelp)  {
 
-            Artisan::call('ddosgameboard:testMeasurements -h');
+            Artisan::call('ddosspelbord:testMeasurements -h');
             $this->info(Artisan::output());
 
         }

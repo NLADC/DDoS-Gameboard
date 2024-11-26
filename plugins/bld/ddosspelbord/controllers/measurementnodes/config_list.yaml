@@ -1,0 +1,12 @@
+title: MeasurementNodes
+modelClass: bld\ddosspelbord\models\MeasurementNode
+list: $/bld/ddosspelbord/models/measurementnode/columns.yaml
+recordUrl: 'bld/ddosspelbord/measurementnodes/update/:id'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: 20
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'

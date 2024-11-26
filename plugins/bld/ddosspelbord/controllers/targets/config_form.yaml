@@ -1,6 +1,6 @@
 name: Target
 form: $/bld/ddosspelbord/models/target/fields.yaml
-modelClass: bld\ddosspelbord\Models\Target
+modelClass: bld\ddosspelbord\models\Target
 defaultRedirect: bld/ddosspelbord/targets
 create:
     redirect: 'bld/ddosspelbord/targets/update/:id'

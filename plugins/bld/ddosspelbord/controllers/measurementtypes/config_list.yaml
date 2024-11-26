@@ -1,0 +1,12 @@
+title: MeasurementTypes
+modelClass: bld\ddosspelbord\models\MeasurementType
+list: $/bld/ddosspelbord/models/measurementtype/columns.yaml
+recordUrl: 'bld/ddosspelbord/measurementtypes/update/:id'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: 20
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'

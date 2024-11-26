@@ -1,6 +1,6 @@
 name: Attacks
 form: $/bld/ddosspelbord/models/attack/fields.yaml
-modelClass: bld\ddosspelbord\Models\Attack
+modelClass: bld\ddosspelbord\models\Attack
 defaultRedirect: bld/ddosspelbord/attacks
 create:
     redirect: 'bld/ddosspelbord/attacks/update/:id'

@@ -5,8 +5,6 @@ module.exports = {
     variants: {},
     plugins: {
         'postcss-import': {},
-        'postcss-preser-env': {},
-        'tailwindcss': {},
-        'autoprefixed': {}
+        'tailwindcss': {}
     },
 }

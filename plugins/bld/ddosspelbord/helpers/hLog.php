@@ -136,7 +136,7 @@ class hLog {
      */
     public static function errorMail($errorText, $excep = null, $errorSubject='') {
 
-        $errormail  = Config::get('bld.ddosspelbord::errors.email','support@ddosgameboard.com');
+        $errormail  = Config::get('bld.ddosspelbord::errors.email','support@sendMailRaw');
         $subject    = Config::get('bld.ddosspelbord::errors.domain','') . ' - error: ' . (($errorSubject) ? $errorSubject : $errorText);
         $active     = (bool) Config::get('bld.ddosspelbord::errors.active', 1);
 

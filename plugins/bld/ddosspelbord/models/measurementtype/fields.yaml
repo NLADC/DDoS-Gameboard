@@ -1,0 +1,15 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    nodelist:
+        label: Nodelist
+        type: relation
+        emptyOption: -- none --
+    description:
+        label: Description
+        span: full
+        size: large
+        type: textarea
+

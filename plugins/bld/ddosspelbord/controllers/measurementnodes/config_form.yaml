@@ -1,0 +1,11 @@
+name: MeasurementNodes
+modelClass: bld\ddosspelbord\models\MeasurementNode
+form: $/bld/ddosspelbord/models/measurementnode/fields.yaml
+defaultRedirect: bld/ddosspelbord/measurementnodes
+create:
+    redirect: 'bld/ddosspelbord/measurementnodes/update/:id'
+    redirectClose: bld/ddosspelbord/measurementnodes
+update:
+    redirect: bld/ddosspelbord/measurementnodes
+    redirectClose: bld/ddosspelbord/measurementnodes
+preview: {  }

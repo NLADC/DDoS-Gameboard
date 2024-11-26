@@ -1,6 +1,9 @@
 columns:
-    type:
+    measurementtype:
         label: Type
+        relation: measurementtype
+        select: name
+        searchable: true
     name:
         label: name
         type: text

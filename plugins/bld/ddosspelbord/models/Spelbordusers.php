@@ -21,17 +21,25 @@
 
 namespace Bld\Ddosspelbord\Models;
 
+use bld\ddosspelbord\classes\middleware\ReqAccesToken;
 use Db;
 use Auth;
 use Hash;
 use Model;
-use October\Rain\Support\Facades\Flash;
+use File;
+use Winter\Storm\Auth\AuthenticationException;
+use Winter\Storm\Exception\ApplicationException;
+use Winter\Storm\Support\Facades\Flash;
 use Session;
 use Mail;
 use Request;
 use URL;
 use Winter\User\Models\User;
 use bld\ddosspelbord\helpers\hLog;
+use Laravel\Passport\TokenRepository;
+use League\OAuth2\Server\ResourceServer;
+use Psr\Http\Message\ServerRequestInterface;
+
 
 /**
  * Model
@@ -44,6 +52,7 @@ class Spelbordusers extends Model
      * @var string The database table used by the model.
      */
     public $table = 'bld_ddosspelbord_users';
+    protected $roleLocked = true;
 
     /**
      * @var array Validation rules
@@ -51,7 +60,7 @@ class Spelbordusers extends Model
     public $rules = [
         'name' => 'required',
         'email'    => 'required',
-        'password'    => 'required',
+        'password'    => 'required:create',
         'party_id'    => 'required',
         'role_id'    => 'required',
     ];
@@ -79,6 +88,9 @@ class Spelbordusers extends Model
         ],
     ];
 
+    /**
+     * @return void
+     */
     public function onResetPassword() {
         $user = User::findByEmail( $this->email );
         $pwd = 'P@$$w0rd';    // Retreive password in the request
@@ -143,8 +155,7 @@ class Spelbordusers extends Model
                 'email' => $this->email,
                 'password' => $this->password,
                 'password_confirmation' => $this->password,
-                ],true
-            );
+                ],true);
             $user->convertToRegistered();
             $user = User::find($user->id);
         }
@@ -157,10 +168,6 @@ class Spelbordusers extends Model
             Flash::error('Error create user');
             return false;
         }
-    }
-
-    public function afterCreate() {
-
     }
 
     public function beforeUpdate() {
@@ -185,7 +192,30 @@ class Spelbordusers extends Model
             return false;
         }
 
+        $newRole = $this->role_id;
+        $oldRole = $this->original['role_id'];
+        if (intval($newRole) !== intval($oldRole)) {
+            throw new ApplicationException('Role change must be done via the change role functionality');
+            return false;
+        }
     }
+
+    public function changeRoleAndDeleteData($roleId) {
+
+        $this->deleteUserData();
+        Db::table('bld_ddosspelbord_users')->where('id', $this->id)->update(['role_id' => intval($roleId)]);
+    }
+
+    private function deleteUserData() {
+
+        Attack::where('user_id', $this->id)->delete();
+        foreach (Logs::where('user_id',$this->id)->get() as $log) {
+            File::where('attachment_type', 'Bld\Ddosspelbord\Models\Logs')->where('attachment_id',$log->id)->delete();
+        }
+        Logs::where('user_id', $this->id)->delete();
+    }
+
+
 
     public function beforeDelete() {
 
@@ -218,7 +248,8 @@ class Spelbordusers extends Model
             } else {
                 if ($log) hLog::logLine("W-userSpelbord; can not find (spelbord) user with email=$userauth->email");
             }
-        } else {
+        }
+        else {
             if ($log) hLog::logLine("D-userSpelbord; no access");
         }
         if (!$user) {
@@ -235,10 +266,23 @@ class Spelbordusers extends Model
 
     public static function verifyAccess($checktoken=true) {
 
-        // check if logged in
-        $user = Spelbordusers::getOnAuth();
-        if ($user && $user->id!=0) {
+        // Check if user is from the API and has a valid bearer token
+        $request = request(); // Get the current request instance
+        $user = null;
 
+        // Check if this is an API request and has a laravel/passport Bearer token
+        if (!empty($request->bearerToken())) {
+            if (self::validateSystemUser()) {
+                $user = self::createSystemUserObject();
+                $checktoken = false;
+            }
+        }
+        else {
+            // check if logged in on the Gameboard application as as USER
+            $user = Spelbordusers::getOnAuth();
+        }
+
+        if ($user) {
             if ($checktoken) {
                 // check token
                 $token = post('_token', '');
@@ -257,7 +301,50 @@ class Spelbordusers extends Model
         }
 
         return $user;
+    }
 
+    private static function validateSystemUser(){
+        try {
+            // Use Passport's ResourceServer to validate the Bearer token
+            $server = app(ResourceServer::class);
+            $psr = app(ServerRequestInterface::class); // Convert Laravel request to PSR-7 request
+            $validatedRequest = $server->validateAuthenticatedRequest($psr);
+
+            // Get token ID from the validated request
+            $tokenId = $validatedRequest->getAttribute('oauth_access_token_id');
+
+            $tokenRepository = app(TokenRepository::class);
+            $token = $tokenRepository->find($tokenId);
+
+            if ($token && !$token->revoked) {
+                return true;
+            } else {
+                throw new AuthenticationException('Invalid or missing Bearer token.');
+            }
+
+        } catch (AuthenticationException $e) {
+            return response()->json(['error' => 'Bearer token authentication failed: ' . $e->getMessage()], 401);
+        }
+    }
+
+    public static function createSystemUserObject(){
+        return (object)[
+            'id' => 0,
+            'partyId' => 0,
+            'name' => 'System',
+            'role' => '',
+            'settings' => '',
+        ];
+    }
+
+    public static function createSystemUserArray(){
+        return [
+            'id' => 0,
+            'partyId' => 0,
+            'name' => 'System',
+            'role' => '',
+            'settings' => '',
+        ];
     }
 
     /**
@@ -289,6 +376,7 @@ class Spelbordusers extends Model
         // logout
         Auth::logout();
     }
+
 
 
 }

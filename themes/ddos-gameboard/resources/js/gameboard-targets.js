@@ -1,22 +1,5 @@
-/*
- * Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
- *
- * This file is part of the DDoS gameboard.
- *
- * DDoS gameboard is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * DDoS gameboard is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see @link https://www.gnu.org/licenses/.
- *
- */
+import {createApp} from 'vue'
+import './security';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -25,51 +8,21 @@
  */
 
 require('./lang');
-
-import Vue from 'vue';
-import {ValidationObserver, ValidationProvider, extend} from 'vee-validate';
-import * as rules from 'vee-validate/dist/rules';
-
-window.Event = new Vue();
-
 require('material-icons');
-require('@lottiefiles/lottie-player');
-Vue.prototype.moment = require('moment');
-Vue.prototype.l = window.l;
-Vue.prototype.graphmaxresponsetime = window.targetsdashboard_graphmaxresponsetime;
+// require('@lottiefiles/lottie-player');
 
-// Initialise VeeValidate, install rules and scheduler
-Object.keys(rules).forEach(rule => {
-    extend(rule, rules[rule]);
-});
-
-Vue.component('validation-provider', ValidationProvider);
-Vue.component('validation-observer', ValidationObserver);
-
-/**
- * The following block of code may be used to automatically register your
- * Vue scheduler. It will recursively scan this directory for the Vue
- * scheduler and automatically register them with their "basename".
- *
- * Eg. ./scheduler/ExampleComponent.vue -> <example-component></example-component>
- */
-
-Vue.component('measurements', require('./components/Measurements.vue').default);
-Vue.component('measurements-graph', require('./components/MeasurementsGraph.vue').default);
-Vue.component('measurements-data', require('./components/MeasurementsData.vue').default);
-Vue.component('groups-select', require('./components/GroupsSelect.vue').default);
-Vue.component('group-select', require('./components/GroupSelect.vue').default);
+import veeValidatePlugin from './vee-validate-plugin';
+import eventBus from './eventBus'
+import mitt from 'mitt';
 
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding scheduler to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const targetsdashboard = new Vue({
+const targetsdashboard = {
     el: '#targetsdashboard',
     emits: ['scaled'],
+
+    created(){
+        this.emitter = mitt();
+    },
 
     data() {
         return {
@@ -216,17 +169,42 @@ const targetsdashboard = new Vue({
                 else {
                     document.documentElement.style.fontSize = "4px";
                 }
-                Event.$emit('scaled');
+                this.emitter.emit('scaled');
 
             }
             else {
                 document.documentElement.style.fontSize = "16px";
-                Event.$emit('scaled');
+                this.emitter.emit('scaled');
             }
 
         },
     }
-});
+};
+
+const app = createApp(targetsdashboard);
+
+app.config.globalProperties.moment = require('moment');
+app.config.globalProperties.l = window.l;
+app.config.globalProperties.graphmaxresponsetime = window.targetsdashboard_graphmaxresponsetime;
+
+/**
+ * The following block of code may be used to automatically register your
+ * Vue scheduler. It will recursively scan this directory for the Vue
+ * scheduler and automatically register them with their "basename".
+ *
+ * Eg. ./scheduler/ExampleComponent.vue -> <example-component></example-component>
+ */
+
+app.component('measurements', require('./components/Measurements.vue').default);
+app.component('measurements-graph', require('./components/MeasurementsGraph.vue').default);
+app.component('measurements-data', require('./components/MeasurementsData.vue').default);
+app.component('groups-select', require('./components/GroupsSelect.vue').default);
+app.component('group-select', require('./components/GroupSelect.vue').default);
+app.use(veeValidatePlugin);
+
+app.mount('#targetsdashboard');
+
+
 
 window.setZoom = function () {
     document.body.style.zoom = '30%';

@@ -28,7 +28,6 @@ use BackendAuth;
 use DateTime;
 use DateTimeZone;
 
-
 /**
  * Model
  */
@@ -50,6 +49,7 @@ class Settings extends Model {
         'logmaxfilesize'    => 'numeric|min:0',
         'logmaxfiles'    => 'numeric|min:0',
         'graphmaxresponsetime'    => 'numeric|min:0',
+        'measurements_active'    => 'required|boolean',
     ];
 
     public $implement = ['System.Behaviors.SettingsModel'];
@@ -62,6 +62,7 @@ class Settings extends Model {
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
 
+
     public function afterSave() {
         parent::afterSave();
 
@@ -71,11 +72,14 @@ class Settings extends Model {
         // force only date
 
         // bepaal start
-        $startdate = date('Y-m-d',strtotime(Settings::get('startdate'))).' 00:00:00';
-        $starttime = date('H:i:s',strtotime(Settings::get('starttime','03:00:00')));
-        $start = str_replace('00:00:00',$starttime,$startdate);
-        hLog::logLine("D-afterSave; startdate=$startdate, starttime=$starttime, start=$start");
-        // controleer of start gewijzigd -> zo ja, voer door in acties
+
+        $timezone = new DateTimeZone(config('cms.backendTimezone'));
+        $startdate = new DateTime(Settings::get('startdate', date('Y-m-d 00:00:00')), $timezone);
+        $starttime = new DateTime(Settings::get('starttime', '03:00:00'));
+        $starttime = $starttime->setTimezone($timezone); // Adjust to the backend timezone
+        $start = str_replace('00:00:00', $starttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+
+        hLog::logLine("D-afterSave; start=$start");
         (new Actions())->resetStartTime($start);
     }
 
@@ -83,15 +87,32 @@ class Settings extends Model {
 
         $startstop = new \stdClass();
 
-        // first (start)
-        $startdate = date('Y-m-d 00:00:00',strtotime(Settings::get('startdate',date('Y-m-d'))));
-        $enddate = date('Y-m-d 00:00:00',strtotime(Settings::get('enddate',date('Y-m-d'))));
-        $firsttime = date('H:i:s', strtotime(Settings::get('firsttime', '02:30:00')));
-        $startstop->first = str_replace('00:00:00', $firsttime, $startdate);
-        $starttime = date('H:i:s', strtotime(Settings::get('starttime', '02:30:00')));
-        $startstop->start = str_replace('00:00:00', $starttime, $startdate);
-        $endtime = date('H:i:s', strtotime(Settings::get('endtime', '08:00:00')));
-        $startstop->end = str_replace('00:00:00', $endtime, $enddate);
+
+        $timezone = new DateTimeZone(config('cms.backendTimezone'));
+
+        // Fetching start and end dates, and applying the timezone correctly
+        $startdate = new DateTime(Settings::get('startdate', date('Y-m-d 00:00:00')), $timezone);
+        $enddate = new DateTime(Settings::get('enddate', date('Y-m-d 00:00:00')), $timezone);
+
+        // Fetch and adjust 'firsttime' to the appropriate timezone
+        $firsttime = new DateTime(Settings::get('firsttime', '02:30:00'));
+        $firsttime = $firsttime->setTimezone($timezone); // Adjust to the backend timezone
+        $first = str_replace('00:00:00', $firsttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+
+        // Fetch and adjust 'starttime' to the appropriate timezone
+        $starttime = new DateTime(Settings::get('starttime', '03:00:00'));
+        $starttime = $starttime->setTimezone($timezone); // Adjust to the backend timezone
+        $start = str_replace('00:00:00', $starttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+
+        // Fetch and adjust 'endtime' to the appropriate timezone
+        $endtime = new DateTime(Settings::get('endtime', '08:00:00'));
+        $endtime = $endtime->setTimezone($timezone); // Adjust to the backend timezone
+        $end = str_replace('00:00:00', $endtime->format('H:i:s'), $enddate->format('Y-m-d 00:00:00'));
+
+
+        $startstop->first = str_replace('00:00:00', $firsttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+        $startstop->start = str_replace('00:00:00', $starttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+        $startstop->end = str_replace('00:00:00', $endtime->format('H:i:s'), $enddate->format('Y-m-d 00:00:00'));
         // get UTC version
         $date = new DateTime('now', new DateTimeZone('Europe/Amsterdam'));
         $interval = $date->format('I') > 0 ? 2 : 1;
@@ -101,6 +122,19 @@ class Settings extends Model {
         return $startstop;
     }
 
+    /**
+     * Ensures default values are set after fetching settings.
+     */
+    public function afterFetch()
+    {
+        if (is_null($this->allowedInactivityInSeconds)) {
+            $this->allowedInactivityInSeconds = 3600; // Set default value
+        }
+
+        if (is_null($this->allowedNonVisibleInSeconds)) {
+            $this->allowedNonVisibleInSeconds = 3600; // Set default value
+        }
+    }
 
 }
 

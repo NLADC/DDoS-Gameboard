@@ -1,5 +1,5 @@
 list: $/bld/ddosspelbord/models/attack/columns.yaml
-modelClass: bld\ddosspelbord\Models\Attack
+modelClass: bld\ddosspelbord\models\Attack
 title: Attacks
 noRecordsMessage: 'backend::lang.list.no_records'
 showSetup: true

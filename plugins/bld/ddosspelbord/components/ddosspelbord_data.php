@@ -37,6 +37,8 @@ use Config;
 use Session;
 use Redirect;
 use Response;
+use DateTime;
+use DateTimeZone;
 use Bld\Ddosspelbord\Controllers\Feeds;
 use Bld\Ddosspelbord\Models\Attack as Attack;
 use Bld\Ddosspelbord\Models\Transactions;
@@ -83,7 +85,6 @@ class ddosspelbord_data extends ComponentBase
 
     public function onRun()
     {
-
         $this->page['gameboard'] = $this->getGameboardData();
     }
 
@@ -119,19 +120,30 @@ class ddosspelbord_data extends ComponentBase
 
             $title = Settings::get('description', '');
             if (empty($title)) $title = 'DDoS gameboard';   // always filled
-            $startdate = date('Y-m-d 00:00:00',strtotime(Settings::get('startdate', date('Y-m-d'))));
-            $enddate = date('Y-m-d 00:00:00',strtotime(Settings::get('enddate',date('Y-m-d'))));
 
-            $firsttime = date('H:i:s', strtotime(Settings::get('firsttime', '02:30:00')));
-            $first = str_replace('00:00:00', $firsttime, $startdate);
-            $starttime = date('H:i:s', strtotime(Settings::get('starttime', '03:00:00')));
-            $start = str_replace('00:00:00', $starttime, $startdate);
+            $timezone = new DateTimeZone(config('cms.backendTimezone'));
 
-            $endtime = date('H:i:s', strtotime(Settings::get('endtime', '08:00:00')));
-            $end = str_replace('00:00:00', $endtime, $enddate);
+            // Fetching start and end dates, and applying the timezone correctly
+            $startdate = new DateTime(Settings::get('startdate', date('Y-m-d 00:00:00')), $timezone);
+            $enddate = new DateTime(Settings::get('enddate', date('Y-m-d 00:00:00')), $timezone);
+
+            // Fetch and adjust 'firsttime' to the appropriate timezone
+            $firsttime = new DateTime(Settings::get('firsttime', '02:30:00'));
+            $firsttime = $firsttime->setTimezone($timezone); // Adjust to the backend timezone
+            $first = str_replace('00:00:00', $firsttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+
+            // Fetch and adjust 'starttime' to the appropriate timezone
+            $starttime = new DateTime(Settings::get('starttime', '03:00:00'));
+            $starttime = $starttime->setTimezone($timezone); // Adjust to the backend timezone
+            $start = str_replace('00:00:00', $starttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
+
+            // Fetch and adjust 'endtime' to the appropriate timezone
+            $endtime = new DateTime(Settings::get('endtime', '08:00:00'));
+            $endtime = $endtime->setTimezone($timezone); // Adjust to the backend timezone
+            $end = str_replace('00:00:00', $endtime->format('H:i:s'), $enddate->format('Y-m-d 00:00:00'));
 
             // Scroll (session)
-            $scroll = Session::get(SESSION_SET_SCROLL, false);
+            $scroll = Session::get(SESSION_SET_SCROLL, true);
             $scroll = ($scroll) ? 'true' : 'false';
 
             // Note: in minutes
@@ -148,6 +160,11 @@ class ddosspelbord_data extends ComponentBase
 
             // Save hash current user session
             Feeds::setLastsettingHash($hash);
+
+            $targetdasboardurl = Settings::get('external_target_monitor_url', false);
+
+            $allowedInactivityInSeconds = Settings::get('allowedInactivityInSeconds', 3600);
+            $allowedNonVisibleInSeconds = Settings::get('allowedNonVisibleInSeconds', 3600);
 
             // -1- lang
             $lang = $this->getLangStrings();
@@ -183,6 +200,9 @@ class ddosspelbord_data extends ComponentBase
                 'logmaxfilesize' => $logmaxfilesize,
                 'logmaxfiles' => $logmaxfiles,
                 'acceptedfiletypes' => implode(',', $acceptedfiletypes),
+                'targetdasboardurl' => $targetdasboardurl,
+                'allowedInactivityInSeconds' => $allowedInactivityInSeconds,
+                'allowedNonVisibleInSeconds' => $allowedNonVisibleInSeconds,
             ];
 
             // let's get to work
@@ -287,21 +307,28 @@ class ddosspelbord_data extends ComponentBase
 
     public static function getSpelborduser($user_id, $auth = false)
     {
-        // Convert to vue code
-        if ($auth) {
-            $spelborduser = Spelbordusers::where('user_id', $user_id)->first();
-        } else {
-            $spelborduser = Spelbordusers::find($user_id);
+        if ($user_id == 0 && $auth == false) {
+               $spelborduser = Spelbordusers::createSystemUserArray();
         }
-        if ($spelborduser) {
-            $spelborduser = $spelborduser->toArray();
-            $spelborduser['partyId'] = $spelborduser['party_id'];
-            $role = Roles::find($spelborduser['role_id']);
-            $spelborduser['role'] = ($role) ? $role->name : DB_ROLE_BLUE;
-            foreach (['user_id', 'role_id', 'party_id'] as $skip) {
-                unset($spelborduser[$skip]);
+        else {
+            // Convert to vue code
+            if ($auth) {
+                $spelborduser = Spelbordusers::where('user_id', $user_id)->first();
+            }
+            else {
+                $spelborduser = Spelbordusers::find($user_id);
+            }
+            if ($spelborduser) {
+                $spelborduser = $spelborduser->toArray();
+                $spelborduser['partyId'] = $spelborduser['party_id'];
+                $role = Roles::find($spelborduser['role_id']);
+                $spelborduser['role'] = ($role) ? $role->name : DB_ROLE_BLUE;
+                foreach (['user_id', 'role_id', 'party_id'] as $skip) {
+                    unset($spelborduser[$skip]);
+                }
             }
         }
+
         return $spelborduser;
     }
 
@@ -345,10 +372,13 @@ class ddosspelbord_data extends ComponentBase
 
             hLog::logLine("D-ddosspelbord_data; getLogs; userRole=$userRole, party_id=$party_id");
 
-            $logs = Logs::join(DB_TABLE_USERS, DB_TABLE_USERS . '.id', '=', DB_TABLE_LOGS . '.user_id')
+            // Fetch logs based on party_id by joining the users table
+            $logs = Logs::leftJoin(DB_TABLE_USERS, DB_TABLE_USERS . '.id', '=', DB_TABLE_LOGS . '.user_id')
                 ->where(DB_TABLE_USERS . '.party_id', '=', $party_id)
+                ->orWhere(DB_TABLE_LOGS . '.user_id', '=', 0) // Include logs where user_id = 0
                 ->select(DB_TABLE_LOGS . '.*')
                 ->get();
+
 
             if (count($logs) > 0) {
                 $party = Parties::find($party_id);
@@ -360,13 +390,10 @@ class ddosspelbord_data extends ComponentBase
                     // Only authorized logs
                     $attachmentsmodels = self::getLogAttachments($log['id']);
                     $attachments = self::exportLogAttachments($attachmentsmodels);
-                    if ($userRole == DB_ROLE_PURPLE || $spelborduser['role'] == $userRole) {
+                    if ($userRole == DB_ROLE_PURPLE || $spelborduser['role'] == $userRole || $spelborduser['id'] == 0) {
                         $spelbordlog = $log->toArray();
                         $spelbordlog['user'] = $spelborduser;
-                        $spelbordlog['user']['party'] = ($party) ? $party : [
-                            'id' => 0,
-                            'name' => NO_PARTY_NAME,
-                        ];
+                        $spelbordlog['user']['party'] = ($party) ? $party->toArray() : self::createEmptyParty();
                         $spelbordlog['partyId'] = $party_id;
                         $spelbordlog['attachments'] = $attachments;
                         $ologs[$log->id] = $spelbordlog;
@@ -414,11 +441,10 @@ class ddosspelbord_data extends ComponentBase
                     if ($userRole == DB_ROLE_PURPLE || $spelborduser['role'] == $userRole) {
                         $spelboardattack = $attack->toArray();
                         $spelboardattack['user'] = $spelborduser;
-                        $spelboardattack['user']['party'] = ($party) ? $party : [
-                            'id' => 0,
-                            'name' => NO_PARTY_NAME,
-                        ];
+                        $spelboardattack['user']['party'] = ($party) ? $party->toArray() : self::createEmptyParty();
                         $spelboardattack['partyId'] = $party_id;
+                        $timestamp = new DateTime($attack->updated_at);
+                        $spelboardattack['lastUpdated'] = $timestamp->format('m-d / H:i');
                         $spelboardattack['attachments'] = $attachments;
                         $oattacks[$attack->id] = $spelboardattack;
                     }
@@ -442,20 +468,27 @@ class ddosspelbord_data extends ComponentBase
         // Array values
         $log = $log->toArray();
         $user = self::getSpelborduser($log['user_id']);
-        $party = Parties::find($user['partyId']);
+        $partyId = intval($user['partyId']);
+        $party = ($partyId == 0) ? false : Parties::find($partyId); //If the party id is 0 than it is the system user
         if ($hasattachments) {
             $attachmentsmodels = self::getLogAttachments($log['id']);
             $attachments = self::exportLogAttachments($attachmentsmodels);
             $log['attachments'] = $attachments;
         }
         $log['user'] = $user;
-        $log['user']['party'] = ($party) ? $party->toArray() : [
-            'id' => 0,
-            'name' => NO_PARTY_NAME,
-        ];
+        $log['user']['party'] = ($party) ? $party->toArray() : self::createEmptyParty();
         $log['partyId'] = $user['partyId'];
 
         return $log;
+    }
+
+    public static function createEmptyParty(){
+        return [
+            'id' => 0,
+            'deleted_at' => NULL,
+            'name' => NO_PARTY_NAME,
+            'logo', ''
+        ];
     }
 
     /**
@@ -470,11 +503,10 @@ class ddosspelbord_data extends ComponentBase
         $party = Parties::find($user['partyId']);
 
         $attack['user'] = $user;
-        $attack['user']['party'] = ($party) ? $party->toArray() : [
-            'id' => 0,
-            'name' => NO_PARTY_NAME,
-        ];
+        $attack['user']['party'] = ($party) ? $party->toArray() : self::createEmptyParty();
         $attack['partyId'] = $user['partyId'];
+        $timestamp = (!empty($attack->updated_at)) ? new DateTime($attack->updated_at) : new DateTime();
+        $attack['lastUpdated'] = $timestamp->format('m-d / H:i');
 
         return $attack;
     }

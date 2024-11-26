@@ -246,7 +246,7 @@ class ddosspelbord_targets extends ComponentBase
                     'timestamp' => $measurement->timestamp,
                     'responsetime' => $measurement->responsetime,
                 ];
-                
+
                 array_push($return, $data);
             }
         }
@@ -260,9 +260,11 @@ class ddosspelbord_targets extends ComponentBase
     public function getLatestTimestamp()
     {
         $measurement = Measurement::where('id', '>', 0)->orderBy('timestamp','DESC')->get()->first();
-        $timestamp = $measurement->timestamp;
+        $timestamp = (!empty($measurement) && !empty($measurement->timestamp)) ? $measurement->timestamp: "1970-01-01 00:00:00";
+
         return $timestamp;
     }
+
 
     /**
      * This will return an interpretable object that the Front-end theme can create a nice dashboard from

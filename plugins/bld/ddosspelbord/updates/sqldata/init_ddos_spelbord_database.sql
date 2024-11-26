@@ -1,184 +1,3 @@
---
--- Tabelstructuur voor tabel `attacks`
---
-DROP TABLE IF EXISTS `bld_ddosspelbord_attacks`;
-CREATE TABLE `bld_ddosspelbord_attacks` (
-                                            `id` bigint(20) UNSIGNED NOT NULL,
-                                            `name` varchar(191) COLLATE utf8mb4_unicode_ci NULL,
-                                            `party_id` bigint(20) UNSIGNED DEFAULT NULL,
-                                            `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-                                            `status` varchar(191) COLLATE utf8mb4_unicode_ci NULL,
-                                            `timestamp` datetime NULL,
-                                            `created_at` timestamp NULL DEFAULT NULL,
-                                            `updated_at` timestamp NULL DEFAULT NULL,
-                                            `deleted_at` timestamp NULL DEFAULT NULL
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Tabelstructuur voor tabel `actions`
---
-DROP TABLE IF EXISTS `bld_ddosspelbord_actions`;
-CREATE TABLE `bld_ddosspelbord_actions` (
-                                            `id` bigint(20) UNSIGNED NOT NULL,
-                                            `party_id` bigint(20) UNSIGNED DEFAULT NULL,
-                                            `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                            `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                            `tag` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                            `start` datetime NOT NULL,
-                                            `length` int(10) UNSIGNED NOT NULL DEFAULT '0',
-                                            `delay` int(10) NOT NULL DEFAULT '0',
-                                            `extension` int(10) UNSIGNED NOT NULL DEFAULT '0',
-                                            `has_issues` tinyint(3) NOT NULL DEFAULT '0',
-                                            `is_cancelled` tinyint(3) NOT NULL DEFAULT '0',
-                                            `highlight` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                                            `created_at` timestamp NULL DEFAULT NULL,
-                                            `updated_at` timestamp NULL DEFAULT NULL,
-                                            `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
---
--- Tabelstructuur voor tabel `logs`
---
-DROP TABLE IF EXISTS `bld_ddosspelbord_logs`;
-CREATE TABLE `bld_ddosspelbord_logs` (
-                                         `id` bigint(20) UNSIGNED NOT NULL,
-                                         `user_id` bigint(20) UNSIGNED NULL,
-                                         `log` text COLLATE utf8mb4_unicode_ci NULL,
-                                         `timestamp` datetime NULL,
-                                         `created_at` timestamp NULL DEFAULT NULL,
-                                         `updated_at` timestamp NULL DEFAULT NULL,
-                                         `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `parties`
---
-DROP TABLE IF EXISTS `bld_ddosspelbord_parties`;
-CREATE TABLE `bld_ddosspelbord_parties` (
-                                            `id` bigint(20) UNSIGNED NOT NULL,
-                                            `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                            `logo` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                            `created_at` timestamp NULL DEFAULT NULL,
-                                            `updated_at` timestamp NULL DEFAULT NULL,
-                                            `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-INSERT INTO `bld_ddosspelbord_parties` (`id`, `name`, `logo`, `created_at`, `updated_at`) VALUES
-                                                                                              (1, 'Belastingdienst', '', '2021-08-12 06:41:00', '2021-08-12 06:41:00'),
-                                                                                              (2, 'SSC-ICT', '', '2021-08-12 06:41:00', '2021-08-12 06:41:00'),
-                                                                                              (3, 'SIDN', '', '2021-08-12 06:41:00', '2021-08-12 06:41:00'),
-                                                                                              (4, 'Logius', '', '2021-08-12 06:41:00', '2021-08-12 06:41:00'),
-                                                                                              (5, 'Rijkswaterstaat', '', NULL, '2022-04-04 11:42:17'),
-                                                                                              (6, 'AntiDDoS Coalitie', '', NULL, '2022-04-05 11:35:26');
-
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `roles`
---
-
-DROP TABLE IF EXISTS bld_ddosspelbord_roles;
-CREATE TABLE `bld_ddosspelbord_roles` (
-                                          `id` bigint(20) UNSIGNED NOT NULL,
-                                          `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                          `display_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                          `created_at` timestamp NULL DEFAULT NULL,
-                                          `updated_at` timestamp NULL DEFAULT NULL,
-                                          `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Gegevens worden geëxporteerd voor tabel `roles`
---
-
-INSERT INTO `bld_ddosspelbord_roles` (`id`, `name`, `display_name`, `created_at`, `updated_at`) VALUES
-                                                                                                    (1, 'purple', 'PURPLE team', NULL, NULL),
-                                                                                                    (2, 'blue', 'BLUE TEAM', NULL, NULL),
-                                                                                                    (3, 'red', 'RED TEAM', NULL, NULL),
-                                                                                                    (4, 'observer', 'Observer', NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `spelbordusers`
---
-
-DROP TABLE IF EXISTS bld_ddosspelbord_users;
-CREATE TABLE `bld_ddosspelbord_users` (
-                                          `id` bigint(20) UNSIGNED NOT NULL,
-                                          `user_id` bigint(20) UNSIGNED NOT NULL,
-                                          `role_id` bigint(20) UNSIGNED DEFAULT NULL,
-                                          `party_id` bigint(20) UNSIGNED NOT NULL,
-                                          `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                          `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                          `avatar` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'users/default.png',
-                                          `email_verified_at` timestamp NULL DEFAULT NULL,
-                                          `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                          `api_token` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                                          `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                                          `settings` text COLLATE utf8mb4_unicode_ci,
-                                          `heartbeat` datetime NULL,
-                                          `created_at` timestamp NULL DEFAULT NULL,
-                                          `updated_at` timestamp NULL DEFAULT NULL,
-                                          `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `transactions`
---
-DROP TABLE IF EXISTS bld_ddosspelbord_transactions;
-CREATE TABLE `bld_ddosspelbord_transactions` (
-                                                 `id` bigint(20) UNSIGNED NOT NULL,
-                                                 `hash` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                                 `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                                 `data` text COLLATE utf8mb4_unicode_ci NOT NULL,
-                                                 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                                 `updated_at` timestamp NULL DEFAULT NULL,
-                                                 `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Indexen voor geëxporteerde tabellen
---
-
---
--- Indexen voor tabel `actions`
---
-ALTER TABLE `bld_ddosspelbord_actions`
-    ADD PRIMARY KEY (`id`);
-
-
---
--- Indexen voor tabel `attacks`
---
-ALTER TABLE `bld_ddosspelbord_attacks`
-    ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT voor geëxporteerde tabellen
---
-
---
--- Indexen voor tabel `logs`
---
-ALTER TABLE `bld_ddosspelbord_logs`
-    ADD PRIMARY KEY (`id`);
-
---
--- Indexen voor tabel `parties`
---
-ALTER TABLE `bld_ddosspelbord_parties`
-    ADD PRIMARY KEY (`id`);
-
 /*
  * Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
  *
@@ -198,6 +17,257 @@ ALTER TABLE `bld_ddosspelbord_parties`
  * along with this program; If not, see @link https://www.gnu.org/licenses/.
  *
  */
+
+--
+-- Tabelstructuur voor tabel `attacks`
+--
+DROP TABLE IF EXISTS `bld_ddosspelbord_attacks`;
+
+CREATE TABLE `bld_ddosspelbord_attacks` (
+                                            `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                            `name` varchar(999) DEFAULT NULL,
+                                            `party_id` bigint(20) unsigned DEFAULT NULL,
+                                            `user_id` bigint(20) unsigned DEFAULT NULL,
+                                            `status` varchar(191) DEFAULT NULL,
+                                            `created_at` timestamp NULL DEFAULT NULL,
+                                            `updated_at` timestamp NULL DEFAULT NULL,
+                                            `timestamp` datetime DEFAULT NULL,
+                                            `deleted_at` timestamp NULL DEFAULT NULL,
+                                            PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+--
+-- Tabelstructuur voor tabel `actions`
+--
+DROP TABLE IF EXISTS `bld_ddosspelbord_actions`;
+
+CREATE TABLE `bld_ddosspelbord_actions` (
+                                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                            `party_id` bigint(20) unsigned DEFAULT NULL,
+                                            `name` varchar(191) NOT NULL,
+                                            `description` varchar(191) NOT NULL,
+                                            `tag` varchar(191) NOT NULL,
+                                            `start` datetime NOT NULL,
+                                            `length` int(10) unsigned NOT NULL DEFAULT 0,
+                                            `delay` int(11) NOT NULL DEFAULT 0,
+                                            `extension` int(10) unsigned NOT NULL DEFAULT 0,
+                                            `has_issues` tinyint(1) NOT NULL DEFAULT 0,
+                                            `is_cancelled` tinyint(1) NOT NULL DEFAULT 0,
+                                            `highlight` varchar(6) NOT NULL,
+                                            `created_at` timestamp NULL DEFAULT NULL,
+                                            `updated_at` timestamp NULL DEFAULT NULL,
+                                            `deleted_at` timestamp NULL DEFAULT NULL,
+                                            PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+--
+-- Tabelstructuur voor tabel `logs`
+--
+DROP TABLE IF EXISTS `bld_ddosspelbord_logs`;
+
+CREATE TABLE `bld_ddosspelbord_logs` (
+                                         `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                         `user_id` bigint(20) unsigned DEFAULT NULL,
+                                         `log` text DEFAULT NULL,
+                                         `timestamp` datetime DEFAULT NULL,
+                                         `created_at` timestamp NULL DEFAULT NULL,
+                                         `updated_at` timestamp NULL DEFAULT NULL,
+                                         `deleted_at` timestamp NULL DEFAULT NULL,
+                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `parties`
+--
+DROP TABLE IF EXISTS `bld_ddosspelbord_parties`;
+
+CREATE TABLE `bld_ddosspelbord_parties` (
+                                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                            `name` varchar(191) NOT NULL,
+                                            `logo` varchar(191) NOT NULL,
+                                            `created_at` timestamp NULL DEFAULT NULL,
+                                            `updated_at` timestamp NULL DEFAULT NULL,
+                                            `deleted_at` timestamp NULL DEFAULT NULL,
+                                            PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `roles`
+--
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_roles`;
+
+CREATE TABLE `bld_ddosspelbord_roles` (
+                                          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                          `name` varchar(191) NOT NULL,
+                                          `display_name` varchar(191) NOT NULL,
+                                          `created_at` timestamp NULL DEFAULT NULL,
+                                          `updated_at` timestamp NULL DEFAULT NULL,
+                                          `deleted_at` timestamp NULL DEFAULT NULL,
+                                          PRIMARY KEY (`id`),
+                                          UNIQUE KEY `roles_name_unique` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `spelbordusers`
+--
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_users`;
+
+CREATE TABLE `bld_ddosspelbord_users` (
+                                          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                          `user_id` bigint(20) unsigned NOT NULL,
+                                          `role_id` bigint(20) unsigned DEFAULT NULL,
+                                          `party_id` bigint(20) unsigned NOT NULL,
+                                          `name` varchar(191) NOT NULL,
+                                          `email` varchar(191) NOT NULL,
+                                          `avatar` varchar(191) DEFAULT 'users/default.png',
+                                          `email_verified_at` timestamp NULL DEFAULT NULL,
+                                          `password` varchar(191) NOT NULL,
+                                          `api_token` varchar(80) DEFAULT NULL,
+                                          `remember_token` varchar(100) DEFAULT NULL,
+                                          `settings` text DEFAULT NULL,
+                                          `created_at` timestamp NULL DEFAULT NULL,
+                                          `updated_at` timestamp NULL DEFAULT NULL,
+                                          `heartbeat` datetime DEFAULT NULL,
+                                          `deleted_at` timestamp NULL DEFAULT NULL,
+                                          PRIMARY KEY (`id`),
+                                          UNIQUE KEY `users_email_unique` (`email`),
+                                          UNIQUE KEY `users_api_token_unique` (`api_token`),
+                                          KEY `users_role_id_foreign` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `transactions`
+--
+DROP TABLE IF EXISTS `bld_ddosspelbord_transactions`;
+
+CREATE TABLE `bld_ddosspelbord_transactions` (
+                                                 `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                                 `hash` varchar(32) NOT NULL,
+                                                 `type` varchar(191) NOT NULL,
+                                                 `data` text NOT NULL,
+                                                 `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                                                 `updated_at` timestamp NULL DEFAULT NULL,
+                                                 `deleted_at` timestamp NULL DEFAULT NULL,
+                                                 PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tabelstructuur voor alle Target Measurements
+--
+
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_targets`;
+
+CREATE TABLE `bld_ddosspelbord_targets` (
+                                            `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                            `created_at` timestamp NULL DEFAULT NULL,
+                                            `updated_at` timestamp NULL DEFAULT NULL,
+                                            `deleted_at` timestamp NULL DEFAULT NULL,
+                                            `name` varchar(191) DEFAULT NULL,
+                                            `target` varchar(191) DEFAULT NULL,
+                                            `ipv` varchar(191) DEFAULT NULL,
+                                            `measurement_api_id` int(10) unsigned DEFAULT NULL,
+                                            `type` varchar(40) NOT NULL,
+                                            `party_id` int(10) unsigned NOT NULL,
+                                            `enabled` tinyint(1) NOT NULL DEFAULT 0,
+                                            `threshold_orange` double NOT NULL DEFAULT 0,
+                                            `threshold_red` double NOT NULL DEFAULT 0,
+                                            `groups` varchar(255) NOT NULL,
+                                            PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tabelstructuur voor tabel `Target Groups`
+--
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_measurements`;
+
+CREATE TABLE `bld_ddosspelbord_measurements` (
+                                                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                                 `target_id` int(10) unsigned DEFAULT NULL,
+                                                 `ipv` varchar(10) DEFAULT NULL,
+                                                 `timestamp` datetime DEFAULT NULL,
+                                                 `responsetime` double DEFAULT NULL,
+                                                 `measurement_api_data_id` int(10) unsigned DEFAULT NULL,
+                                                 `number_of_probes` int(11) NOT NULL DEFAULT 0,
+                                                 PRIMARY KEY (`id`),
+                                                 KEY `timestamp_target` (`timestamp`,`target_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_target_groups`;
+
+CREATE TABLE `bld_ddosspelbord_target_groups` (
+                                                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                                  `created_at` timestamp NULL DEFAULT NULL,
+                                                  `updated_at` timestamp NULL DEFAULT NULL,
+                                                  `deleted_at` timestamp NULL DEFAULT NULL,
+                                                  `name` varchar(255) NOT NULL,
+                                                  `sortnr` int(11) NOT NULL DEFAULT 1,
+                                                  `graphresponsetimeclipvalue` double NOT NULL DEFAULT 200,
+                                                  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_measurement_api`;
+
+CREATE TABLE `bld_ddosspelbord_measurement_api` (
+                                                    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                                    `created_at` timestamp NULL DEFAULT NULL,
+                                                    `updated_at` timestamp NULL DEFAULT NULL,
+                                                    `deleted_at` timestamp NULL DEFAULT NULL,
+                                                    `name` varchar(255) NOT NULL,
+                                                    `description` text NOT NULL,
+                                                    `modulename` varchar(255) NOT NULL,
+                                                    `configjson` text NOT NULL,
+                                                    `type` varchar(40) NOT NULL DEFAULT 'website',
+                                                    `apikey` varchar(255) DEFAULT NULL,
+                                                    `billingemail` varchar(255) DEFAULT NULL,
+                                                    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bld_ddosspelbord_measurement_api_data`;
+
+CREATE TABLE `bld_ddosspelbord_measurement_api_data` (
+                                                         `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                                         `created_at` timestamp NULL DEFAULT NULL,
+                                                         `updated_at` timestamp NULL DEFAULT NULL,
+                                                         `deleted_at` timestamp NULL DEFAULT NULL,
+                                                         `measurement_api_id` int(10) unsigned NOT NULL,
+                                                         `datajson` text NOT NULL,
+                                                         `target_id` int(10) unsigned NOT NULL,
+                                                         `start_at` datetime DEFAULT NULL,
+                                                         `end_at` datetime DEFAULT NULL,
+                                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+--
+-- Indexen voor tabel `logs`
+--
+ALTER TABLE `bld_ddosspelbord_logs`
+    ADD PRIMARY KEY (`id`);
+
+--
+-- Indexen voor tabel `parties`
+--
+ALTER TABLE `bld_ddosspelbord_parties`
+    ADD PRIMARY KEY (`id`);
 
 --
 -- Indexen voor tabel `roles`
@@ -221,50 +291,4 @@ ALTER TABLE `bld_ddosspelbord_users`
 ALTER TABLE `bld_ddosspelbord_transactions`
     ADD PRIMARY KEY (`id`);
 
---
--- AUTO_INCREMENT voor geëxporteerde tabellen
---
-
---
--- AUTO_INCREMENT voor een tabel `actions`
---
-ALTER TABLE `bld_ddosspelbord_actions`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT voor een tabel `attacks`
---
-ALTER TABLE `bld_ddosspelbord_attacks`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-
---
--- AUTO_INCREMENT voor een tabel `logs`
---
-ALTER TABLE `bld_ddosspelbord_logs`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT voor een tabel `parties`
---
-ALTER TABLE `bld_ddosspelbord_parties`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT voor een tabel `roles`
---
-ALTER TABLE `bld_ddosspelbord_roles`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT voor een tabel `spelbordusers`
---
-ALTER TABLE `bld_ddosspelbord_users`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT voor een tabel `transactions`
---
-ALTER TABLE `bld_ddosspelbord_transactions`
-    MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 

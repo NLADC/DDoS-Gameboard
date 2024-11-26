@@ -1,4 +1,8 @@
 fields:
+    id:
+        label: id
+        type: number
+        hidden: true
     name:
         label: name
         span: auto
@@ -18,9 +22,15 @@ fields:
         type: dropdown
         span: left
     role_id:
-        label: role
+        label: Role
         relation: roles
         select: name
         type: radio
         cssClass: 'inline-options'
-        span: auto
+        span: right
+
+    change_btn:
+        type: partial
+        span: right
+        path: $/bld/ddosspelbord/controllers/spelbordusers/changeFormBtn.htm
+        context: update

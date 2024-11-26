@@ -14,26 +14,6 @@ $this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale()
 {% set CurrentLanguage = SelectedLanguage %}
 
 <!DOCTYPE html>
-<!--
-  ~ Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  ~
-  ~ This file is part of the DDoS gameboard.
-  ~
-  ~ DDoS gameboard is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation; either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ DDoS gameboard is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; If not, see @link https://www.gnu.org/licenses/.
-  ~
-  -->
-
 <html lang="nl-nl" class="h-full">
 <head>
 	<meta charset="utf-8">
@@ -66,9 +46,13 @@ $this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale()
         window.gameboard_acceptedfiletypes = "{{ gameboard.data.acceptedfiletypes}}";
         window.gameboard_locale = '{{CurrentLanguage}}';
         window.lang = {{ gameboard.data.lang|raw }};
+        window.gameboard_targetdasboardurl = "{{ gameboard.data.targetdasboardurl }}";
+        window.gameboard_allowedInactivityInSeconds = "{{ gameboard.data.allowedInactivityInSeconds }}";
+        window.gameboard_allowedNonVisibleInSeconds = "{{ gameboard.data.allowedNonVisibleInSeconds }}";
 	</script>
 </head>
 <body class="el-0">
     {% page %}
 </body>
 </html>
+

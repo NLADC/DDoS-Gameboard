@@ -23,19 +23,25 @@ namespace Bld\Ddosspelbord\Controllers;
 
 use bld\ddosspelbord\helpers\hLog;
 use bld\ddosspelbord\helpers\hMail;
+use bld\ddosspelbord\models\Attack;
+use Bld\Ddosspelbord\Models\Logs;
 use Lang;
 use Mail;
 use Url;
+use Db;
 use App\SpatieModelHasPermission;
 use Backend\Classes\Controller;
 use BackendMenu;
 use League\Csv\Exception;
-use October\Rain\Support\Facades\Flash;
+use Winter\Storm\Support\Facades\Flash;
 use Winter\User\Components\ResetPassword;
 use Winter\User\Models\User;
+use Bld\Ddosspelbord\Models\Spelbordusers as SpelbordusersModel;
 
 class Spelbordusers extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.spelbordusers'];
+
     public $implement = [
         'Backend\Behaviors\ListController',
         'Backend\Behaviors\FormController',
@@ -44,7 +50,7 @@ class Spelbordusers extends Controller
 
     public $listConfig = 'config_list.yaml';
     public $formConfig = 'config_form.yaml';
-    public $importExportConfig = 'config_import_export.yaml';
+    public $importExportConfig = 'project_import_export.yaml';
 
     public function __construct()
     {
@@ -60,6 +66,31 @@ class Spelbordusers extends Controller
         $this->asExtension('ListController')->index();
     }
 
+    public function formExtendFields($form)
+    {
+        // Check if this is the update action
+        if ($this->action === 'update') {
+            // Ensure the field exists before attempting to modify it
+            if ($form->getField('role_id')) {
+                // Set the field to read-only
+                $form->getField('role_id')->disabled = true;
+            }
+        }
+
+    }
+
+    public function updateRole($recordId = null)
+    {
+        try {
+            $this->pageTitle = 'Update Role';
+            $this->asExtension('FormController')->update($recordId, 'updateRole');
+        } catch (Exception $e) {
+            Flash::error($e->getMessage());
+            return Redirect::to(Backend::url('bld/ddosspelbord/spelbordusers'));
+        }
+    }
+
+
     public function listInjectRowClass($record, $definition = null)
     {
         $classes = [];
@@ -69,6 +100,15 @@ class Spelbordusers extends Controller
         }
         if (count($classes) > 0) {
             return join(' ', $classes);
+        }
+    }
+    public function onConfirmRoleChange(){
+        $roleId = post('Spelbordusers')['role_id'];
+        $userid = post('user_id');
+
+        $user = SpelbordusersModel::find($userid);
+        if (!empty($user)) {
+            $user->changeRoleAndDeleteData($roleId);
         }
     }
 

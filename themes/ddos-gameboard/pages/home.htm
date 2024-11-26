@@ -22,26 +22,6 @@ return Redirect::to($loginUrl);
 ?>
 
 ==
-<!--
-  ~ Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  ~
-  ~ This file is part of the DDoS gameboard.
-  ~
-  ~ DDoS gameboard is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation; either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ DDoS gameboard is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; If not, see @link https://www.gnu.org/licenses/.
-  ~
-  -->
-
 <div id="gameboard" class="flex flex-col el-0-brand">
     <notification-box v-if="showNotification" @notify-off="notifyOff" :notifications="notifications"></notification-box>
 
@@ -66,7 +46,10 @@ return Redirect::to($loginUrl);
                     <button @click="showHelpFile = true" title="Show help" class="material-icons mi-help-outline">
                         help_outline
                     </button>
-                    <a href="/targetdashboard" title="Show Target Dashboard" class="material-icons mi-help-outline">
+                    <button v-if="user.role == 'purple'" @click="downloadLoggingPurple" title="Download full log" class="material-icons">
+                        download
+                    </button>
+                    <a v-if="targetdasboardurl" :href="targetdasboardurl" title="Show Target Dashboard" class="material-icons mi-help-outline">
                         language
                     </a>
 
@@ -82,8 +65,8 @@ return Redirect::to($loginUrl);
             <button v-if="user.id == 0" class="pure-button pure-button-primary" @click="showLoginModal = true">Login
             </button>
             <span v-if="user.id != 0">@{{ user.name }}</span>
-            <logout-button v-if="user.id != 0" :logoutbuttontext="'{{ 'theme.logout'|_ }}'"></logout-button>
-            <div class="scroll-checkbox-wrapper" v-if="showscroll">
+            <logout-button v-if="user.id != 0" :logoutbuttontext="'{{ 'theme.logout'|_ }}'" @logout="logout"></logout-button>
+            <div class="scroll-checkbox-wrapper" v-if="showscroll" >
                 <input type="checkbox" v-model="scroll" {{ gameboard.data.scroll ? 'checked="CHECKED"':'' }}
                 @click="submitScroll()" id="scroll"> <label for="scroll">{{ 'theme.scroll'|_ }}</label>
             </div>
@@ -122,13 +105,13 @@ return Redirect::to($loginUrl);
               @close="showLiveLogModal = false"></live-log>
     <parties-select :show="showPartiesSelect" :parties="parties" :csrf="csrfToken"
                     @close="showPartiesSelect = false"></parties-select>
-    <actions-list :show="showActionsList" :parties="parties" @close="showActionsList = false"></actions-list>
+    <actions-list :show="showActionsList" :parties="parties" @close="showActionsList = false" partyActions = "partyActions" :user="user"></actions-list>
     <quick-logging :show="showQuickLogging" :logs="logs" :rerender="reRender.quicklogs"
                    :rerenderattacks="reRender.attacks" :attacks="attacks" :acceptedFileTypes="acceptedFileTypes"
                    :user="user" :csrf="csrfToken" :parties="parties" @rerendered="reRender.quicklogs = false"
                    @rerenderattacks="reRender.attacks = false"
                    @close="showQuickLogging = false" @update-log="updateLog"
-                   @update-attack="updateAttack"></quick-logging>
+                   update-attack="updateAttack"></quick-logging>
     <help-file :show="showHelpFile" @close="showHelpFile = false"></help-file>
     <attachment-modal :show="showAttachmentModal" :attachmentmodal="attachmentmodal"
                       @close="showAttachmentModal = false"></attachment-modal>

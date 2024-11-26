@@ -1,4 +1,4 @@
-<?php
+<?php namespace bld\ddosspelbord\models;
 /*
  * Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
  *
@@ -19,10 +19,8 @@
  *
  */
 
-namespace bld\ddosspelbord\Models;
-
-use Model;
 use bld\ddosspelbord\models\Measurement_api;
+use Model;
 use Bld\Ddosspelbord\models\Parties;
 use bld\ddosspelbord\models\Target_groups;
 
@@ -60,6 +58,14 @@ class Target extends Model
             'otherKey' => 'party_id'
         ],
     ];
+
+    public $belongsTo = [
+        'measurementtype' => [
+            'bld\ddosspelbord\models\MeasurementType',
+            'key' => 'measurement_type_id',
+            'otherKey' => 'id',
+        ],
+    ];
     /*
     public $belongsToMany = [
         'groups' => [
@@ -72,14 +78,19 @@ class Target extends Model
     }
 
     public function getMeasurementApiIdOptions($value, $formData) {
-
-        if (empty($this->type)) $this->type = 'server';
-
-        $recs = Measurement_api::where('type',$this->type)->get();
         $opt = [];
+        if (empty($this->measurement_type_id)) {
+            $recs = Measurement_api::all();
+        }
+        else {
+            $recs = Measurement_api::where('measurement_type_id', $this->measurement_type_id)->get();
+        }
+
         foreach ($recs AS $rec) {
             $opt[$rec->id] = $rec->name;
         }
+
+
         return $opt;
     }
 

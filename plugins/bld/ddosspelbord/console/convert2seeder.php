@@ -32,7 +32,7 @@ class convert2seeder extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosgameboard:convert2seeder';
+    protected $name = 'ddosspelbord:convert2seeder';
 
     /**
      * @var string The console command description.

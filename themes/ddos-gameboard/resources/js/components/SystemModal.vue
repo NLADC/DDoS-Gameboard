@@ -1,23 +1,3 @@
-<!--
-  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  -
-  - This file is part of the DDoS gameboard.
-  -
-  - DDoS gameboard is free software; you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
-  - the Free Software Foundation; either version 3 of the License, or
-  - (at your option) any later version.
-  -
-  - DDoS gameboard is distributed in the hope that it will be useful,
-  - but WITHOUT ANY WARRANTY; without even the implied warranty of
-  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  - GNU General Public License for more details.
-  -
-  - You should have received a copy of the GNU General Public License
-  - along with this program; If not, see @link https://www.gnu.org/licenses/.
-  -
-  -->
-
 <template>
 <transition name="modal" v-if="show">
 <div class="modal-mask">
@@ -31,11 +11,11 @@
 	<button type="submit" class="btn btn-primary mb-6" @click="submitForm('refreshPurple')">Refresh PURPLE</button>
 
     <div class="w-full mb-3 text-center text-red-500" v-if="isError">{{ errorMsg }}</div>
-		
+
 	<div class="flex items-center justify-between">
         <button type="reset" @click="close()" class="w-full py-2 px-4 rounded-r focus:outline-none focus:shadow-outline" v-html="l('theme.close')"></button>
     </div>
-	
+
 </div>
 </div>
 </transition>

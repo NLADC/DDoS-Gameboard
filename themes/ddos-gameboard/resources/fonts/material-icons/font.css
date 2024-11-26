@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "Material Icons";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('./../fonts/material-icons/material-icons.woff2'); /* IE9 Compat Modes */
+    src: local('material-icons'),
+    url('./../fonts/material-icons/material-icons.woff2') format('woff2'), /* Super Modern Browsers */
+    url('./../fonts/material-icons/material-icons.woff') format('woff'), /* Modern Browsers */
+}

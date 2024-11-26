@@ -62,7 +62,7 @@ class ddosspelbord_login extends ComponentBase {
      */
     public static function login() {
 
-        $login = post('email');
+        $login = post('username');
         $password = post('password');
 
         hLog::logLine("D-ddosspelbord_login.login; login=$login ");

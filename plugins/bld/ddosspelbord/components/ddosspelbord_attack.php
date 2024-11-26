@@ -80,6 +80,7 @@ class ddosspelbord_attack extends ComponentBase
         try {
             // get gameboard user
             if ($user = Spelbordusers::verifyAccess()) {
+                $userId =  post('user_id');
                 if ($user->role != 'observer') {
                     $time = post('timestamp', '');
                     if ($time && strtotime($time) !== false) {
@@ -89,13 +90,19 @@ class ddosspelbord_attack extends ComponentBase
                         $id = post('id', '');
 
                         if (!empty($id)) {
-                            hLog::logLine("D-ddosspelbord_attack.handleAttackChanges; id=$id, update attack");
+                            hLog::logLine("D-ddosspelbord_attack.handleAttackChanges; userId = $userId, =id=$id, update attack");
                             $attack = Attack::find($id);
                         } else {
-                            hLog::logLine("D-ddosspelbord_attack.handleAttackChanges; create new attack");
-                            $attack = new Attack();
-                            $attack->user_id = $user->id;
-                            $attack->party_id = $user->party_id;
+                            hLog::logLine("D-ddosspelbord_attack.handleAttackChanges; userId=$userId create new attack");
+                            if ($user->id == $userId) {
+                                $attack = new Attack();
+                                $attack->user_id = $user->id;
+                                $attack->party_id = $user->party_id;
+                            }
+                            else {
+                                throw new ApplicationException('You are not allowed to start an attack under a different users name');
+                            }
+
                         }
 
                         // Check if user had correct party id
@@ -134,6 +141,7 @@ class ddosspelbord_attack extends ComponentBase
 
                             // Get vue code values & create transaction
                             $anattack = ddosspelbord_data::getSpelbordAttack($attack);
+
                             hlog::logLine("submitLog.anttack=" . print_r($anattack,true ));
                             (new Feeds())->createTransaction(TRANSACTION_TYPE_ATTACK, $anattack);
 

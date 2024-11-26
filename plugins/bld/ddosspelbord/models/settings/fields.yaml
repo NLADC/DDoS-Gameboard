@@ -3,7 +3,7 @@ fields:
         label: Exercise
         type: section
     description:
-        label: description 
+        label: description
         span: left
         type: text
     startdate:
@@ -12,6 +12,7 @@ fields:
         type: datepicker
         mode: date
         format: Y-m-d
+        ignoreTimezone: true
         firstDay: 1
     firsttime:
         label: First time
@@ -37,7 +38,12 @@ fields:
         type: datepicker
         mode: date
         format: Y-m-d
+        ignoreTimezone: true
         firstDay: 1
+    measurements_active:
+        label: Activate Measurements
+        span: left
+        type: switch
     granularity:
         label: Granularity (minutes)
         span: right
@@ -46,7 +52,7 @@ fields:
     tech_section:
         label: Technical
         type: section
-        comments: this section contains technisch 
+        comments: this section contains technisch
     maxexecutiontime:
         label: Max execution time webservice
         span: left
@@ -71,6 +77,24 @@ fields:
         span: full
         type: text
         default: "png, jpg, jpeg, gif, svg, tiff, txt, rtf, mp4, Ogg, mp3, wav, Ogg, avi, bmp, css, csv, doc, gif, json, pdf"
+    external_target_monitor_url:
+        label: External URL for Target Dashboard
+        type: text
+        comment: 'dont forget http:// or https://'
+    allowedInactivityInSeconds:
+        label: Allowed Seconds of Inactivity
+        span: left
+        type: number
+        step: 1
+        default: 3600
+        comment: 'In Seconds, When a user does not interact with the system but views it, after how many second to log out'
+    allowedNonVisibleInSeconds:
+        label: Allowed Non Page Visibility
+        span: right
+        type: number
+        step: 1
+        default: 3600
+        comment: 'In Seconds, When a user is not viewing the gameboard at all'
     Target_Dashboard_Settings:
         label: Target Dashboard Settings
         type: section
@@ -78,5 +102,7 @@ fields:
         label: Fallback graph max response time
         type: number
         default: 2000
-
+    deleteAllData:
+        type: partial
+        path: $/bld/ddosspelbord/views/clearAllData.php
 

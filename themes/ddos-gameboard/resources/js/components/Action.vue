@@ -1,23 +1,3 @@
-<!--
-  - Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)
-  -
-  - This file is part of the DDoS gameboard.
-  -
-  - DDoS gameboard is free software; you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
-  - the Free Software Foundation; either version 3 of the License, or
-  - (at your option) any later version.
-  -
-  - DDoS gameboard is distributed in the hope that it will be useful,
-  - but WITHOUT ANY WARRANTY; without even the implied warranty of
-  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  - GNU General Public License for more details.
-  -
-  - You should have received a copy of the GNU General Public License
-  - along with this program; If not, see @link https://www.gnu.org/licenses/.
-  -
-  -->
-
 <template>
 <div v-if="show" class="action-wrapper" :class="{'global': global, 'bg-red-500': dHeight || eHeight}" :style="{marginLeft: (action.channel * 16.5) + 'rem', marginTop: offsetY + 'rem', paddingTop: dHeight + 'rem', paddingBottom: eHeight + 'rem'}">
 
@@ -116,14 +96,14 @@
             },
 
             calcHeight(start, end) {
-                var offsetY = 0;
+                let offsetY = 0;
 
                 if(start == null) {
                     start = this.moment(this.min);
-                    offsetY = 1.5;
+                    offsetY = -2.5;
                 }
 
-                var minutes = Math.floor((Math.abs(start - end) / 1000) / 60);
+                let minutes = Math.floor((Math.abs(start - end) / 1000) / 60 );
 
                 return (minutes / this.granularity * 4 ) + offsetY;
             },

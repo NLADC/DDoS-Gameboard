@@ -8,3 +8,9 @@ create:
 update:
     redirect: bld/ddosspelbord/spelbordusers
     redirectClose: bld/ddosspelbord/spelbordusers
+updateRole:
+    form: $/bld/ddosspelbord/models/spelbordusers/fields_role.yaml
+    redirect: 'bld/ddosspelbord/spelbordusers/updaterole/:id'
+    redirectClose: bld/ddosspelbord/spelbordusers
+    context: updateRole
+

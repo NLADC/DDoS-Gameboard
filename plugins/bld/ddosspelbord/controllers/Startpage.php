@@ -35,6 +35,8 @@ use Bld\Ddosspelbord\Models\Spelbordusers;
 
 class Startpage extends Controller {
 
+    public $requiredPermissions = ['bld.ddosspelbord.startpage'];
+
     public $implement = [
     ];
 

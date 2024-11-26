@@ -35,7 +35,7 @@ We use composer locally by calling 'composer'. This is possible after:
 ```shell
 sudo mv composer.phar /usr/local/bin/composer
 ```
-- nginx (apt install nginx) or alternatively apache (apt install apache2) 
+- nginx (apt install nginx) or alternatively apache (apt install apache2)
 - mariadb (apt install mariadb-server)
 - npm (via NodeSource), verified version is 8.5.1
 
@@ -286,13 +286,13 @@ If you experience problems, you can test by loosening the mode of the entire map
 sudo chmod -R 0775 /server/www/dgb
 ```
 
-Now the ddosgameboard database has to be initiated. We do this by running the sql in the following file:
+Now the ddosgameboard database has to be initiated, we can seed it with example values.
 
 The sql can be executed as sql via phpmyadmin or your database management tool of choice, but can also be done via the terminal.
 ```shell
 mysql
 mysql> use ddosspelbord;
-mysql> source plugins/bld/ddosspelbord/updates/init_ddos_spelbord_database.sql;
+mysql> source plugins/bld/ddosspelbord/updates/seed_ddos_spelbord.sql;
 ```
 
 Then update the WinterCMS environment (set theme to DDoS game board):
@@ -359,12 +359,12 @@ Now the environment should be up and running:
 To start a game it is important to set all settings on the next page:
   /backend/system/settings/update/bld/ddosgameboard/settings
 
-
 #### Database population
 
 Nice stuffing actions:
 - plugins/bld/ddosgameboard/updates/init_ddos_gameboard_actions.sql;
 - plugins/bld/ddosspelboard/updates/init_ddos_spelboard_transactions.sql;
+- plugins/bld/ddosspelboard/updates/seed_ddos_spelbord.sql;
 
 Pay attention; the times in the settings (see below) must match the test data in the database.
 

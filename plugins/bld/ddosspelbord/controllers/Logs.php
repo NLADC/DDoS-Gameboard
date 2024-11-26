@@ -21,9 +21,9 @@
 
 namespace Bld\Ddosspelbord\Controllers;
 
-use bld\ddosspelbord\Models\Measurement;
+use bld\ddosspelbord\models\Measurement;
 use Bld\Ddosspelbord\Models\Settings;
-use bld\ddosspelbord\Models\Target;
+use bld\ddosspelbord\models\Target;
 use Db;
 use App\Action;
 use Bld\Ddosspelbord\Models\Roles;
@@ -44,10 +44,12 @@ use \Bld\Ddosspelbord\Models\Actions;
 use Backend\FormWidgets\FileUpload;
 use Winter\Storm\Filesystem\Zip;
 use System\Models\File as File;
-use Winter\Storm\Assetic\Util\FilesystemUtils;
+use Assetic\Util\FilesystemUtils;
 
 class Logs extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.logs'];
+
     public $implement = [
         'Backend\Behaviors\ListController',
         'Backend\Behaviors\FormController'
@@ -90,7 +92,7 @@ class Logs extends Controller
         return Redirect::to('/backend/bld/ddosspelbord/logs/getdownload/');
     }
 
-    public function getdownload() {
+    public function getdownload($partyIds = null) {
         // download file
         hLog::logLine("D-getdownload...");
 
@@ -105,8 +107,14 @@ class Logs extends Controller
         // Already creating subdirectory where the attachments will be nested in the end zip
         mkdir($tmpdir . "/attachments/");
 
-        $party_ids = Session::get(SESSION_LOGS_FILTER_PARTIES);
-        if ($party_ids) $party_ids = unserialize($party_ids);
+        $party_ids = [];
+        if (!empty(Session::get(SESSION_LOGS_FILTER_PARTIES))) {
+            $party_ids = Session::get(SESSION_LOGS_FILTER_PARTIES);
+            if ($party_ids) $party_ids = unserialize($party_ids);
+        }
+        if (!empty($partyIds)) {
+            $party_ids = $partyIds;
+        }
 
         $logs = \Bld\Ddosspelbord\Models\Logs::orderBy('timestamp');
         $measurements = Measurement::orderBy('timestamp');
@@ -135,7 +143,8 @@ class Logs extends Controller
         try {
 
             $logs = $logs->select('bld_ddosspelbord_logs.*')->get();
-            $parties = $users = [];
+            $users = [];
+            $parties = Parties::all()->sortBy('id');
             $loglines = 'timestamp;party;user;role;log;attachments' . "\n";
             foreach ($logs as $log) {
                 if (!isset($users[$log->user_id])) {
@@ -160,7 +169,12 @@ class Logs extends Controller
                         ];
                     }
                 }
-                $party = $parties[$user->party_id];
+                if (!empty($parties->where('id', $user->party_id)[0])) {
+                    $party = $parties->where('id', $user->party_id)[0];
+                }
+                else {
+                    continue; // No Party no export for this log
+                }
 
                 $role = Roles::find($user->role_id);
                 $f = [];

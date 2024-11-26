@@ -30,15 +30,17 @@ class BuilderTableUpdateBldDdosspelbordMeasurementApi extends Migration
     {
         Schema::table('bld_ddosspelbord_measurement_api', function($table)
         {
-            $table->string('type', 40)->default('server');
+            $table->integer('measurement_type_id')->nullable()->unsigned();
+            $table->string('modulename', 255)->default(null)->change();
         });
     }
-
+    
     public function down()
     {
         Schema::table('bld_ddosspelbord_measurement_api', function($table)
         {
-            $table->dropColumn('type');
+            $table->dropColumn('measurement_type_id');
+            $table->string('modulename', 255)->default(null)->change();
         });
     }
 }

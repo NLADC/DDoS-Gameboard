@@ -1,0 +1,10 @@
+name: Measurement_api
+form: $/bld/ddosspelbord/models/measurement_api/fields.yaml
+modelClass: bld\ddosspelbord\models\Measurement_api
+defaultRedirect: bld/ddosspelbord/measurementapi
+create:
+    redirect: 'bld/ddosspelbord/measurementapi/update/:id'
+    redirectClose: bld/ddosspelbord/measurementapi
+update:
+    redirect: bld/ddosspelbord/measurementapi
+    redirectClose: bld/ddosspelbord/measurementapi

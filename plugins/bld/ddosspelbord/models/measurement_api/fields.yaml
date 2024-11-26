@@ -3,15 +3,9 @@ fields:
         label: Name
         span: auto
         type: text
-    type:
+    measurementtype:
         label: Type
-        span: auto
-        type: dropdown
-        default: dns
-        options:
-            server: 'Server'
-            dns: 'DNS name service'
-            smtp: 'SMTP (mail) service'
+        type: relation
     description:
         label: Description
         size: small

@@ -1,0 +1,48 @@
+title = "Target Measurements"
+url = "/targetdashboard"
+layout = "ddos-gameboard-targets"
+is_hidden = 0
+
+[session]
+security = "all"
+
+[ddosspelbord_targets]
+
+==
+<?php
+    use Auth;
+    use Redirect;
+        function onStart() {
+            $user = Auth::check();
+            $loginUrl = $this->pageUrl('login');
+
+if (!$user) {
+return Redirect::to($loginUrl);
+}
+}
+?>
+==
+
+<div id="targetsdashboard">
+
+    <h1 class="page-heading"><a href="/" title="Show DDOSGameboard" class="material-icons mi-help-outline">
+        arrow_back_ios
+    </a>
+        <button @click="showGroupsSelect = true" title="Select groups" class="material-icons">business
+        </button>
+        {{ 'theme.headingtargetdash'|_ }}
+        <button @click="Zoom(-3)" title="zoom out" class="material-icons mi-help-outline">
+            zoom_out
+        </button>
+        <button @click="Zoom(3)" title="zoom in" class="material-icons mi-help-outline">
+            zoom_in
+        </button>
+    </h1>
+    <measurements :show="showMeasurements" id="measurements" :allmeasurements="measurements"
+                  :rerender="reRender.measurements" @rerendered="reRendered()"
+                  :firsttime="firsttime" :endtime="endtime" :latesttimestamp="latesttimestamp"
+    ></measurements>
+    <groups-select :show="showGroupsSelect" :groups="groups" :csrf="csrfToken"
+                   @close="showGroupsSelect = false"></groups-select>
+
+</div>

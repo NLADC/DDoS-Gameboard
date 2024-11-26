@@ -70,6 +70,7 @@ en:
   theme.dropfilesor: "Drop files or "
   theme.clickhere: "click here"
   theme.removeall: "Remove all"
+  theme.noPartyMessage : "You are currently not in a party"
 
 nl:
   theme.welcomeandpassword: "Welkom op het DDOSspelbord om door te gaan set je wachtwoord"
@@ -138,3 +139,4 @@ nl:
   theme.dropfilesor: "Sleep bestanden hier of "
   theme.clickhere: "klik hier"
   theme.removeall: "Verwijder alles"
+  theme.noPartyMessage : "You are currently not in a party"

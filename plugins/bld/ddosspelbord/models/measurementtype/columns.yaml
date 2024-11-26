@@ -1,0 +1,17 @@
+columns:
+    name:
+        label: name
+        type: text
+    nodelist:
+        label: Nodelist
+        relation: nodelist
+        select: name
+    description:
+        label: description
+        type: text
+    created_at:
+        label: created_at
+        type: datetime
+    updated_at:
+        label: updated_at
+        type: datetime

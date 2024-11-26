@@ -24,7 +24,7 @@ namespace bld\ddosspelbord\console;
 use DateTime;
 use DateTimeZone;
 use bld\ddosspelbord\helpers\hLog;
-use bld\ddosspelbord\Models\Measurement;
+use bld\ddosspelbord\models\Measurement;
 use bld\ddosspelbord\models\Measurement_api;
 use bld\ddosspelbord\models\Measurement_api_data;
 use Bld\Ddosspelbord\models\Settings;
@@ -45,8 +45,8 @@ class analyzeAPI extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosgameboard:analyzeAPI';
-    protected $signature = 'ddosgameboard:analyzeAPI {mode? : save|analyze}
+    protected $name = 'ddosspelbord:analyzeAPI';
+    protected $signature = 'ddosspelbord:analyzeAPI {mode? : save|analyze}
         {--f|file= : file with the RIPE ATLAS json data}
         {--s|start= : start time (yyyy-mm-dd hh:mm) (UTC)}
         ';
@@ -212,7 +212,7 @@ class analyzeAPI extends Command
 
         if ($showhelp)  {
 
-            Artisan::call('ddosgameboard:analyzeAPI -h');
+            Artisan::call('ddosspelbord:analyzeAPI -h');
             $this->info(Artisan::output());
 
         }

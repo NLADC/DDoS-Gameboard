@@ -1,0 +1,21 @@
+# ===================================
+#  Import/Export Behavior Config
+# ===================================
+
+import:
+    title: Import spelbordusers
+    modelClass: Bld\Ddosspelbord\Models\SpelbordusersImport
+    list: $/bld/ddosspelbord/models/spelbordusers/columns_import.yaml
+    redirect: bld/ddosspelbord/spelbordusers
+
+export:
+    title: Export spelbordusers
+    modelClass: Bld\Ddosspelbord\Models\SpelbordusersExport
+    list: $/bld/ddosspelbord/models/spelbordusers/columns_export.yaml
+    redirect: bld/ddosspelbord/spelbordusers
+
+defaultFormatOptions:
+    delimiter: ';'
+    enclosure: '"'
+    escape: '\'
+    encoding: 'utf-8'

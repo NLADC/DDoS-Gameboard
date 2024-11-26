@@ -1,0 +1,30 @@
+fields:
+    name:
+        label: name
+        span: auto
+        type: text
+        readOnly: true
+    email:
+        label: email
+        span: auto
+        type: text
+        readOnly: true
+    password:
+        label: password
+        type: password
+        span: auto
+        readOnly: true
+    party_id:
+        label: party
+        relation: parties
+        select: name
+        type: dropdown
+        span: left
+        readOnly: true
+    role_id:
+        label: role
+        relation: roles
+        select: name
+        type: radio
+        cssClass: 'inline-options'
+        span: auto

@@ -24,7 +24,7 @@ namespace bld\ddosspelbord\console;
 use DateTime;
 use DateTimeZone;
 use bld\ddosspelbord\helpers\hLog;
-use bld\ddosspelbord\Models\Measurement;
+use bld\ddosspelbord\models\Measurement;
 use bld\ddosspelbord\models\Measurement_api;
 use bld\ddosspelbord\models\Measurement_api_data;
 use Bld\Ddosspelbord\models\Settings;
@@ -45,8 +45,8 @@ class measurementAPI extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosgameboard:measurementAPI';
-    protected $signature = 'ddosgameboard:measurementAPI {mode? : show, create or measure}
+    protected $name = 'ddosspelbord:measurementAPI';
+    protected $signature = 'ddosspelbord:measurementAPI {mode? : show, create or measure}
         {--m|mid= : measurement ID}
         {--k|key= : the API key}
         {--s|start= : start time (yyyy-mm-dd hh:mm) (UTC)}
@@ -399,7 +399,7 @@ class measurementAPI extends Command
 
         if ($showhelp)  {
 
-            Artisan::call('ddosgameboard:measurementAPI -h');
+            Artisan::call('ddosspelbord:measurementAPI -h');
             $this->info(Artisan::output());
 
         }

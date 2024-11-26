@@ -1,0 +1,11 @@
+name: Nodelists
+modelClass: bld\ddosspelbord\models\NodeList
+form: $/bld/ddosspelbord/models/nodelist/fields.yaml
+defaultRedirect: bld/ddosspelbord/nodelists
+create:
+    redirect: 'bld/ddosspelbord/nodelists/update/:id'
+    redirectClose: bld/ddosspelbord/nodelists
+update:
+    redirect: bld/ddosspelbord/nodelists
+    redirectClose: bld/ddosspelbord/nodelists
+preview: {  }

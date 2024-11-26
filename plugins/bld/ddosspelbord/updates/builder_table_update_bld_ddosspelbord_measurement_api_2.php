@@ -30,7 +30,7 @@ class BuilderTableUpdateBldDdosspelbordMeasurementApi2 extends Migration
     {
         Schema::table('bld_ddosspelbord_measurement_api', function($table)
         {
-            $table->string('apikey', 255)->nullable();
+            $table->dropColumn('type');
         });
     }
     
@@ -38,7 +38,7 @@ class BuilderTableUpdateBldDdosspelbordMeasurementApi2 extends Migration
     {
         Schema::table('bld_ddosspelbord_measurement_api', function($table)
         {
-            $table->dropColumn('apikey');
+            $table->string('type', 40)->default('website');
         });
     }
 }

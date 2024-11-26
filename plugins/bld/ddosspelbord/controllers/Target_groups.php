@@ -26,6 +26,8 @@ use BackendMenu;
 
 class Target_groups extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.attacks'];
+
     public $implement = [        'Backend\Behaviors\ListController',        'Backend\Behaviors\FormController'    ];
 
     public $listConfig = 'config_list.yaml';

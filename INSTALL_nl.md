@@ -222,7 +222,7 @@ Als het goed is heb je nu een WinterCMS omgeving op:
 
 ### Installeren DDoS gameboard plugin & theme
 
-Gameboard is in WinterCMS geintegreerd op basis van een plugin en theme.  
+Gameboard is in WinterCMS geintegreerd op basis van een plugin en theme.
 Via een `git clone` van https://github.com/ADC-NL/DDoS-Gameboard in de hoofdmap worden de aanvullende sources geladen.
 
 Web root / www root is in onderstaande commando's: `/server/www/dgb`
@@ -250,7 +250,7 @@ sudo -u www-data rsync --archive --progress --verbose /server/www/dgb/ddos-gameb
 ```
 De `.git` map in `gitsource` wil je niet meer kopiëren due die sla je over.
 
-Dit `rsync` commando kun je zo vaak draaien als je wilt.  
+Dit `rsync` commando kun je zo vaak draaien als je wilt.
 Als `rsync` ziet dat er geen wijziging is dan slaat ie de bestanden over en is de sync zo klaar.
 
 Nu kun je je source map /server/www/dgb/ddos-gameboard-git weer verwijderen
@@ -277,8 +277,8 @@ sudo find /server/www/dgb/storage -type d -exec chmod 0755 {} \;
 ```
 
 I.p.v. `chmod` recursive (`-R`) op de hele map te doen gebruik je het `find` commando.
-Dit omdat anders alle bestanden *executable* permissie krijgen, wat minder veilig is.  
-Sommige bestanden moeten wel *executable* zijn, zie het eerste `find` commando.  
+Dit omdat anders alle bestanden *executable* permissie krijgen, wat minder veilig is.
+Sommige bestanden moeten wel *executable* zijn, zie het eerste `find` commando.
 Voeg aan dit commando extra bestanden toe die *executable* moeten zijn.
 
 Als je problemen ervaart kun je even testen door de mode van de gehele map wat losser te zetten:
@@ -288,7 +288,7 @@ sudo chmod -R 0775 /server/www/dgb
 
 Nu moet de ddosspelbord database geïnitieerd worden. Dit doen we door de sql in het volgende bestand uit te voeren:
 
-De sql kun je via phpmyadmin of je database beheer tool naar keuze als sql laten uitvoeren, maar kan ook gedaan worden via de terminal.
+De sql om te seeden kun je via phpmyadmin of je database beheer tool naar keuze als sql laten uitvoeren, maar kan ook gedaan worden via de terminal.
 ```shell
 mysql
 mysql> use ddosspelbord;
@@ -324,7 +324,7 @@ Werkende versies op Ubuntu 22.04 LTS zijn:
 Nodejs: v12.22.9
 NPM: 8.5.1
 
-in de terminal voer in 
+in de terminal voer in
 ```shell
 npm install
 npm update
@@ -338,10 +338,10 @@ php artisan translate:scan --purge
 php artisan cache:clear
 ```
 
-Nu zijn alle package's gereed om te beginnen. 
+Nu zijn alle package's gereed om te beginnen.
 Zie development.md om als je wilt gaan ontwikkelen aan het spelbord.
 
-Zet de nginx hoofdmap op de (hoofdmap)/public:  
+Zet de nginx hoofdmap op de (hoofdmap)/public:
 `/etc/nginx/sites-available/ddosgameboard`:
 ```
 root /server/www/dgb
@@ -363,6 +363,7 @@ Om een game te starten is het belangrijk om op de volgende pagina alle instellin
 Leuke vulling actions:
 - plugins/bld/ddosspelbord/updates/init_ddos_spelbord_actions.sql;
 - plugins/bld/ddosspelbord/updates/init_ddos_spelbord_transactions.sql;
+- plugins/bld/ddosspelbord/updates/seed_ddos_spelbord.sql;
 
 Let op; de tijden in de instellingen (zie hieronder) moet overeenkomen met de testdata in de database.
 

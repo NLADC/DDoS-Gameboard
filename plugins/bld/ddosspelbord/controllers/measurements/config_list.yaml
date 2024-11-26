@@ -1,5 +1,5 @@
 list: $/bld/ddosspelbord/models/measurement/columns.yaml
-modelClass: bld\ddosspelbord\Models\Measurement
+modelClass: bld\ddosspelbord\models\Measurement
 title: Measurements
 noRecordsMessage: 'backend::lang.list.no_records'
 showSetup: true

@@ -38,35 +38,28 @@ use bld\ddosspelbord\helpers\hLog;
 use System\Models\File as File;
 use bld\ddosspelbord\helpers\base64Helper;
 
-class ddosspelbord_log extends ComponentBase
-{
+class ddosspelbord_log extends ComponentBase {
 
-    public function componentDetails()
-    {
+    public function componentDetails() {
         return [
-            'name' => 'Anti-DDoS Coalitie DDoS spelbord',
+            'name'        => 'Anti-DDoS Coalitie DDoS spelbord',
             'description' => 'Handle backend calls'
         ];
     }
 
-    public function defineProperties()
-    {
-        return [
-        ];
+    public function defineProperties() {
+        return [];
     }
 
-    public function getVersion()
-    {
+    public function getVersion() {
         return Config::get('bld.ddosspelbord::release.version', '0.9.?') . ' - ' . Config::get('bld.ddosspelbord::release.build', 'build 1');
     }
 
-    public function init()
-    {
+    public function init() {
         hLog::logLine("D-ddosspelbord_log.init; version=" . ddosspelbord_data::getVersion());
     }
 
-    public function onRun()
-    {
+    public function onRun() {
     }
 
     /***
@@ -76,95 +69,95 @@ class ddosspelbord_log extends ComponentBase
      * The DB will be updated, the sender of the log directly and the party members as well by transaction
      * @return Response\
      */
-    public static function submitLog()
-    {
+    public static function submitLog( $data = [] ) {
         hLog::logLine("D-ddosspelbord_log.submitLog");
 
         $alog = [];
         $result = false;
         $message = '';
 
+        // Use the provided data array instead of relying on post() or $_POST
+        $dataLog = isset($data['log']) ? $data['log'] : post('log', '');
+        $dataTimestamp = isset($data['timestamp']) ? $data['timestamp'] : post('timestamp', '');
+
         $acceptedfiletypes = LogsController::GetAllowedFiletypes();
 
         try {
             // get gameboard user
-            if ($user = Spelbordusers::verifyAccess()) {
+            if ( $user = Spelbordusers::verifyAccess() ) {
 
-                if ($user->role != 'observer') {
+                if ( $user->role != 'observer' ) {
 
-                    $time = post('timestamp', '');
+                    $time = $dataTimestamp;
 
-                    if ($time && strtotime($time) !== false) {
+                    if ( $time && strtotime($time) !== false ) {
 
-                        $timestamp = Settings::get('startdate');
-                        $timestamp = str_replace('00:00:00', $time, $timestamp);
+                        $startdate = Settings::get('startdate');
+                        $timestamp = preg_replace('/\d{2}:\d{2}:\d{2}/', $time, $startdate);
+                        hLog::logLine("D-ddosspelbord_log.submitLog; startdate=$startdate, time=$time, timestamp=$timestamp");
 
-                        $logtext = post('log', '');
-                        // strip all tags
-                        $logtext = strip_tags($logtext);
-                        // Strip dangerous tags
-                        $logtext = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $logtext);
-                        $logtext = preg_replace('#function(.*?)[(][)](.*?)#is', '', $logtext);
-                        $logtext = preg_replace('#http:[/][/](.*?)#is', '', $logtext);
-                        // Completely sanitize input
-                        $logtext = filter_var($logtext, FILTER_SANITIZE_STRING);
+                        $logtext = $dataLog;
+                        // analyze input
+                        $logtext = htmlspecialchars($logtext, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_IGNORE);
 
                         $id = post('id', '');
 
-                        if (!empty($id)) {
+                        if ( !empty($id) ) {
                             hLog::logLine("D-ddosspelbord_log.submitLog; id=$id, update log");
                             $log = Logs::find($id);
-                        } else {
+                        }
+                        else {
                             hLog::logLine("D-ddosspelbord_log.submitLog; create new log");
                             $log = new Logs();
                             $log->user_id = $user->id;
                         }
-                        if (!empty($log) && !empty($logtext)) {
+                        if ( !empty($log) && !empty($logtext) || !( empty(post('attachments', '')) ) ) {
 
-                            if ($log->user_id != $user->id) {
+                            if ( $log->user_id != $user->id ) {
                                 $message = 'You cannot update a log from another user';
-                            } else {
+                            }
+                            else {
                                 $log->log = $logtext;
                                 $log->timestamp = $timestamp;
                                 $log->save();
 
-                                if (!(empty(post('deletefilesbyid', '')))) {
+                                if ( !( empty(post('deletefilesbyid', '')) ) ) {
                                     $deletefilesbyid = post('deletefilesbyid', '');
-                                    for ($i = 0; $i < count($deletefilesbyid); ++$i) {
-                                        if (empty(File::find($deletefilesbyid[$i]))) {
-                                            throw new ApplicationException(sprintf('File to be deleted by id:'. $deletefilesbyid[$i] . 'Doesn\'t exist'));
+                                    for ( $i = 0; $i < count($deletefilesbyid); ++$i ) {
+                                        if ( empty(File::find($deletefilesbyid[ $i ])) ) {
+                                            throw new ApplicationException(sprintf('File to be deleted by id:' . $deletefilesbyid[ $i ] . 'Doesn\'t exist'));
                                         }
                                         else {
-                                            File::find($deletefilesbyid[$i])->delete();
+                                            File::find($deletefilesbyid[ $i ])->delete();
                                         }
                                     }
                                 }
                                 $hasattachments = false;
 
-                                if (!(empty(post('hasorgattachments', '')))) {
+                                if ( !( empty(post('hasorgattachments', '')) ) ) {
                                     $hasattachments = true;
                                 }
 
-                                if (!(empty(post('attachments', '')))) {
+                                if ( !( empty(post('attachments', '')) ) ) {
 
                                     $logattachments = post('attachments', '');
 
                                     $maxfiles = Settings::get('logmaxfiles');
-                                    if (count($logattachments) > $maxfiles) {
+                                    if ( count($logattachments) > $maxfiles ) {
                                         throw new ApplicationException(sprintf('You can only upload ' . $maxfiles . 'files to the server'));
                                     }
-                                    for ($i = 0; $i < count($logattachments); ++$i) {
+                                    for ( $i = 0; $i < count($logattachments); ++$i ) {
                                         // When no rawdata is suplied, te file already exists
-                                        if (!empty($logattachments[$i]['rawdata'])) {
-                                            $raw64data = base64Helper::RemoveBase64Header($logattachments[$i]['rawdata']);
+                                        if ( !empty($logattachments[ $i ]['rawdata']) ) {
+                                            $raw64data = base64Helper::RemoveBase64Header($logattachments[ $i ]['rawdata']);
                                             $rawdata = base64_decode($raw64data);
-                                            $filename = $logattachments[$i]['filename'];
+                                            $filename = $logattachments[ $i ]['filename'];
                                             $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                                            if (in_array($ext, $acceptedfiletypes)) {
-                                                $file = (new File)->fromData($rawdata, $filename);
+                                            if ( in_array($ext, $acceptedfiletypes) ) {
+                                                $file = ( new File )->fromData($rawdata, $filename);
                                                 $logmaxfilesizeinmb = Settings::get('logmaxfilesize');
                                                 $logmaxfilesize = $logmaxfilesizeinmb * 1024 * 1024;
-                                                if ($file->file_size > $logmaxfilesize) {
+                                                if ( $file->file_size > $logmaxfilesize ) {
                                                     throw new ApplicationException(sprintf('You can only upload ' . $logmaxfilesizeinmb . 'files to the server'));
                                                 }
                                                 $file->is_public = true;
@@ -183,40 +176,80 @@ class ddosspelbord_log extends ComponentBase
                                 // get vue code values & create transaction
                                 $alog = ddosspelbord_data::getSpelbordLog($log, $hasattachments);
                                 //hlog::logLine("submitLog.alog=" . print_r($alog,true ));
-                                (new Feeds())->createTransaction(TRANSACTION_TYPE_LOG, $alog);
+
+                                try {
+                                    ( new Feeds() )->createTransaction(TRANSACTION_TYPE_LOG, $alog);
+                                }
+                                catch (\Throwable $err)  {
+                                    $message = "Cannot create transaction error: " . $err->getMessage();
+                                    hLog::logLine("E-$message");
+                                }
 
                                 $result = true;
                             }
-
-                        } else {
+                        }
+                        else {
                             $message = 'Error create/update log';
                         }
 
-                    } else {
+                    }
+                    else {
                         $message = "No valid log timestamp; input timestamp='$time' ";
                     }
 
-                } else {
+                }
+                else {
                     $message = "No logging rights";
                 }
 
             }
 
-        } catch (Exception $err) {
+        }
+        catch ( Exception $err ) {
             $message = "Cannot save log; error: " . $err->getMessage();
             hLog::logLine("E-$message");
             $result = false;
         }
 
-        if ($message) {
+        if ( $message ) {
             hLog::logLine("W-$message");
         }
 
         return Response::json([
-            'result' => $result,
-            'message' => $message,
-            'log' => json_encode($alog),
-        ]);
+                                  'result'  => $result,
+                                  'message' => $message,
+                                  'log'     => json_encode($alog),
+                              ]);
+    }
+
+    public static function downloadLogPurple() {
+        $message = '';
+        $file = '';
+        $result = false;
+
+        $user = Spelbordusers::verifyAccess();
+        $postUser = post('user');
+
+        if ( empty($user) ) {
+            $message = 'unauthenticated user';
+        }
+
+        if ( $user = Spelbordusers::verifyAccess() ) {
+            if ( $user->party_id !== $postUser['party_id'] ) {
+                $message = 'unauthenticated';
+            }
+            else {
+                $logsController = new LogsController();
+                return $logsController->getdownload([ $user->party_id ]);
+            }
+        }
+
+        return Response::json([
+                                  'result'  => $result,
+                                  'message' => $message,
+                              ]);
+
+
     }
 
 }

@@ -57,7 +57,7 @@ class ReadFeed extends Command
     /**
      * @var string The console command name.
      */
-    protected $name = 'ddosgameboard:readfeed';
+    protected $name = 'ddosspelbord:readfeed';
 
     /**
      * @var string The console command description.
@@ -94,7 +94,7 @@ class ReadFeed extends Command
 
         } else {
 
-            hlog::logLine("D-ReadFeed; mode=$mode, number=$number, username=$username, host=$host");
+            hlog::logLine("D-ReadFeed; mode=$mode, number=$number, username=$username, password=$password, host=$host");
 
             if ($mode == 'logout') {
 
@@ -126,7 +126,7 @@ class ReadFeed extends Command
                         $spelborduser->name = $login;
                         $spelborduser->password = 'Gerald13';
                         $spelborduser->email = $spelborduser->name . '@nomoreddos.org';
-                        $spelborduser->party_id = 6;
+                        $spelborduser->party_id = 1;
                         $spelborduser->role_id = 2;
                         $spelborduser->save();
                         hlog::logLine("D-Spelbord user '$login' with password '$spelborduser->password' created");
@@ -189,7 +189,7 @@ class ReadFeed extends Command
 
                         // LOGIN
                         $post = [
-                            'email' => $username,
+                            'username' => $username,
                             'password' => $password,
                         ];
                         //$post = "login=$username&password=$password";

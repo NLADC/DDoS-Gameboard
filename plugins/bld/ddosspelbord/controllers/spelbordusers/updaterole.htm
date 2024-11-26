@@ -1,0 +1,39 @@
+<?php Block::put('breadcrumb') ?>
+<ul>
+    <li><a href="<?= Backend::url('bld/ddosspelbord/spelbordusers') ?>">Spelbordusers</a></li>
+    <li><?= e($this->pageTitle) ?></li>
+</ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+<?= Form::open(['class' => 'layout']) ?>
+
+<div class="layout-row">
+    <?= $this->formRender() ?>
+</div>
+
+<div class="form-buttons">
+    <div class="loading-indicator-container">
+        <button
+            class="btn btn-primary"
+            data-request="onConfirmRoleChange"
+            data-request-confirm="Are you sure you want to change the role? All associated data will be deleted."
+            data-request-data="user_id: '<?= $this->vars['formModel']->id ?>'"
+            data-hotkey="ctrl+s, cmd+s"
+            data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+        >
+            Change Role
+        </button>
+
+        <span class="btn-text">
+                    <?= e(trans('backend::lang.form.or')) ?> <a href="<?= Backend::url('bld/ddosspelbord/spelbordusers/update/' . $this->vars['formModel']->id) ?>"><?= e(trans('backend::lang.form.cancel')) ?></a>
+                </span>
+    </div>
+</div>
+<?= Form::close() ?>
+
+<?php else: ?>
+<p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+<p><a href="<?= Backend::url('bld/ddosspelbord/spelbordusers') ?>" class="btn btn-default"><?= e(trans('backend::lang.form.return_to_list')) ?></a></p>
+<?php endif ?>

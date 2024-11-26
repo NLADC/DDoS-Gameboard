@@ -26,6 +26,8 @@ use BackendMenu;
 
 class Parties extends Controller
 {
+    public $requiredPermissions = ['bld.ddosspelbord.parties'];
+
     public $implement = [
         \Backend\Behaviors\ListController::class,
         \Backend\Behaviors\RelationController::class,

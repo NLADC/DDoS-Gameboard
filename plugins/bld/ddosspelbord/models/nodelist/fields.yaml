@@ -1,0 +1,17 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    nodes:
+        label: NodeList
+        span: full
+        type: checkboxlist
+        quickselect: true
+        commentAbove: 'These Nodes are loaded through API calls and should be auto filled'
+        select: name
+    description:
+        label: Description
+        size: large
+        span: full
+        type: textarea

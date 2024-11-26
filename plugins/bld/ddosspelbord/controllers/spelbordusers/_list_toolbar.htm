@@ -43,6 +43,7 @@
             data-toggle="dropdown">
             <span class="caret"></span>
         </button>
+
         <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('winter.user::lang.users.bulk_actions')) ?>">
             <li>
                 <a href="javascript:;" class="oc-icon-trash-o" data-action="delete" data-confirm="<?= e(trans('winter.user::lang.users.delete_selected_confirm')) ?>">
@@ -79,7 +80,6 @@
         data-stripe-load-indicator>
         <?= e(trans('bld.ddosspelbord::lang.sendpasswordresetmail')) ?>
     </button>
-
 
     <a href="<?= Backend::url('bld/ddosspelbord/spelbordusers/export') ?>" class="btn btn-primary oc-icon-download">
         <?= e(trans('bld.ddosspelbord::lang.export')) ?>

@@ -8,10 +8,6 @@ columns:
         relation: parties
         select: name
         searchable: true
-    name:
-        label: name
-        type: text
-        searchable: true
     target:
         label: target
         type: text
@@ -19,13 +15,15 @@ columns:
     ipv:
         label: IPversion
         type: text
-    type:
-        label: type
-        type: text
+    measurementtype:
+        label: Type
+        relation: measurementtype
+        select: name
         searchable: true
     groups:
         label: group
         type: text
+        invisible: true
         searchable: true
     measurement:
         label: 'Measurement'
@@ -33,12 +31,15 @@ columns:
         relation: measurement_api
         select: name
         searchable: true
+        invisible: true
     threshold_orange:
         label: 'Threshold orange'
         type: text
+        invisible: true
     threshold_red:
         label: 'Threshold red'
         type: text
+        invisible: true
     updated_at:
         label: 'Last update'
         type: datetime
