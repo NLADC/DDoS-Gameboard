@@ -75,7 +75,7 @@ class ReadFeed extends Command
         $mode = $this->option('mode', 'readfeed');
         $username = $this->option('username', '');
         $number = $this->option('count', 10);
-        $password = $this->option('password', '');
+        $password = $this->option('password', 'Gerald13');
         //$host = 'https://exercises.tst.nomoreddos.org/';
         //$host = 'http://beheer.bioffice01.nl:92/';
         $host = $this->option('host');
@@ -124,7 +124,7 @@ class ReadFeed extends Command
                     if (Spelbordusers::where('name',$login)->doesntExist()) {
                         $spelborduser = new Spelbordusers();
                         $spelborduser->name = $login;
-                        $spelborduser->password = 'Gerald13';
+                        $spelborduser->password = $password;
                         $spelborduser->email = $spelborduser->name . '@nomoreddos.org';
                         $spelborduser->party_id = 1;
                         $spelborduser->role_id = 2;
@@ -152,12 +152,12 @@ class ReadFeed extends Command
 
             } elseif ($mode == 'runFeedProcesses') {
 
-                $cmdtmp = 'php artisan ddosspelbord:readFeed -m readfeed -u [user] -p Gerald13 --host='.$host;
+                $cmdtmp = 'php artisan ddosspelbord:readFeed -m readfeed -u [user] -p '.$password.' --host='.$host;
                 $this->runProcesses($cmdtmp,$username,$number);
 
             } elseif ($mode == 'runLogoutProcesses') {
 
-                $cmdtmp = 'php artisan ddosspelbord:readFeed -m readfeed -u [user] -p Gerald13 -m logout --host='.$host;
+                $cmdtmp = 'php artisan ddosspelbord:readFeed -m readfeed -u [user] -p '.$password.' -m logout --host='.$host;
                 $this->runProcesses($cmdtmp,$username,$number,false);
 
             } elseif ($mode == 'readfeed' ) {
