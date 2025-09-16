@@ -85,7 +85,12 @@
         <?= e(trans('bld.ddosspelbord::lang.export')) ?>
     </a>
 
+    <?php
+            $user = \bld\ddosspelbord\classes\helpers\ddosspelbordUsers::getUser();
+            if ($user->hasAccess('bld.ddosspelbord.import_actions')):?>
     <a href="<?= Backend::url('bld/ddosspelbord/spelbordusers/import') ?>" class="btn btn-primary oc-icon-upload">
         <?= e(trans('bld.ddosspelbord::lang.import')) ?>
     </a>
+    <?php endif ?>
+
 </div>

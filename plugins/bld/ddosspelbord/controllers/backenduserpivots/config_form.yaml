@@ -1,0 +1,11 @@
+name: Backend Users
+modelClass: bld\ddosspelbord\Models\BackendUserPivot
+form: $/bld/ddosspelbord/models/backenduserpivot/fields.yaml
+defaultRedirect: bld/ddosspelbord/backenduserpivots
+create:
+    redirect: 'bld/ddosspelbord/backenduserpivots/update/:id'
+    redirectClose: bld/ddosspelbord/backenduserpivots
+update:
+    redirect: bld/ddosspelbord/backenduserpivots
+    redirectClose: bld/ddosspelbord/backenduserpivots
+preview: {  }

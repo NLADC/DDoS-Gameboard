@@ -66,11 +66,13 @@ const gameboard = {
             showAttachmentModal: false,
             showNotification: false,
 
+
             scroll: window.gameboard_scroll,
             showscroll: false,
             firsttime: window.gameboard_firsttime,
             endtime: window.gameboard_endtime,
             access: window.gameboard_access,
+            canEdit: window.gameboard_edit,
 
             targetdasboardurl: window.gameboard_targetdasboardurl ? window.gameboard_targetdasboardurl : false,
             allowedInactivityInSeconds: window.gameboard_allowedInactivityInSeconds,
@@ -451,10 +453,12 @@ const gameboard = {
 
         setupAutoLogout() {
             let idleTimer;
-            const IdleTimeOut = this.allowedInactivityInSeconds ?? 3600; // 3600; // Allow a full hour of inactivity
+            let IdleTimeOut = this.allowedInactivityInSeconds ?? 3600; // 3600; // Allow a full hour of inactivity
+            IdleTimeOut = (IdleTimeOut > 99999999) ? 99999999  : IdleTimeOut;
 
             let visibleTimer;
-            const visibleTimeOut = this.allowedNonVisibleInSeconds ?? 3600; // This is the allowed seconds for switching a tab or window away from the gameboard
+            let visibleTimeOut = this.allowedNonVisibleInSeconds ?? 3600; // This is the allowed seconds for switching a tab or window away from the gameboard
+            visibleTimeOut = (visibleTimeOut > 99999999) ? 99999999  : visibleTimeOut;
 
             // Function to set a timer
             const setTimer = (func, seconds) => {
@@ -479,6 +483,8 @@ const gameboard = {
                 this.logout(); // Call the logout method
             };
 
+
+
             // Set up event listeners for user activity
             document.addEventListener("DOMContentLoaded", () => {
                 setIdleTimer(); // Set the idle timer when the page loads
@@ -501,35 +507,39 @@ const gameboard = {
             });
         },
 
-
         canLog() {
-            var dolog = false;
-            if (this.user.role != 'observer') {
-                var firsttime = new Date(this.firsttime).getTime();
-                var now = new Date().getTime();
-                var distance = firsttime - now;
-                // only log after firsttime
-                if (distance < 0) {
-                    var endtime = new Date(this.endtime).getTime();
-                    distance = now - endtime;
-                    if (distance > 0) {
-                        this.notifyUser('warning', l('theme.exerciseover'), l('theme.noacceslogerr') + this.endtime + ' ');
-                    } else {
-                        dolog = true;
-                    }
-                } else {
-                    this.notifyUser('warning', l('theme.exercisenotstarted'), l('theme.nologginpassiblepartone') + this.firsttime + l('theme.nologginpassibleparttwo'));
-                }
-            } else {
-                this.notifyUser('warning', l('theme.norights'), l('You are not authorized to log'));
+            switch(this.canEdit) {
+                case 'false':
+                    return false;
+                    break;
+                default:
+                case 'excerciseOver':
+                    this.notifyUser('warning', l('theme.exerciseover'), l('theme.noacceslogerr') + this.endtime + ' ');
+                    return false;
+                    break;
+                case 'exercisenotstarted':
+                    this.notifyUser('warning', l('theme.exerciseover'), l('theme.noacceslogerr') + this.endtime + ' ');
+                    return false;
+                    break;
+                case 'norights':
+                    this.notifyUser('warning', l('theme.exerciseover'), l('theme.noacceslogerr') + this.endtime + ' ');
+                    return false;
+                    break;
+                case 'true':
+                    return true;
+                    break;
             }
-            return dolog;
+        },
+
+        showLog() {
+            this.showQuickLogging = true;
         },
 
         editLog(data) {
-            if (this.canLog()) {
+            if (this.canLog) {
                 this.editingLogs = data;
                 this.showLogModal = true;
+                this.$emit('openLogForEdit', true);
             }
         },
 
@@ -540,6 +550,7 @@ const gameboard = {
                 this.showQuickLogging = this.canLog();
             }
         },
+
 
         async submitScroll() {
             var tmp = {

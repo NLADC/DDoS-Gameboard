@@ -7,6 +7,7 @@ fields:
         label: 'Party'
         select: name
         type: relation
+        hidden: true
     user:
         label: 'User'
         select: name

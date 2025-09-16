@@ -22,15 +22,22 @@
 namespace Bld\Ddosspelbord\Models;
 
 use \Backend\Models\ExportModel;
+use bld\ddosspelbord\classes\helpers\ddosspelbordUsers;
+use bld\ddosspelbord\models\Action;
 
 class ActionsExport extends ExportModel {
 
     public function exportData($columns, $sessionKey = null) {
-        $actions = Actions::all();
+        $query = Action::query();
+        if (ddosspelbordUsers::filterOnParty()) {
+            $partyId = ddosspelbordUsers::getBackendPartyId();
+            $query->where('party_id',$partyId);
+        }
+        $actions = $query->get();
         $actions->each(function($action) use ($columns) {
             $action->addVisible($columns);
             // fill as field value from hasOne relation parties
-            $action->party = $action->parties->name;
+            $action->party = (!empty($action->parties)) ? $action->parties->name : '';
         });
         return $actions->toArray();
     }

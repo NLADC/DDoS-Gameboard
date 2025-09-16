@@ -23,10 +23,11 @@ namespace bld\ddosspelbord\Controllers;
 
 use Backend\Classes\Controller;
 use BackendMenu;
+use bld\ddosspelbord\classes\base\baseController;
 
-class Measurements extends Controller
+class Measurements extends baseController
 {
-    public $requiredPermissions = ['bld.ddosspelbord.attacks'];
+    public $requiredPermissions = ['bld.ddosspelbord.monitor'];
 
     public $implement = [        'Backend\Behaviors\ListController',        'Backend\Behaviors\FormController'    ];
 

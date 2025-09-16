@@ -17,6 +17,3 @@ columns:
         label: log
         type: text
         searchable: true
-    deleted_at:
-        label: deleted_at
-        type: datetime

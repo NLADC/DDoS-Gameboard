@@ -2,10 +2,11 @@
 
 use Backend\Classes\Controller;
 use BackendMenu;
+use bld\ddosspelbord\classes\base\baseController;
 
-class NodeLists extends Controller
+class NodeLists extends baseController
 {
-    public $requiredPermissions = ['bld.ddosspelbord.attacks'];
+    public $requiredPermissions = ['bld.ddosspelbord.monitor'];
 
     public $implement = [        'Backend\Behaviors\ListController',        'Backend\Behaviors\FormController'    ];
 

@@ -20,10 +20,9 @@
  */
 
 return [
-
     'release' => [
-        'version' => '2.3',
-        'build'   => 'Build 3',
+        'version' => '2.4',
+        'build'   => 'Build 5',
     ],
 
     'mail' => [

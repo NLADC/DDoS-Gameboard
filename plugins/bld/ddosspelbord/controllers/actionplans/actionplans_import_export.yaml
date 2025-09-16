@@ -1,0 +1,23 @@
+# ===================================
+#  Import/Export Behavior Config
+# ===================================
+
+import:
+    title: Import actions
+    modelClass: Bld\Ddosspelbord\Models\ActionPlansImport
+    list: $/bld/ddosspelbord/models/action/columns_imexport.yaml
+    form: $/bld/ddosspelbord/models/actionplan/fields_import.yaml
+    redirect: bld/ddosspelbord/actionplans
+
+export:
+    title: Export actionplan
+    modelClass: Bld\Ddosspelbord\Models\ActionPlansExport
+    list: $/bld/ddosspelbord/models/action/columns_imexport.yaml
+    form: $/bld/ddosspelbord/models/actionplan/fields_export.yaml
+    redirect: bld/ddosspelbord/actionplans
+
+defaultFormatOptions:
+    delimiter: ';'
+    enclosure: '"'
+    escape: '\'
+    encoding: 'utf-8'

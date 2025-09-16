@@ -25,7 +25,6 @@ artisan
 CHANGELOG.md
 index.php
 LICENSE
-package-lock.json
 package.winter.json
 phpcs.xml
 phpunit.xml

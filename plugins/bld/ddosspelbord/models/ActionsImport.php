@@ -31,98 +31,142 @@ class ActionsImport extends ImportModel {
      */
     public $rules = [];
 
-    public function importData($results, $sessionKey = null) {
-
-        // holds party from which the action time fields are changed
+    public function importData($results, $sessionKey = null)
+    {
+        // Keep track of which parties need their action times reset
         $resetTimes = [];
-        // the specific action time fields
-        $actiontimefields = (new Actions())->getTimeFields();
+        $actionTimeFields = (new Action())->getTimeFields();
 
-        // check if clear
         if ($this->cleartable) {
             hLog::logLine("D-Clear table before import");
-            $del = Actions::where('id','>',0)->delete();
+            Action::where('id', '>', 0)->delete();
         }
 
-        // loop through the import lines
-        foreach ($results as $row => $data) {
-
+        foreach ($results as $rowNumber => $data) {
             try {
-
-                // note: unique for one row is party_id and start time
-
-                if (!empty($data) && isset($data['party']) && isset($data['start'])) {
-
-                    // check & get party
-                    $partyName = $data['party'];
-                    $party = Parties::where('name',$partyName)->first();
-                    if ($party) {
-                        $data['party_id'] = $party->id;
-                    } else {
-                        $this->logError($row,"Cannot find key of party '$partyName'!?!");
-                        $data['party_id'] = 0;
-                    }
-                    unset($data['party']);
-
-                    $data['start'] = date('Y-m-d H:i:s',strtotime($data['start']));
-
-                    $action = Actions::where([
-                        ['party_id',$data['party_id']],
-                        ['start',$data['start']],
-                    ])->first();
-
-                    // detect if create or update
-                    if ($action) {
-                        // setup arrays for comparing -> strip/add special fields
-                        $actionarr = $action->toArray();
-                        $actionarr['party_id'] = $data['party_id'];
-                        // check if diff in values
-                        $diff = $difftime = false;
-                        foreach ($data AS $field => $value) {
-                            // check if changed
-                            if ($actionarr[$field] != $value) {
-                                $diff = true;
-                            }
-                            // check if time fields changed -> then forceResetStartTimes (below)
-                            if (in_array($field,$actiontimefields) && $actionarr[$field] != $value) {
-                                $difftime = true;
-                            }
-                        }
-                        if ($diff) {
-                            $this->logUpdated();
-                            if ($difftime) $resetTimes[$data['party_id']] = true;
-                        } else {
-                            $this->logSkipped($row,"No change in action");
-                        }
-
-                    } else {
-                        $action = new Actions();
-                        $resetTimes[$data['party_id']] = true;
-                        $this->logCreated();
-                    }
-
-                    $action->fill($data);
-                    // skip change detection
-                    $action->setSkip();
-                    $action->save();
-
-                } else {
-
-                    $this->logSkipped($row,"Skip empty or not valid import file row ");
-
-                }
+                $this->processImportedRow($rowNumber, $data, $actionTimeFields, $resetTimes);
+            } catch (\Exception $ex) {
+                $this->logError($rowNumber, $ex->getMessage());
             }
-            catch (\Exception $ex) {
-                $this->logError($row, $ex->getMessage());
-            }
-
         }
 
         if (count($resetTimes) > 0) {
-            // reset starttimes of actions -> only from party_id in resetTimes
-            (neW Actions())->forceResetStartTimes($resetTimes);
+            (new Action())->forceResetStartTimes($resetTimes);
+        }
+    }
+
+
+    /**
+     * Processes a single row from the import.
+     *
+     * @param int   $rowNumber
+     * @param array $data
+     * @param array $actionTimeFields
+     * @param array $resetTimes  Reference array to track parties needing a reset
+     */
+    private function processImportedRow( $rowNumber, $data, $actionTimeFields, &$resetTimes)
+    {
+        if (empty($data) || !isset($data['party'], $data['start'])) {
+            $this->logSkipped($rowNumber, "Skip empty or invalid import row");
+            return;
         }
 
+        // Assign party_id (0 if not found)
+        $data['party_id'] = $this->getPartyId($rowNumber, $data['party']);
+        unset($data['party']);
+        $data['start'] = date('Y-m-d H:i:s', strtotime($data['start']));
+
+        $action = Action::where([
+                                     ['party_id', $data['party_id']],
+                                     ['start',    $data['start']],
+                                 ])->first();
+
+        if ($action) {
+            $changedTimeFields = $this->updateExistingAction($rowNumber, $action, $data, $actionTimeFields);
+            if ($changedTimeFields) {
+                $resetTimes[$data['party_id']] = true;
+            }
+        } else {
+            $this->createNewAction($data);
+            $resetTimes[$data['party_id']] = true;
+        }
     }
+
+    /**
+     * Finds the Party by name, logs an error if not found, and returns party ID (or 0).
+     *
+     * @param  int    $rowNumber
+     * @param  string $partyName
+     * @return int
+     */
+    public function getPartyId($rowNumber, $partyName)
+    {
+        $party = Parties::where('name', $partyName)->first();
+        if (!$party) {
+            $this->logError($rowNumber, "Cannot find key of party '$partyName'!?!");
+            return 0;
+        }
+        return $party->id;
+    }
+
+    /**
+     * Updates an existing Actions record. Returns true if any of the time fields changed.
+     *
+     * @param  int    $rowNumber
+     * @param  Action $action
+     * @param  array   $data
+     * @param  array   $actionTimeFields
+     * @return bool    Whether any time field changed
+     */
+    private function updateExistingAction(
+        int    $rowNumber,
+        Action $action,
+        array  $data,
+        array  $actionTimeFields
+    ) {
+        $original = $action->toArray();
+        $original['party_id'] = $data['party_id'];
+
+        $diff      = false;
+        $diffTime  = false;
+
+        foreach ($data as $field => $value) {
+            if (array_key_exists($field, $original) && $original[$field] != $value) {
+                $diff = true;
+                if (in_array($field, $actionTimeFields)) {
+                    $diffTime = true;
+                }
+            }
+        }
+
+        if ($diff) {
+            $this->logUpdated();
+        } else {
+            $this->logSkipped($rowNumber, "No change in action");
+        }
+
+
+        $action->fill($data);
+        $action->setSkip();
+        $action->save();
+
+        return $diffTime;
+    }
+
+    /**
+     * Creates a new Actions record from data.
+     *
+     * @param array $data
+     */
+    private function createNewAction($data)
+    {
+        $action = new Action();
+        $action->fill($data);
+        $action->setSkip();
+        $action->save();
+
+        $this->logCreated();
+    }
+
 
 }

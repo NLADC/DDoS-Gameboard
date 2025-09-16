@@ -1,19 +1,25 @@
 <template>
-    <div class="game-countdown" :class="'mode-' + mode" id="game-countdown">
-        <div class="wrapper text-xl lg:text-5xl sm:text-2xl xm:text-1xl">
-            <lottie-player v-if="mode == 2" class="player-1 -top-5 lg:-top-1 -left-10 lg:-left-20" src="/json/alarm.json" background="transparent" speed="0.4" loop autoplay></lottie-player>
+    <div class="game-datetimeWrapper">
+        <div class="game-countdown" :class="'mode-' + mode" id="game-countdown">
+            <div class="wrapper text-xl lg:text-5xl sm:text-2xl xm:text-1xl">
+                <lottie-player v-if="mode == 2" class="player-1 -top-5 lg:-top-1 -left-10 lg:-left-20" src="/json/alarm.json" background="transparent" speed="0.4" loop autoplay></lottie-player>
 
-            <span v-if="mode == 1">{{ days < 10 ? '0' + days : days }}</span>
-            <span v-if="mode == 1">:</span>
-            <span>{{ hours < 10 ? '0' + hours : hours }}</span>
-            <span>:</span>
-            <span>{{ minutes < 10 ? '0' + minutes : minutes }}</span>
-            <span>:</span>
-            <span>{{ seconds < 10 ? '0' + seconds : seconds }}</span>
-
-<!--            <lottie-player v-if="mode == 2" class="player-2 -top-5 lg:-top-1 -right-10 lg:-right-20" src="/json/alarm.json" background="transparent" speed="0.4" loop autoplay></lottie-player>-->
+                <span v-if="mode == 1">{{ days < 10 ? '0' + days : days }}</span>
+                <span v-if="mode == 1">:</span>
+                <span>{{ hours < 10 ? '0' + hours : hours }}</span>
+                <span>:</span>
+                <span>{{ minutes < 10 ? '0' + minutes : minutes }}</span>
+                <span>:</span>
+                <span>{{ seconds < 10 ? '0' + seconds : seconds }}</span>
+                <!--            <lottie-player v-if="mode == 2" class="player-2 -top-5 lg:-top-1 -right-10 lg:-right-20" src="/json/alarm.json" background="transparent" speed="0.4" loop autoplay></lottie-player>-->
+            </div>
         </div>
+        <div class="game-date">
+                <span>8 March 2025</span>
+        </div>
+
     </div>
+
 </template>
 
 <script>

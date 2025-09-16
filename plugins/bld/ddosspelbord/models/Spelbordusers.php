@@ -21,6 +21,7 @@
 
 namespace Bld\Ddosspelbord\Models;
 
+use bld\ddosspelbord\classes\base\baseModel;
 use bld\ddosspelbord\classes\middleware\ReqAccesToken;
 use Db;
 use Auth;
@@ -44,7 +45,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Model
  */
-class Spelbordusers extends Model
+class Spelbordusers extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 
@@ -61,7 +62,6 @@ class Spelbordusers extends Model
         'name' => 'required',
         'email'    => 'required',
         'password'    => 'required:create',
-        'party_id'    => 'required',
         'role_id'    => 'required',
     ];
 
@@ -147,8 +147,9 @@ class Spelbordusers extends Model
      * @return false|void
      */
     public function beforeCreate() {
-
-        if (($user = User::findByEmail($this->email)) == 0) {
+        parent::beforeCreate();
+        $user = User::findByEmail($this->email);
+        if (empty($user)) {
             // insert user in users table
             $user = Auth::register([
                 'name' => $this->name,

@@ -1,0 +1,17 @@
+columns:
+    name:
+        label: name
+        type: text
+        searchable: true
+        sortable: true
+    user_last_edited:
+        label: Last Edited By
+        type: text
+        relation: user_last_edited
+        select: name
+        searchable: true
+    updated_at:
+        label: updated_at
+        type: datetime
+        searchable: true
+        sortable: true

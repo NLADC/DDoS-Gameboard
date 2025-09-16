@@ -21,12 +21,13 @@
 
 namespace Bld\Ddosspelbord\Models;
 
+use bld\ddosspelbord\classes\base\baseModel;
 use Model;
 
 /**
  * Model
  */
-class Parties extends Model {
+class Parties extends baseModel {
 
     use \Winter\Storm\Database\Traits\Validation;
 
@@ -48,7 +49,7 @@ class Parties extends Model {
 
     public $hasMany = [
         'actions' => [
-            'bld\ddosspelbord\models\Actions',
+            'bld\ddosspelbord\models\Action',
             'key' => 'party_id',
             'order' => 'start ASC'
         ],

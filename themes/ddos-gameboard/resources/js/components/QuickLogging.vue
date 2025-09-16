@@ -15,9 +15,9 @@
             <quick-bubble v-for="log in activeLogs" :key="log.id" :log="log"></quick-bubble>
 
         </div>
-        <Form id="quicklogging-form" @submit="submitForm">
+        <Form id="quicklogging-form" :disabled="!editLog" @submit="submitForm">
             <div class="inputwrapper">
-                    <textarea type="textarea"
+                    <textarea type="textarea" :disabled="!editLog"
                               v-on:keydown.enter="handleEnter"
                               class="focus:outline-none focus:shadow-outline bg-white text-black w-75 "
                               v-model="proxy.log" name="log" rows="2" cols="40"
@@ -30,7 +30,7 @@
                     <div class="draganddropfiles" @dragover="dragover" @dragleave="dragleave" @drop="drop">
                         <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
                                class="w-px h-px opacity-0 overflow-hidden absolute" @change="onAttachmentsChange"
-                               ref="file">
+                               ref="file" :disabled="!editLog">
                         <label for="assetsFieldHandle" class="block cursor-pointer">
                             <div>
                                 <span v-html="l('theme.dropfilesor')"></span> <span class="underline"><span
@@ -119,6 +119,7 @@
 export default {
     props: {
         show: Boolean,
+        canEditLog: String,
         logs: Object,
         attacks: Object,
         user: Object,
@@ -129,6 +130,7 @@ export default {
     },
 
     data: () => ({
+        editLog: false,
         filelist: [],
         isError: false,
         errorMsg: '',
@@ -165,9 +167,12 @@ export default {
         if (this.logmaxfiles) this.maxfiles = this.logmaxfiles;
         if (this.logmaxfilesize) this.maxfilesize = this.logmaxfilesize
         if (this.acceptedFileTypes && Array.isArray(this.acceptedFileTypes)) this.acceptedExtensions = this.acceptedFileTypes;
-
         setInterval(this.timer.bind(this), 1000);
+
+
     },
+
+
 
     watch: {
         filenames: {
@@ -194,6 +199,7 @@ export default {
                 if (this.show) {
                     this.activeLogs = this.getLogs();
                     this.activeattacks = this.getAttacks();
+                    this.editLog = this.getEditLogBool();
                 }
             },
         },
@@ -207,9 +213,16 @@ export default {
                 this.attacksScrollBottomTimeout();
             }
         },
+
     },
 
     methods: {
+
+        getEditLogBool(){
+            let bool = (window.gameboard_edit == 'true');
+          return bool;
+        },
+
         /**
          * This function helps toggle the html when the drag and drop field is empty or filled with files, it also signals the vue to update.
          */
@@ -607,53 +620,57 @@ export default {
             }
         },
         async submitForm() {
-            this.hideError();
-            if (this.proxy.log || Object.keys(this.proxy.attachments).length > 0) {
-                var tmp = {
-                    _token: this.csrf,
-                    id: this.proxy.id,
-                    log: this.proxy.log,
-                    attachments: this.proxy.attachments,
-                    timestamp: this.moment(this.proxy.timestamp.timestamp).format('HH:mm:ss')
-                }
-                this.resetFields();
-                var path = '/api/log';
-                var method = 'POST';
+            // Check if we are inside the time bounds of an exercise
+            if (this.getEditLogBool()) {
+                this.hideError();
+                if (this.proxy.log || Object.keys(this.proxy.attachments).length > 0) {
+                    var tmp = {
+                        _token: this.csrf,
+                        id: this.proxy.id,
+                        log: this.proxy.log,
+                        attachments: this.proxy.attachments,
+                        timestamp: this.moment(this.proxy.timestamp.timestamp).format('HH:mm:ss')
+                    }
+                    this.resetFields();
+                    var path = '/api/log';
+                    var method = 'POST';
 
-                const response = await fetch(path, {
-                    method: method,
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(tmp)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if ('result' in data && data.result == false && 'message' in data)
-                            this.triggerError(data.message);
-                        else {
-                            if ('result' in data && data.result == true && 'log' in data) {
-                                let log = JSON.parse(data.log);
-                                // update directly local -> update by stream can be seconds..
-                                this.logs[log.id] = log;
-                                this.$emit('update-log', log);
-                                // Show message if there is one.
-                                if ('message' in data && data.message.length >= 1) {
-                                    this.triggerError(data.message);
+                    const response = await fetch(path, {
+                        method: method,
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(tmp)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if ('result' in data && data.result == false && 'message' in data)
+                                this.triggerError(data.message);
+                            else {
+                                if ('result' in data && data.result == true && 'log' in data) {
+                                    let log = JSON.parse(data.log);
+                                    // update directly local -> update by stream can be seconds..
+                                    this.logs[log.id] = log;
+                                    this.$emit('update-log', log);
+                                    // Show message if there is one.
+                                    if ('message' in data && data.message.length >= 1) {
+                                        this.triggerError(data.message);
+                                    }
                                 }
                             }
-                        }
-                    })
-                    .catch(err => {
-                        this.triggerError('A fatal error has occured! ' + err);
-                    });
+                        })
+                        .catch(err => {
+                            this.triggerError('A fatal error has occured! ' + err);
+                        });
 
-            } else {
-                this.triggerError('Empty log (text or attachment) - please add something');
+                } else {
+                    this.triggerError('Empty log (text or attachment) - please add something');
+                }
+                this.removeattachments();
             }
-            this.removeattachments();
         },
+
     },
 }
 </script>

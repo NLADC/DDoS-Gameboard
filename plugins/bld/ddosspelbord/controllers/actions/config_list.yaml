@@ -1,5 +1,5 @@
-list: $/bld/ddosspelbord/models/actions/columns.yaml
-modelClass: Bld\Ddosspelbord\Models\Actions
+list: $/bld/ddosspelbord/models/action/columns.yaml
+modelClass: Bld\Ddosspelbord\Models\Action
 title: Actions
 noRecordsMessage: 'backend::lang.list.no_records'
 showSetup: true

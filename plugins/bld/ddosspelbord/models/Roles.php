@@ -21,12 +21,13 @@
 
 namespace Bld\Ddosspelbord\Models;
 
+use bld\ddosspelbord\classes\base\baseModel;
 use Model;
 
 /**
  * Model
  */
-class Roles extends Model
+class Roles extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 

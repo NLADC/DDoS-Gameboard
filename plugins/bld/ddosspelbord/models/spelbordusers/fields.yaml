@@ -1,26 +1,16 @@
 fields:
-    id:
-        label: id
-        type: number
-        hidden: true
-    name:
-        label: name
-        span: auto
-        type: text
-    email:
-        label: email
-        span: auto
-        type: text
-    password:
-        label: password
-        type: password
-        span: auto
     party_id:
         label: party
         relation: parties
         select: name
         type: dropdown
         span: left
+        hidden: true
+    email:
+        label: email
+        span: left
+        type: text
+        comment: 'Also login username'
     role_id:
         label: Role
         relation: roles
@@ -28,9 +18,63 @@ fields:
         type: radio
         cssClass: 'inline-options'
         span: right
-
     change_btn:
         type: partial
         span: right
         path: $/bld/ddosspelbord/controllers/spelbordusers/changeFormBtn.htm
         context: update
+    password:
+        label: password
+        type: password
+        span: left
+    name:
+        label: name
+        type: text
+        span: left
+    phone:
+        label: phone
+        type: text
+        span: auto
+    organization:
+        label: organization
+        type: text
+        span: left
+    department:
+        label: department
+        type: text
+        span: auto
+    section:
+        type: section
+        label: 'Present options'
+        span: full
+    bhv:
+        label: BHV
+        type: checkbox
+        cssClass: 'col-sm-2'
+        span: storm
+    friday_present:
+        label: 'friday present'
+        type: checkbox
+        cssClass: 'col-sm-2'
+        span: storm
+    friday_diner:
+        label: 'friday diner'
+        type: checkbox
+        cssClass: 'col-sm-2'
+        span: storm
+    saterday_present:
+        label: 'saterday present'
+        type: checkbox
+        cssClass: 'col-sm-2'
+        span: storm
+    saterday_breakfast:
+        label: 'saterday breakfast'
+        type: checkbox
+        cssClass: 'col-sm-4'
+        span: storm
+    dietary:
+        label: diet
+        type: textarea
+        span: full
+        size: small
+

@@ -19,13 +19,14 @@
  *
  */
 
+use bld\ddosspelbord\classes\base\baseModel;
 use bld\ddosspelbord\helpers\hLog;
 use Model;
 
 /**
  * Model
  */
-class Target_groups extends Model
+class Target_groups extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 

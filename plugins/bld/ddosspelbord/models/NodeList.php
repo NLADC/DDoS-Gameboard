@@ -1,12 +1,13 @@
 <?php namespace bld\ddosspelbord\models;
 
+use bld\ddosspelbord\classes\base\baseModel;
 use Model;
 use DateTime;
 use bld\ddosspelbord\models\MeasurementNode;
 /**
  * Model
  */
-class NodeList extends Model
+class NodeList extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 

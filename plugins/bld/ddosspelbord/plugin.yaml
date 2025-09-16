@@ -26,35 +26,48 @@ navigation:
             - bld.ddosspelbord.spelbordusers
         icon: icon-user
         order: 720
+    BackendUsers:
+        label: 'Users'
+        url: bld/ddosspelbord/backenduserpivots
+        icon: icon-user-md
+        order: 725
+        permissions:
+            - bld.ddosspelbord.backendusers
     Actions:
         label: Actions
         url: /bld/ddosspelbord/actions
+        icon: icon-hand-o-right
         permissions:
             - bld.ddosspelbord.actions
-        icon: icon-list
         order: 730
+    ActionPlans:
+        label: Plans
+        url: bld/ddosspelbord/actionplans
+        icon: icon-edit
+        permissions:
+            - bld.ddosspelbord.actionplans
+        order: 740
     Logs:
         label: Logs
         url: /bld/ddosspelbord/logs
         permissions:
             - bld.ddosspelbord.logs
         icon: icon-list
-        order: 740
+        order: 750
     Attacks:
-        label: Stopwatch
+        label: Attacks
         url: bld/ddosspelbord/attacks
         permissions:
             - bld.ddosspelbord.attacks
         icon: icon-soccer-ball-o
-        order: 750
-
+        order: 760
     Monitor:
         label: Monitor
         url: bld/ddosspelbord/targets
         permissions:
-            - bld.ddosspelbord.attacks
+            - bld.ddosspelbord.monitor
         icon: icon-globe
-        order: 760
+        order: 770
         sideMenu:
             Targets:
                 label: Targets
@@ -62,14 +75,8 @@ navigation:
                 permissions:
                     - bld.ddosspelbord.attacks
                 icon: icon-globe
-#            Target_groups:
-#                label: 'Target groups'
-#                url: bld/ddosspelbord/target_groups
-#                permissions:
-#                    - bld.ddosspelbord.attacks
-#                icon: icon-group
             mesurementtypes:
-                label: Mesurements Types
+                label: 'Mesurements Types'
                 url: bld/ddosspelbord/measurementtypes
                 permissions:
                     - bld.ddosspelbord.attacks
@@ -80,18 +87,6 @@ navigation:
                 permissions:
                     - bld.ddosspelbord.attacks
                 icon: icon-sitemap
-#            Measurement_api:
-#                label: 'Measurement API'
-#                url: bld/ddosspelbord/measurementapi
-#                permissions:
-#                    - bld.ddosspelbord.attacks
-#                icon: icon-globe
-#            Measurements:
-#                label: Measurements
-#                url: bld/ddosspelbord/measurements
-#                permissions:
-#                    - bld.ddosspelbord.attacks
-#                icon: icon-clock-o
     Settings:
         label: Settings
         url: system/settings/update/bld/ddosspelbord/settings

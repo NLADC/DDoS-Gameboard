@@ -40,6 +40,7 @@ $this['SelectedLanguage'] = $this->activeLocale = $this->translator->getLocale()
         window.gameboard_firsttime = "{{ gameboard.firsttime }}";
         window.gameboard_endtime = "{{ gameboard.endtime }}";
         window.gameboard_access = "{{ gameboard.data.loggedin }}";
+        window.gameboard_edit = "{{ gameboard.editable }}";
         window.gameboard_logmaxfilesize = "{{ gameboard.data.logmaxfilesize }}";
         window.gameboard_logmaxfiles = "{{ gameboard.data.logmaxfiles }}";
         window.gameboard_scroll = {{ gameboard.data.scroll }};

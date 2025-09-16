@@ -81,8 +81,7 @@ Zorg voor een nginx of apache configuratie die in de hoofdmap uitkomt:
 - /etc/nginx/sites-available/
 - https://wintercms.com/docs/setup/configuration#nginx-configuration
 - zorg voor chown -R www-data:www-data van (hoofdmap)
-- zorg voor chmod -R 755 van (hoofdmap)
-- zorg voor chmod -r 775 van (hoofdmap)/storage
+- zorg voor chmod -R 775 van (hoofdmap)/storage
 
 #### nginx config
 
@@ -168,6 +167,16 @@ Voeg het volgende toe aan je VirtualHost (d.w.z. regel onder #LogLevel info ssl:
 Apache werkt pas naar behoren na het enablen van de mod rewrite:
 
 Vergeet niet de toegang naar phpmyadmin uit te zetten bij het opleveren van het ddosspelbord
+
+#### php max_input_vars
+
+Om te werken met Plandata groter dan 90 rijen moet het een van de volgende geconfigureerd worden.
+
+```
+php.ini	max_input_vars = 5000
+.htaccess (Apache)	php_value max_input_vars 5000
+Nginx site / fastcgi_param	fastcgi_param PHP_VALUE "max_input_vars=5000";
+```
 
 
 ```shell

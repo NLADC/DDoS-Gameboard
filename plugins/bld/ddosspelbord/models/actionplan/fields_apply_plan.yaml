@@ -1,0 +1,14 @@
+fields:
+    import_text:
+        label: 'bld.ddosspelbord::lang.apply_actions'
+        type: section
+        comment: 'bld.ddosspelbord::lang.apply_actions_text'
+    clearcurrent:
+        label: 'bld.ddosspelbord::lang.clearcurrent_actions'
+        type: switch
+        default: false
+        span: left
+    name:
+        label: 'bld.ddosspelbord::lang.name'
+        type: text
+        readOnly: true

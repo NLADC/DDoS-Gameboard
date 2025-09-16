@@ -1,0 +1,49 @@
+columns:
+    party:
+        label: party
+        type: text
+        relation: party
+        select: name
+        sortable: true
+
+    full_name:
+        label: name
+        type: text
+        searchable: true
+
+    backenduser[login]:
+        label: backend::lang.user.login
+        searchable: true
+        width: 15%
+
+    backenduser[email]:
+        label: backend::lang.user.email
+        searchable: true
+
+    role:
+        label: backend::lang.user.role.name
+        type: text
+        sortable: true
+        searchable: true
+
+    backenduser[last_login]:
+        label: backend::lang.user.last_login
+        searchable: true
+        type: datetime
+
+    backenduser[created_at]:
+        label: backend::lang.user.created_at
+        searchable: true
+        invisible: true
+        type: datetime
+
+    backenduser[updated_at]:
+        label: backend::lang.user.updated_at
+        searchable: true
+        invisible: true
+        type: datetime
+
+    backenduser[is_activated]:
+        label: backend::lang.user.activated
+        invisible: true
+        type: switch

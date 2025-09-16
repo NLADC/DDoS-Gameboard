@@ -19,13 +19,14 @@
  *
  */
 
+use bld\ddosspelbord\classes\base\baseModel;
 use Model;
 use Session;
 
 /**
  * Model
  */
-class Attack extends Model
+class Attack extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 

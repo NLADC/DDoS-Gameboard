@@ -1,3 +1,16 @@
+.game-datetimeWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-date {
+    font-size: 1em;
+}
+
 .game-countdown {
   lottie-player {
     height: 100%;
@@ -62,6 +75,10 @@
 
 
   }
+}
+
+.goToGameDateTime {
+    @include linkstates();
 }
 
 @media (max-width: $breakpoint-md) {

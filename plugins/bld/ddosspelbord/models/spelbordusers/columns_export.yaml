@@ -14,7 +14,31 @@ columns:
         label: role
         relation: roles
         select: name
-    deleted_at:
-        label: deleted_at
-        type: datetime
+    phone:
+        label: phone
+        type: text
+    organization:
+        label: organization
+        type: text
+    department:
+        label: department
+        type: text
+    bhv:
+        label: BHV
+        type: checkbox
+    friday_present:
+        label: 'friday present'
+        type: checkbox
+    friday_diner:
+        label: 'friday diner'
+        type: checkbox
+    saterday_present:
+        label: 'saterday present'
+        type: checkbox
+    saterday_breakfast:
+        label: 'saterday breakfast'
+        type: checkbox
+    dietary:
+        label: diet
+        type: text
 

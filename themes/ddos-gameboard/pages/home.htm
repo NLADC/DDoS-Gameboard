@@ -40,7 +40,7 @@ return Redirect::to($loginUrl);
                     </button>
                     <button @click="showActionsList = true" title="Exercise actions" class="material-icons">event
                     </button>
-                    <button v-if="user.role!='observer'" @click="editDirectLog" title="Open direct logging"
+                    <button v-if="user.role!='observer'" @click="showLog" title="Open direct logging"
                             class="material-icons">insert_comment
                     </button>
                     <button @click="showHelpFile = true" title="Show help" class="material-icons mi-help-outline">
@@ -106,10 +106,10 @@ return Redirect::to($loginUrl);
     <parties-select :show="showPartiesSelect" :parties="parties" :csrf="csrfToken"
                     @close="showPartiesSelect = false"></parties-select>
     <actions-list :show="showActionsList" :parties="parties" @close="showActionsList = false" partyActions = "partyActions" :user="user"></actions-list>
-    <quick-logging :show="showQuickLogging" :logs="logs" :rerender="reRender.quicklogs"
+    <quick-logging :show="showQuickLogging" :canEdit = canEditLog :logs="logs" :rerender="reRender.quicklogs"
                    :rerenderattacks="reRender.attacks" :attacks="attacks" :acceptedFileTypes="acceptedFileTypes"
                    :user="user" :csrf="csrfToken" :parties="parties" @rerendered="reRender.quicklogs = false"
-                   @rerenderattacks="reRender.attacks = false"
+                   @rerenderattacks="reRender.attacks = false" @show-log = "showLog" @edit-log = "editLog"
                    @close="showQuickLogging = false" @update-log="updateLog"
                    update-attack="updateAttack"></quick-logging>
     <help-file :show="showHelpFile" @close="showHelpFile = false"></help-file>

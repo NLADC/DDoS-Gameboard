@@ -21,11 +21,13 @@
 
 namespace Bld\Ddosspelbord\Controllers;
 
+use bld\ddosspelbord\classes\base\baseController;
+use bld\ddosspelbord\classes\helpers\ddosspelbordUsers;
 use bld\ddosspelbord\models\Measurement;
 use Bld\Ddosspelbord\Models\Settings;
 use bld\ddosspelbord\models\Target;
 use Db;
-use App\Action;
+use App\Action as AppAction;
 use Bld\Ddosspelbord\Models\Roles;
 use ApplicationException;
 use Redirect;
@@ -40,13 +42,13 @@ use BackendMenu;
 use Bld\Ddosspelbord\Models\Parties;
 use Bld\Ddosspelbord\Models\Spelbordusers;
 use bld\ddosspelbord\helpers\hLog;
-use \Bld\Ddosspelbord\Models\Actions;
+use Bld\Ddosspelbord\Models\Action;
 use Backend\FormWidgets\FileUpload;
 use Winter\Storm\Filesystem\Zip;
 use System\Models\File as File;
 use Assetic\Util\FilesystemUtils;
 
-class Logs extends Controller
+class Logs extends baseController
 {
     public $requiredPermissions = ['bld.ddosspelbord.logs'];
 
@@ -80,14 +82,24 @@ class Logs extends Controller
         Session::put(SESSION_LOGS_FILTER_USERS, serialize([]));
     }
 
-    public function listExtendQuery($query)
+    public function listExtendQuery($query, $definition)
     {
+        parent::listExtendQuery($query, $definition);
         //$sql = $query->toSql();
         //hlog::logLine("D-listExtendQuery; sql=$sql");
     }
 
     public function onDownload()
     {
+        if (ddosspelbordUsers::filterOnParty()) {
+            $partyId = ddosspelbordUsers::getBackendPartyId();
+            Session::put(SESSION_LOGS_FILTER_PARTIES, serialize([$partyId]));
+        }
+        else {
+            Session::forget(SESSION_LOGS_FILTER_PARTIES);
+            Session::forget(SESSION_LOGS_FILTER_USERS);
+        }
+
         // redirect for forcing browser into download
         return Redirect::to('/backend/bld/ddosspelbord/logs/getdownload/');
     }
@@ -107,10 +119,14 @@ class Logs extends Controller
         // Already creating subdirectory where the attachments will be nested in the end zip
         mkdir($tmpdir . "/attachments/");
 
-        $party_ids = [];
-        if (!empty(Session::get(SESSION_LOGS_FILTER_PARTIES))) {
-            $party_ids = Session::get(SESSION_LOGS_FILTER_PARTIES);
-            if ($party_ids) $party_ids = unserialize($party_ids);
+        $party_ids = $partyIds ?? [];
+        if (!empty($partyIds = Session::get(SESSION_LOGS_FILTER_PARTIES))) {
+            $partyIds = unserialize($partyIds);
+            if (count($partyIds) > 0) {
+                $party_ids = $partyIds;
+            }
+
+
         }
         if (!empty($partyIds)) {
             $party_ids = $partyIds;
@@ -169,11 +185,11 @@ class Logs extends Controller
                         ];
                     }
                 }
-                if (!empty($parties->where('id', $user->party_id)[0])) {
-                    $party = $parties->where('id', $user->party_id)[0];
+                if ($parties->where('id', $user->party_id)->isNotEmpty()) {
+                    $party = $parties->where('id', $user->party_id)->first();
                 }
-                else {
-                    continue; // No Party no export for this log
+                elseif (is_array($party_ids) && count($party_ids) > 0) {
+                    continue; // No Party no export for this log when party user filter
                 }
 
                 $role = Roles::find($user->role_id);
@@ -185,7 +201,7 @@ class Logs extends Controller
                     $filepath = $attachment->getLocalPath();
                     $file = new stdClass();
                     if (file_exists($filepath)) {
-                        if ($user->name != '?') {
+                        if (!empty($user->name) && $user->name != '?') {
                             $file->filename = preg_replace('/\s+/', '_', $attachment->created_at) . "_" .  $user->name . ":" .  $attachment->file_name;
                             $file->filename = preg_replace('/\:/', '-', $file->filename);
                         }
@@ -215,9 +231,9 @@ class Logs extends Controller
 
                 // Building the CSV
                 $loglines .= "$log->timestamp;";
-                $loglines .= "$party->name;";
-                $loglines .= "$user->name;";
-                $loglines .= ($role) ? "$role->name;" : '';
+                $loglines .= (!empty($party->name)) ? "$party->name;": "";
+                $loglines .= (!empty($user->name)) ? "$user->name;" : "";
+                $loglines .= (!empty($role->name)) ? "$role->name;" : '';
                 $log = str_replace("\n", '[CR]', $log->log);
                 $log = addslashes($log);
                 $loglines .= "$log;";

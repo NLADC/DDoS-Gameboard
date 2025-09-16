@@ -21,6 +21,8 @@
 
 namespace Bld\Ddosspelbord\Controllers;
 
+use bld\ddosspelbord\classes\base\baseController;
+use bld\ddosspelbord\helpers\hDate;
 use bld\ddosspelbord\helpers\hLog;
 use Bld\Ddosspelbord\Models\Transactions;
 use Flash;
@@ -33,7 +35,7 @@ use Bld\Ddosspelbord\Models\Parties;
 use Bld\Ddosspelbord\Models\Logs;
 use Bld\Ddosspelbord\Models\Spelbordusers;
 
-class Startpage extends Controller {
+class Startpage extends baseController {
 
     public $requiredPermissions = ['bld.ddosspelbord.startpage'];
 
@@ -151,7 +153,7 @@ class Startpage extends Controller {
                     $transactions[] = [
                         'data' => [
                             'log' => $log->log,
-                            'timestamp' => $log->timestamp,
+                            'timestamp' => hDate::Utc2Est($log->timestamp),
                             'user' => [
                                 'name' => $spelborduser->name,
                                 'party' => [

@@ -50,7 +50,7 @@ class hMail {
 
         $alt_email  = Config::get('bld.ddosspelbord::mail.overrule_to','');
         if ($alt_email) {
-            Log::info("D-Alternate email address (TEST MODE); use '$alt_email' for '$to' ");
+            hLog::info("D-Alternate email address (TEST MODE); use '$alt_email' for '$to' ");
             $to = $alt_email;
         }
 
@@ -73,12 +73,12 @@ class hMail {
                 if ($bcc) $message->bcc($bcc);
             });
 
-            Log::info("D-sendMail from=$from to=$to ");
+            hLog::info("D-sendMail from=$from to=$to ");
 
         } catch(\Exception $err) {
 
             // NB: \Expection is important, else not in this catch when error in Mail
-            Log::error("E-Error sendMail(to=$to,from=$from, mailview=$mailview): error=" . $err->getMessage() );
+            hLog::error("E-Error sendMail(to=$to,from=$from, mailview=$mailview): error=" . $err->getMessage() );
 
         }
 
@@ -95,7 +95,7 @@ class hMail {
 
         $alt_email  = Config::get('bld.ddosspelbord::mail.overrule_to','');
         if ($alt_email) {
-            Log::info("D-Alternate email address (TEST MODE); use '$alt_email' for '$to' ");
+            hLog::info("D-Alternate email address (TEST MODE); use '$alt_email' for '$to' ");
             $subject = "[ALT_EMAIL active; org=$to] $subject";
             $to = $alt_email;
         }
@@ -119,12 +119,12 @@ class hMail {
 
             });
 
-            Log::info("D-sendMailRaw succes");
+            hLog::info("D-sendMailRaw succes");
 
         } catch(\Exception $err) {
 
             // NB: \Expection is important, else not in this catch when error in Mail
-            Log::error("E-Error sendMailRaw(to=$to,from=$from,subject=$subject): error=" . $err->getMessage() );
+            hLog::error("E-Error sendMailRaw(to=$to,from=$from,subject=$subject): error=" . $err->getMessage() );
 
         }
 

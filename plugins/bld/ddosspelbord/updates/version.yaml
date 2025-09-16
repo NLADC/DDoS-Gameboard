@@ -34,3 +34,45 @@
 1.0.14:
     - 'Updated table bld_ddosspelbord_measurement_node_pivot'
     - builder_table_update_bld_ddosspelbord_measurement_node_pivot.php
+1.0.15:
+    - 'Created table bld_ddosspelbord_action_plans'
+    - builder_table_create_bld_ddosspelbord_action_plans.php
+1.0.16:
+    - 'Updated table bld_ddosspelbord_action_plans'
+    - builder_table_update_bld_ddosspelbord_action_plans.php
+1.0.17:
+    - 'Updated table bld_ddosspelbord_actions'
+    - builder_table_update_bld_ddosspelbord_actions.php
+1.0.18:
+    - 'Create the 3 Roles for Ddos Spelboard'
+    - ./roles_adjust_persmissions_1.php
+1.0.19:
+    - 'Created table bld_ddosspelbord_backend_user'
+    - builder_table_create_bld_ddosspelbord_backend_user.php
+1.0.20:
+    - 'Updated table bld_ddosspelbord_backend_user'
+    - builder_table_update_bld_ddosspelbord_backend_user_pivot.php
+1.0.21:
+    - 'Updated table bld_ddosspelbord_backend_user_pivot'
+    - builder_table_update_bld_ddosspelbord_backend_user_pivot_2.php
+1.0.22:
+    - 'Added backendUser permission for Admin'
+    - ./roles_adjust_persmissions_2.php
+1.0.23:
+    - 'Added monitor permission for Admin only'
+    - ./roles_adjust_persmissions_3.php
+1.0.24:
+    - 'Remove startpage for manager'
+    - ./roles_adjust_persmissions_4.php
+1.0.25:
+    - 'Updated table bld_ddosspelbord_users'
+    - builder_table_update_bld_ddosspelbord_users.php
+1.0.26:
+    - 'Expanded Import Export roles and Apply Actions'
+    - ./roles_adjust_persmissions_5.php
+1.0.27:
+    - 'Updated table bld_ddosspelbord_parties'
+    - builder_table_update_bld_ddosspelbord_parties.php
+1.0.28:
+    - 'Updated table bld_ddosspelbord_users'
+    - builder_table_update_bld_ddosspelbord_users_2.php

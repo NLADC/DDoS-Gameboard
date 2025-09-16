@@ -23,8 +23,9 @@ namespace Bld\Ddosspelbord\Controllers;
 
 use Backend\Classes\Controller;
 use BackendMenu;
+use bld\ddosspelbord\classes\base\baseController;
 
-class Parties extends Controller
+class Parties extends baseController
 {
     public $requiredPermissions = ['bld.ddosspelbord.parties'];
 

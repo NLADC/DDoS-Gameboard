@@ -17,9 +17,9 @@
                                 :log="log"></log-bubble>
                 </div>
 
-                <Form @submit="submitForm">
+                <Form @submit="submitForm" :disabled="!editLog">
                     <div class="mb-3">
-             <textarea type="textarea"
+             <textarea type="textarea" :disabled="!editLog"
                        v-on:keydown.enter="handleEnter"
                        class="focus:outline-none focus:shadow-outline bg-white text-black w-75 "
                        v-model="proxy.log" name="log" rows="2" cols="40"
@@ -29,7 +29,7 @@
                         <ErrorMessage name="log" class="input-error"/>
                         <div class="upload-log-attachments">
                             <div class="draganddropfiles" @dragover="dragover" @dragleave="dragleave" @drop="drop">
-                                <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
+                                <input type="file" :disabled="!editLog" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
                                        class="w-px h-px opacity-0 overflow-hidden absolute"
                                        @change="onAttachmentsChange"
                                        ref="file">
@@ -97,6 +97,7 @@ export default {
     },
 
     data: () => ({
+        editLog: false,
         isError: false,
         errorMsg: '',
         showAttachmentoverview: false,
@@ -129,6 +130,7 @@ export default {
         show: {
             handler() {
                 if (this.show) {
+                    this.editLog = this.getEditLogBool();
                     this.setFields();
                     this.spawnTime = Date.now();
                 }
@@ -143,6 +145,11 @@ export default {
     },
 
     methods: {
+        getEditLogBool(){
+            let bool = (window.gameboard_edit == 'true');
+            return bool;
+        },
+
         /**
          * This function helps toggle the html when the drag and drop field is empty or filled with files, it also signals the vue to update.
          */
@@ -387,54 +394,56 @@ export default {
 
 
         async submitForm() {
-            this.hideError();
+            if (this.getEditLogBool()) {
+                this.hideError();
 
-            if (this.proxy.log || Object.keys(this.proxy.attachments).length > 0 ) {
-                var tmp = {
-                    _token: this.csrf,
-                    id: this.proxy.id,
-                    log: this.proxy.log,
-                    attachments: this.proxy.attachments,
-                    timestamp: this.moment(this.editing.timestamp).format('HH:mm:ss'),
-                }
-                this.resetFields();
-                var path = '/api/log';
-                var method = 'POST';
+                if (this.proxy.log || Object.keys(this.proxy.attachments).length > 0 ) {
+                    var tmp = {
+                        _token: this.csrf,
+                        id: this.proxy.id,
+                        log: this.proxy.log,
+                        attachments: this.proxy.attachments,
+                        timestamp: this.moment(this.editing.timestamp).format('HH:mm:ss'),
+                    }
+                    this.resetFields();
+                    var path = '/api/log';
+                    var method = 'POST';
 
-                const response = await fetch(path, {
-                    method: method,
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(tmp)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.debug(data);
-                        if ('result' in data && data.result == false && 'message' in data)
-                            this.triggerError(data.message);
-                        else {
-                            if ('result' in data && data.result == true && 'log' in data) {
-                                let log = JSON.parse(data.log);
-                                // update directly local -> update by stream can be seconds..
-                                this.logs[log.id] = log;
-                                this.$emit('update-log', log);
-                                // Show message if there is one.
-                                if ('message' in data && data.message.length >= 1) {
-                                    this.triggerError(data.message);
+                    const response = await fetch(path, {
+                        method: method,
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(tmp)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.debug(data);
+                            if ('result' in data && data.result == false && 'message' in data)
+                                this.triggerError(data.message);
+                            else {
+                                if ('result' in data && data.result == true && 'log' in data) {
+                                    let log = JSON.parse(data.log);
+                                    // update directly local -> update by stream can be seconds..
+                                    this.logs[log.id] = log;
+                                    this.$emit('update-log', log);
+                                    // Show message if there is one.
+                                    if ('message' in data && data.message.length >= 1) {
+                                        this.triggerError(data.message);
+                                    }
                                 }
                             }
-                        }
-                    })
-                    .catch(err => {
-                        this.triggerError('A fatal error has occured! ' + err);
-                    });
+                        })
+                        .catch(err => {
+                            this.triggerError('A fatal error has occured! ' + err);
+                        });
 
-            } else {
-                this.triggerError('Empty log (text or attachment) - please add something');
+                } else {
+                    this.triggerError('Empty log (text or attachment) - please add something');
+                }
+                this.removeattachments();
             }
-            this.removeattachments();
         },
 
 

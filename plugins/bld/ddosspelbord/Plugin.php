@@ -61,19 +61,23 @@ class Plugin extends PluginBase {
 
 
         // Listen for menu extendItems
-        Event::listen('backend.menu.extendItems', function($manager) {
-
-            // remove menu items when not admin
+        Event::listen('backend.menu.extendItems', function ( $manager ) {
+            $menus = $manager->listMainMenuItems();
             $user = BackendAuth::getUser();
-            if ($user->is_superuser!==1) {
-                // DYNAMIC; remove NO ABUSEIO.SCART menu items
-                $menus = $manager->listMainMenuItems();
-                foreach ($menus AS $menukey => $menu) {
-                    if ($menu->owner!='bld.ddosspelbord') {
+
+            foreach ( $menus as $menukey => $menu ) {
+                // remove menu items when not admin
+                if ( $user->is_superuser !== 1 ) {
+                    if ( $menu->owner != 'bld.ddosspelbord' ) {
                         $manager->removeMainMenuItem($menu->owner, $menu->code);
                     }
                 }
+                // Remove Winter.User menu item, is overriden with spelborduser
+                if ($menu->code == 'user' && $menu->owner == "Winter.User") {
+                    $manager->removeMainMenuItem($menu->owner, $menu->code);
+                }
             }
+
 
         });
 
@@ -122,13 +126,18 @@ class Plugin extends PluginBase {
     }
     public function registerPermissions() {
         return [
-            'bld.ddosspelbord.startpage' => [
-                'label' => 'Startpage',
+            'bld.ddosspelbord.parties' => [
+                'label' => 'Manage Parties (Multi Tenant)',
                 'tab' => 'DDOSSpelbord',
                 'order' => 700,
             ],
-            'bld.ddosspelbord.parties' => [
-                'label' => 'Parties',
+            'bld.ddosspelbord.backendusers' => [
+                'label' => 'Manage BackendUsers',
+                'tab' => 'DDOSSpelbord',
+                'order' => 705,
+            ],
+            'bld.ddosspelbord.startpage' => [
+                'label' => 'Startpage',
                 'tab' => 'DDOSSpelbord',
                 'order' => 710,
             ],
@@ -141,6 +150,26 @@ class Plugin extends PluginBase {
                 'label' => 'Actions',
                 'tab' => 'DDOSSpelbord',
                 'order' => 730,
+            ],
+            'bld.ddosspelbord.actionplans' => [
+                'label' => 'Action Plans',
+                'tab' => 'DDOSSpelbord',
+                'order' => 732,
+            ],
+            'bld.ddosspelbord.apply_actionplans' => [
+                'label' => 'Action Plans',
+                'tab' => 'DDOSSpelbord',
+                'order' => 734,
+            ],
+            'bld.ddosspelbord.import_actions' => [
+                'label' => 'Actions',
+                'tab' => 'DDOSSpelbord',
+                'order' => 736,
+            ],
+            'bld.ddosspelbord.export_actions' => [
+                'label' => 'Actions',
+                'tab' => 'DDOSSpelbord',
+                'order' => 738,
             ],
             'bld.ddosspelbord.logs' => [
                 'label' => 'Logs',
@@ -157,10 +186,15 @@ class Plugin extends PluginBase {
                 'tab' => 'DDOSSpelbord',
                 'order' => 750,
             ],
+            'bld.ddosspelbord.monitor' => [
+                'label' => 'Access All Monitor or measurements settings',
+                'tab' => 'DDOSSpelbord',
+                'order' => 770,
+            ],
             'bld.ddosspelbord.access_api' => [
                 'label' => 'Access API calls',
                 'tab' => 'DDOSSpelbord',
-                'order' => 770,
+                'order' => 780,
             ],
         ];
     }

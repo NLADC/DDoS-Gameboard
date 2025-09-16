@@ -83,6 +83,10 @@
 #quicklogging-form {
     height: auto;
 
+    &[disabled="true"] {
+        opacity: 0.6;
+    }
+
     .logTimespamp {
         flex-basis: 33%;
         min-width: 64px;

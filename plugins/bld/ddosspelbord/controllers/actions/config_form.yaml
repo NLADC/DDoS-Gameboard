@@ -1,6 +1,6 @@
 name: Actions
-form: $/bld/ddosspelbord/models/actions/fields.yaml
-modelClass: Bld\Ddosspelbord\Models\Actions
+form: $/bld/ddosspelbord/models/action/fields.yaml
+modelClass: Bld\Ddosspelbord\Models\Action
 defaultRedirect: bld/ddosspelbord/actions
 create:
     redirect: 'bld/ddosspelbord/actions/update/:id'
@@ -8,3 +8,7 @@ create:
 update:
     redirect: bld/ddosspelbord/actions
     redirectClose: bld/ddosspelbord/actions
+editor:
+    redirect: bld/ddosspelbord/actions
+    redirectClose: bld/ddosspelbord/actions
+    form: $/bld/ddosspelbord/models/action/fields_editor.yaml

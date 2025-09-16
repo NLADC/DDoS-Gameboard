@@ -19,12 +19,13 @@
  *
  */
 
+use bld\ddosspelbord\classes\base\baseModel;
 use Model;
 
 /**
  * Model
  */
-class Measurement extends Model {
+class Measurement extends baseModel {
 
 
     public $timestamps = false;

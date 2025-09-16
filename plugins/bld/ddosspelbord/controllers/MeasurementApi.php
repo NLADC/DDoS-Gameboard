@@ -2,14 +2,15 @@
 
 use Backend\Classes\Controller;
 use BackendMenu;
+use bld\ddosspelbord\classes\base\baseController;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use League\Csv\Exception;
 use Winter\storm\Support\Facades\Flash;
 
-class MeasurementApi extends Controller
+class MeasurementApi extends baseController
 {
-    public $requiredPermissions = ['bld.ddosspelbord.attacks'];
+    public $requiredPermissions = ['bld.ddosspelbord.monitor'];
 
     public $implement = [
         'Backend\Behaviors\ListController',

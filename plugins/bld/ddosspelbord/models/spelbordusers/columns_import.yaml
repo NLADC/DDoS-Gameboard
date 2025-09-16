@@ -17,7 +17,3 @@ columns:
         label: role
         relation: roles
         select: name
-    deleted_at:
-        label: deleted_at
-        type: datetime
-

@@ -82,7 +82,7 @@ Provide a nginx or apache configuration that ends up in the root folder:
 - https://wintercms.com/docs/setup/configuration#nginx-configuration
 - provide chown -R www-data:www-data from (root)
 - provide chmod -R 755 from (root)
-- get chmod -r 775 from (root)/storage
+- get chmod -R 775 van (root)/storage
 
 #### nginx config
 
@@ -350,6 +350,19 @@ root /server/www/dgb
 is going to be:
 root /server/www/dgb/public
 ```
+
+#### php max_input_vars
+
+To import PlanData into the gameboard you need to set the php max_input_vars to 5000 to handle bigger plandata then 90 rows
+
+```
+php.ini	max_input_vars = 5000
+.htaccess (Apache)	php_value max_input_vars 5000
+Nginx site / fastcgi_param	fastcgi_param PHP_VALUE "max_input_vars=5000";
+```
+
+
+
 
 Now the environment should be up and running:
 - Access to the Admin section via the /backend

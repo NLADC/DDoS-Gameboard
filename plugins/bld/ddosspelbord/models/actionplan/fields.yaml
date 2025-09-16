@@ -1,0 +1,102 @@
+fields:
+
+
+tabs:
+    fields:
+        plandata:
+            tab: Actions
+            label: Actions
+            type: datatable
+            adding: true
+            btnAddRowLabel: Add Row Below
+            btnAddRowBelowLabel: Add Row Below
+            btnDeleteRowLabel: Delete Row
+            deleting: true
+            dynamicHeight: true
+            fieldName: null
+            height: false
+            keyFrom: id
+            recordsPerPage: false
+            searching: false
+            toolbar: true
+            context: update
+            columns:
+                party_id:
+                    title: Party
+                    type: dropdown
+                    width: 100px
+                    default: 0
+                name:
+                    title: Name
+                    type: string
+                    default: ''
+                description:
+                    title: Description
+                    type: string
+                    default: ''
+                start:
+                    title: Start
+                    type: string
+                    width: 120px
+                    default: ''
+                tag:
+                    title: Tag
+                    type: string
+                    width: 84px
+                    default: ''
+                length:
+                    title: Length
+                    type: string
+                    width: 84px
+                    default: 0
+                delay:
+                    title: Delay
+                    type: string
+                    width: 60px
+                    default: 0
+                extension:
+                    title: Extension
+                    type: string
+                    width: 84px
+                    default: 0
+                has_issues:
+                    title: Issues
+                    type: checkbox
+                    width: 60px
+                    default: 0
+                is_cancelled:
+                    title: Cancelled
+                    type: checkbox
+                    width: 87px
+                    default: 0
+                highlighted:
+                    title: Highlighted
+                    type: string
+                    width: 240px;
+                    default: ''
+            default: [ ]
+        hint:
+            type: hint
+            path: $/bld/ddosspelbord/controllers/actionplans/_hint.php
+            tab: Info
+            context: ['create']
+        name:
+            label: 'bld.ddosspelbord::lang.name'
+            span: full
+            type: text
+            tab: Info
+            context: ['create', 'update']
+        description:
+            label: 'bld.ddosspelbord::lang.description'
+            span: full
+            type: richeditor
+            tab: Info
+            context: [ 'create', 'update' ]
+        user_last_edited:
+            label: 'bld.ddosspelbord::lang.user_last_edited'
+            span: auto
+            select: name
+            type: relation
+            readOnly: true
+            tab: Info
+            context: [ 'create', 'update' ]

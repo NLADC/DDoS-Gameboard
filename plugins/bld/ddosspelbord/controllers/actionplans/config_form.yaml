@@ -1,0 +1,11 @@
+name: ActionPlans
+modelClass: bld\ddosspelbord\Models\ActionPlan
+form: $/bld/ddosspelbord/models/actionplan/fields.yaml
+defaultRedirect: bld/ddosspelbord/actionplans
+create:
+    redirect: 'bld/ddosspelbord/actionplans/update/:id'
+    redirectClose: bld/ddosspelbord/actionplans
+update:
+    redirect: bld/ddosspelbord/actionplans
+    redirectClose: bld/ddosspelbord/actionplans
+preview: {  }

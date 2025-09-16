@@ -187,6 +187,8 @@ class ddosspelbord_data extends ComponentBase
                 $attacks = (object)[];
             }
 
+            $editable = $this->getEditable($user, $first, $end);
+
             $data = [
                 'hash' => $hash,
                 'lang' => json_encode($lang),
@@ -213,6 +215,7 @@ class ddosspelbord_data extends ComponentBase
                 'endtime' => $end,
                 'granularity' => $granularity,
                 'version' => self::getVersion(),
+                'editable' => $editable,
                 'data' => $data,
             ];
 
@@ -250,11 +253,46 @@ class ddosspelbord_data extends ComponentBase
         return $gameboard;
     }
 
+    private function getEditable($user, $firstTime, $endTime){
+        $return = 'false';
+
+        // 1) Check if user is not an observer
+        if ($user && $user->id != 0 && $user->role != 'observer') {
+            // Convert times to Unix timestamps
+            $firstTime = strtotime($firstTime);
+            $now       = time();
+
+            $distance = $firstTime - $now;
+
+            // 2) Only allow logging after firstTime
+            if ($distance < 0) {
+                // Check if we're still before endTime
+                $endTime  = strtotime($endTime);
+                $distance = $now - $endTime;
+
+                if ($distance > 0) {
+                    // We're past the end time
+                    $return = 'excerciseOver';
+                } else {
+                    // Currently within the loggable window
+                    $return = 'true';
+                }
+            } else {
+                // Exercise not started yet
+                $return = 'excerciseNotStarted';
+            }
+        } else {
+            // User is an observer
+            $return = 'noRights';
+        }
+
+        return $return;
+    }
+
 
     public function getPartiesWithActions($user)
     {
-
-        $parties = Parties::all();
+        $parties = Parties::where('is_active', 1)->get();
 
         // Session holds (optional) excluded parties
         $excluded = Session::get(SESSION_EXCLUDED_PARTIES, '');

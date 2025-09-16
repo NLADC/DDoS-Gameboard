@@ -22,12 +22,13 @@
 namespace Bld\Ddosspelbord\Controllers;
 
 use Backend\Classes\Controller;
+use bld\ddosspelbord\classes\base\baseController;
 use Session;
 use Flash;
 use Bld\Ddosspelbord\Models\Parties;
 use BackendMenu;
 
-class Planner extends Controller {
+class Planner extends baseController {
 
     public $implement = [    ];
 

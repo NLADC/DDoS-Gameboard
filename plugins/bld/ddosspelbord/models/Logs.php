@@ -21,6 +21,7 @@
 
 namespace Bld\Ddosspelbord\Models;
 
+use bld\ddosspelbord\classes\base\baseModel;
 use bld\ddosspelbord\helpers\hLog;
 use Model;
 use Session;
@@ -29,7 +30,7 @@ use System\Models\File as File;
 /**
  * Model
  */
-class Logs extends Model {
+class Logs extends baseModel {
 
     use \Winter\Storm\Database\Traits\Validation;
 

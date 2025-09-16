@@ -19,12 +19,13 @@
  *
  */
 
+use bld\ddosspelbord\classes\base\baseModel;
 use Model;
 
 /**
  * Model
  */
-class Measurement_api_data extends Model
+class Measurement_api_data extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 

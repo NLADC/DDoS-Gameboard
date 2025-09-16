@@ -1,0 +1,6 @@
+fields:
+    cleartable:
+        label: 'bld.ddosspelbord::lang.cleartable'
+        type: switch
+        default: false
+        span: left

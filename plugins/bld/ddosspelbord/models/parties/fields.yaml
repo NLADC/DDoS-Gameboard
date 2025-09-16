@@ -3,6 +3,9 @@ fields:
         label: name
         span: auto
         type: text
+    is_active:
+        label: Active
+        type: switch
 
 tabs:
     fields:

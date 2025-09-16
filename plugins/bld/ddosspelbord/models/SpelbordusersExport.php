@@ -22,18 +22,24 @@
 namespace Bld\Ddosspelbord\Models;
 
 use \Backend\Models\ExportModel;
+use bld\ddosspelbord\classes\helpers\ddosspelbordUsers;
 
 class SpelbordusersExport extends ExportModel {
 
     public function exportData($columns, $sessionKey = null) {
-
-        $spelbordusers = Spelbordusers::all();
+        $query = Spelbordusers::query();
+        if (ddosspelbordUsers::filterOnParty()) {
+            $partyId = ddosspelbordUsers::getBackendPartyId();
+            $query->where('party_id',$partyId);
+        }
+        $spelbordusers = $query->get();
 
         $spelbordusers->each(function($spelborduser) use ($columns) {
             $spelborduser->addVisible($columns);
+
             // fill as field value from hasOne relation parties
             $spelborduser->party = (isset($spelborduser->parties->name)) ? $spelborduser->parties->name : '';
-            $spelborduser->role = $spelborduser->roles->name;
+            $spelborduser->role = (isset($spelborduser->roles->name)) ? $spelborduser->roles->name : '';
         });
         return $spelbordusers->toArray();
     }

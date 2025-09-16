@@ -21,6 +21,7 @@
 
 namespace Bld\Ddosspelbord\Controllers;
 
+use bld\ddosspelbord\classes\base\baseController;
 use bld\ddosspelbord\helpers\hLog;
 use bld\ddosspelbord\helpers\hMail;
 use bld\ddosspelbord\models\Attack;
@@ -38,7 +39,7 @@ use Winter\User\Components\ResetPassword;
 use Winter\User\Models\User;
 use Bld\Ddosspelbord\Models\Spelbordusers as SpelbordusersModel;
 
-class Spelbordusers extends Controller
+class Spelbordusers extends baseController
 {
     public $requiredPermissions = ['bld.ddosspelbord.spelbordusers'];
 
@@ -66,8 +67,9 @@ class Spelbordusers extends Controller
         $this->asExtension('ListController')->index();
     }
 
-    public function formExtendFields($form)
+    public function formExtendFields($form, $fields)
     {
+        parent::formExtendFields($form, $fields);
         // Check if this is the update action
         if ($this->action === 'update') {
             // Ensure the field exists before attempting to modify it

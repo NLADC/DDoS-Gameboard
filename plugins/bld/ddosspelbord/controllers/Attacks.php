@@ -23,8 +23,9 @@ namespace bld\ddosspelbord\Controllers;
 
 use Backend\Classes\Controller;
 use BackendMenu;
+use bld\ddosspelbord\classes\base\baseController;
 
-class Attacks extends Controller
+class Attacks extends baseController
 {
     public $requiredPermissions = ['bld.ddosspelbord.attacks'];
 
@@ -39,8 +40,14 @@ class Attacks extends Controller
     public function __construct()
     {
         parent::__construct();
+        BackendMenu::setContext('bld.ddosspelbord', 'Attacks');
+
     }
 
+    public function listExtendQuery($query, $definition)
+    {
+        parent::listExtendQuery($query, $definition);
+    }
 
 
 }

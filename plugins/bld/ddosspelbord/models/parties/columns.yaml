@@ -3,9 +3,9 @@ columns:
         label: name
         type: text
         searchable: true
+    is_active:
+        label: Active
+        type: switch
     updated_at:
         label: updated_at
-        type: datetime
-    deleted_at:
-        label: deleted_at
         type: datetime

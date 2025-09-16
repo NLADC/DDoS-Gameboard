@@ -36,7 +36,7 @@
         "winter/wn-cms-module": "dev-develop",
         "laravel/framework": "^9.1",
         "wikimedia/composer-merge-plugin": "~2.1.0",
-        "winter/wn-builder-plugin": "^2.0",
+        "winter/wn-builder-plugin": "^2.1",
         "winter/wn-user-plugin": "^v2.2.0",
         "winter/wn-translate-plugin": "^2.0",
         "laravel/passport": "^v12.30",

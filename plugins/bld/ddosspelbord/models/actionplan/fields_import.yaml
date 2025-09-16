@@ -1,0 +1,23 @@
+fields:
+    actionplan:
+        label: Action Plan
+        type: dropdown
+    newActionPlan:
+        label: Name
+        type: text
+        dependsOn: actionplan
+        trigger:
+            action: show
+            field: actionplan
+            condition:
+                value[0]
+    clearcurrent:
+        label: 'bld.ddosspelbord::lang.clearcurrent_actions'
+        type: switch
+        default: false
+        span: left
+        trigger:
+            action: hide
+            field: actionplan
+            condition:
+                value[0]

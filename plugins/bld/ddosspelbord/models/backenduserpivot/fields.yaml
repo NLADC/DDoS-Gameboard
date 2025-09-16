@@ -1,0 +1,53 @@
+fields:
+    party:
+        label: Party
+        type: relation
+        select: name
+        span: full
+        hidden: true
+        emptyOption: __ No Party __
+
+    backenduser[send_invite]:
+        context: create
+        type: checkbox
+        span: auto
+        label: backend::lang.user.send_invite
+        comment: backend::lang.user.send_invite_comment
+        default: true
+
+    backenduser[login]:
+        span: left
+        label: backend::lang.user.login
+
+    backenduser[email]:
+        span: right
+        type: email
+        label: backend::lang.user.email
+
+
+
+    backenduser[first_name]:
+        span: left
+        label: backend::lang.user.first_name
+
+    backenduser[last_name]:
+        span: right
+        label: backend::lang.user.last_name
+
+    backenduser[password]:
+        type: password
+        span: left
+        label: backend::lang.user.password
+
+    backenduser[password_confirmation]:
+        type: password
+        span: right
+        label: backend::lang.user.password_confirmation
+
+    backenduser[role]:
+        context: [create, update]
+        label: backend::lang.user.role_field
+        commentAbove: backend::lang.user.role_comment
+        type: radio
+        options: getRoleOptions
+

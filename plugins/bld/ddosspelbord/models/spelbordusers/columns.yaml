@@ -20,6 +20,3 @@ columns:
     updated_at:
         label: updated
         type: datetime
-    deleted_at:
-        label: deleted_at
-        type: datetime

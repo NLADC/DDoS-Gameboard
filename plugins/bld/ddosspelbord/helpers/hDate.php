@@ -26,7 +26,7 @@ use DateTimeZone;
 
 class hDate {
 
-    public static function Utc2Est($stime,$format='Y-m-d H:i:s') {
+    public static function Utc2Est($stime,$format='Y-m-d H:i:s P T') {
         $date = new DateTime($stime);
         // Convert
         $date->setTimezone(new DateTimeZone('Europe/Amsterdam'));

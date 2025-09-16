@@ -28,7 +28,7 @@ use Session;
 use Redirect;
 use Response;
 use Bld\Ddosspelbord\Controllers\Feeds;
-use Bld\Ddosspelbord\Models\Actions;
+use Bld\Ddosspelbord\Models\Action;
 use Bld\Ddosspelbord\Models\spelbordusers;
 use Cms\Classes\ComponentBase;
 use bld\ddosspelbord\helpers\hLog;
@@ -82,7 +82,7 @@ class ddosspelbord_action extends ComponentBase {
             hLog::logLine("D-ddosspelbord_action.submitAction; id=$action_id");
 
             if ($action_id) {
-                $action = Actions::find($action_id);
+                $action = Action::find($action_id);
 
                 $fields = [
                     'name', 'tag', 'description',

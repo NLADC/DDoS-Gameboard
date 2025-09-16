@@ -21,7 +21,20 @@
     'sendpasswordresetmail' => 'Verstuur welkom & wachtwoord reset mail',
     'sendpasswordresetmail_conformation' => 'Wil je deze gebruikers echt een wachtwoord reset email sturen?',
     'sendpasswordresetmail_success' => 'De reset mail(s) zijn verzonden',
-
+    'actions_editor' => 'Acties Bewerker',
+    'apply_actions' => 'Apply Actions',
+    'apply_actions_text' => 'Let op, dit zal alle acties binnen dit plan in de LIVE-acties plaatsen die momenteel in het GameBoard zijn geladen.',
+    'apply_actions_success' => 'Acties uit actieplan succesvol geïmporteerd',
+    'apply_actions_warning' => 'Waarschuwing: Actieplan eerst opslaan, omdat niet-opgeslagen wijzigingen worden genegeerd',
+    'actionplan_hint' => 'Voordat u acties kan toevoegen aan het plan moet u eerst het plan aanmaken',
+    'clearcurrent_actions' => 'Wis huidige acties',
+    'name' => 'Naam',
+    'description' => 'Beschrijving',
+    'user_last_edited' => 'Gebruiker Laatst Bewerkt',
+    'cleartable' => 'Tabel wissen vóór import',
+    'import_text_actionplan' => 'Importeer een ActiesPlan',
+    'edit_as_plan' => 'Bewerk als Plan',
+    'create_plan' => 'Creeer Plan',
 ];
 /*
  * Copyright (C) 2024 Anti-DDoS Coalitie Netherlands (ADC-NL)

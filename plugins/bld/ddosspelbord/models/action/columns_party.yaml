@@ -1,0 +1,32 @@
+columns:
+    start:
+        label: start
+        type: time
+        format: 'H:i:s'
+    length:
+        label: 'length (sec)'
+        type: number
+    tag:
+        label: tag
+        type: text
+        searchable: true
+    name:
+        label: name
+        type: text
+        searchable: true
+    description:
+        label: description
+        type: text
+        searchable: true
+    delay:
+        label: 'delay (sec)'
+        type: number
+    extension:
+        label: 'extension (sec)'
+        type: number
+    has_issues:
+        label: issues
+        type: switch
+    is_cancelled:
+        label: cancelled
+        type: switch

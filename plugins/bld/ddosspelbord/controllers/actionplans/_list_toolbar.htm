@@ -1,0 +1,27 @@
+<div data-control="toolbar">
+    <?php $user = \bld\ddosspelbord\classes\helpers\ddosspelbordUsers::getUser();
+       if ($user->hasAccess('bld.ddosspelbord.import_actions')):?>
+    <a href="<?= Backend::url('bld/ddosspelbord/actionplans/import') ?>" class="btn btn-primary oc-icon-upload">
+        <?= e(trans('bld.ddosspelbord::lang.import')) ?>
+    </a>
+    <?php endif ?>
+
+    <?php if ($user->hasAccess('bld.ddosspelbord.apply_actionplans')): ?> ?>
+    <a href="<?= Backend::url('bld/ddosspelbord/actionplans/create') ?>" class="btn btn-primary wn-icon-plus"><?= e(trans('backend::lang.form.create')) ?></a>
+    <button
+        class="btn btn-default wn-icon-trash-o"
+        disabled="disabled"
+        onclick="$(this).data('request-data', {
+            checked: $('.control-list').listWidget('getChecked')
+        })"
+        data-request="onDelete"
+        data-request-confirm="<?= e(trans('backend::lang.list.delete_selected_confirm')) ?>"
+        data-trigger-action="enable"
+        data-trigger=".control-list input[type=checkbox]"
+        data-trigger-condition="checked"
+        data-request-success="$(this).prop('disabled', true)"
+        data-stripe-load-indicator>
+        <?= e(trans('backend::lang.list.delete_selected')) ?>
+    </button>
+    <?php endif ?>
+</div>

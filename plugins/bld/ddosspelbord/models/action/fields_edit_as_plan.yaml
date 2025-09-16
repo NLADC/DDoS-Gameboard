@@ -1,0 +1,13 @@
+fields:
+    seaction_header:
+        label: 'bld.ddosspelbord::lang.edit_as_plan'
+        type: section
+        comment: 'bld.ddosspelbord::lang.edit_as_plan_comment'
+    name:
+        label: 'bld.ddosspelbord::lang.name'
+        span: full
+        type: text
+    description:
+        label: 'bld.ddosspelbord::lang.description'
+        span: full
+        type: richeditor

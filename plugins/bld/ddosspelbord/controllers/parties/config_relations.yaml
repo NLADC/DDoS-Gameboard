@@ -2,7 +2,7 @@ actions:
     label: Actions
     view:
         title: Actions
-        list: $/bld/ddosspelbord/models/actions/columns_party.yaml
+        list: $/bld/ddosspelbord/models/action/columns_party.yaml
         showCheckboxes: true
         toolbarButtons:
             create: Add action
@@ -14,7 +14,7 @@ actions:
         recordsPerPage: 10
     manage:
         title: Actions
-        form: $/bld/ddosspelbord/models/actions/fields_party.yaml
+        form: $/bld/ddosspelbord/models/action/fields_party.yaml
         showCheckboxes: true
         toolbarButtons:
             create: Add action

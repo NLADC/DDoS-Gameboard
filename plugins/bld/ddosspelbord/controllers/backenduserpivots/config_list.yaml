@@ -1,0 +1,12 @@
+title: Backend Users
+modelClass: bld\ddosspelbord\Models\BackendUserPivot
+list: $/bld/ddosspelbord/models/backenduserpivot/columns.yaml
+recordUrl: 'bld/ddosspelbord/backenduserpivots/update/:id'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: 20
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'

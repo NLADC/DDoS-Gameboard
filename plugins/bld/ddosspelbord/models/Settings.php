@@ -80,7 +80,7 @@ class Settings extends Model {
         $start = str_replace('00:00:00', $starttime->format('H:i:s'), $startdate->format('Y-m-d 00:00:00'));
 
         hLog::logLine("D-afterSave; start=$start");
-        (new Actions())->resetStartTime($start);
+        (new Action())->resetStartTime($start);
     }
 
     public static function getStartStopexercise() {

@@ -30,7 +30,7 @@ Last Name: SystemOnly
 Password: <A Strong Password Off Course>
 ```
 
-Now go to permissions tab and deny all permissions but allow the permission "Access API calls"
+Now go to permissions tab and deny all permissions but allow the permission "Access API calls", or give the user the DDOS Gameboard API User role.
 
 ### Auth and get Access Token
 POST:```/api/authentication```

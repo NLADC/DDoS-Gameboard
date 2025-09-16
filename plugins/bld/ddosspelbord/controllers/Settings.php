@@ -2,12 +2,13 @@
 
 use Backend\Classes\Controller;
 use BackendMenu;
+use bld\ddosspelbord\classes\base\baseController;
 use bld\ddosspelbord\helpers\hLog;
 use bld\ddosspelbord\models\Attack;
 use bld\ddosspelbord\models\Measurement;
 use bld\ddosspelbord\models\Measurement_api;
 use bld\ddosspelbord\models\Measurement_api_data;
-use bld\ddosspelbord\models\Actions;
+use bld\ddosspelbord\models\Action;
 use bld\ddosspelbord\models\MeasurementNode;
 use bld\ddosspelbord\models\MeasurementType;
 use bld\ddosspelbord\models\NodeList;
@@ -22,7 +23,7 @@ use System\Models\File;
 use Bld\Ddosspelbord\Models\Spelbordusers;
 use Winter\User\Models\User;
 
-class Settings extends Controller {
+class Settings extends baseController {
 
     /**
      * Never Delete This function or all ajax calls underneath will fail
@@ -90,7 +91,7 @@ class Settings extends Controller {
 
                     case 'setupData':
 
-                        Actions::truncate();
+                        Action::truncate();
                         Parties::truncate();
 
                         Flash::success('Succesfully deleted all setupData');

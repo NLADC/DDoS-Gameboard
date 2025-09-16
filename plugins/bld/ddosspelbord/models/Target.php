@@ -19,6 +19,7 @@
  *
  */
 
+use bld\ddosspelbord\classes\base\baseModel;
 use bld\ddosspelbord\models\Measurement_api;
 use Model;
 use Bld\Ddosspelbord\models\Parties;
@@ -27,7 +28,7 @@ use bld\ddosspelbord\models\Target_groups;
 /**
  * Model
  */
-class Target extends Model
+class Target extends baseModel
 {
     use \Winter\Storm\Database\Traits\Validation;
 
